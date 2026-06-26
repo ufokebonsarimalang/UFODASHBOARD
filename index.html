@@ -1,0 +1,1257 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>UFO Kebonsari</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+<style>
+*{
+    box-sizing:border-box;
+}
+
+body{
+    margin:0;
+    padding:25px;
+    font-family:'Outfit',sans-serif;
+    min-height:100vh;
+
+    background:
+    radial-gradient(
+        circle at top,
+        rgba(59,130,246,.12) 0%,
+        transparent 45%
+    ),
+    linear-gradient(
+        180deg,
+        #0f172a 0%,
+        #111827 100%
+    );
+
+    color:white;
+}
+.header{
+    text-align:center;
+    margin-bottom:30px;
+}
+
+.header h1{
+    font-size:52px;
+    font-weight:800;
+    margin:0;
+    letter-spacing:-2px;
+
+    background:linear-gradient(
+        90deg,
+        #ffffff,
+        #60a5fa
+    );
+
+    -webkit-background-clip:text;
+    -webkit-text-fill-color:transparent;
+}
+
+.header p{
+    color:#94a3b8;
+    font-size:15px;
+    margin-top:8px;
+}
+.search-box{
+    max-width:700px;
+    margin:0 auto 25px;
+    display:flex;
+    gap:10px;
+}
+
+.search-box input{
+    flex:1;
+    padding:14px;
+    border-radius:16px;
+    border:1px solid rgba(255,255,255,.15);
+    background:rgba(255,255,255,.08);
+    backdrop-filter:blur(12px);
+    color:white;
+    font-size:16px;
+}
+
+.search-box input::placeholder{
+    color:#cbd5e1;
+}
+
+.search-box button{
+    padding:14px 24px;
+    border:none;
+    border-radius:16px;
+    cursor:pointer;
+    font-weight:600;
+    color:white;
+
+    background:linear-gradient(
+        135deg,
+        #3b82f6,
+        #06b6d4
+    );
+}
+
+.search-box button:hover{
+    opacity:.9;
+}
+
+#summary{
+    max-width:1200px;
+    margin:0 auto 25px;
+}
+
+.summary-card{
+    background:rgba(255,255,255,.08);
+    backdrop-filter:blur(18px);
+    border:1px solid rgba(255,255,255,.12);
+    border-radius:24px;
+    padding:20px;
+    color:white;
+}
+
+.summary-card h2{
+    margin-top:0;
+}
+
+.grid{
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    gap:18px;
+}
+
+.card{
+    background:rgba(255,255,255,.08);
+    backdrop-filter:blur(18px);
+    border:1px solid rgba(255,255,255,.12);
+    border-radius:24px;
+    padding:18px;
+    transition:.2s;
+}
+
+.card:hover{
+    transform:translateY(-4px);
+}
+
+.card.success{
+    border-left:5px solid #16a34a;
+}
+
+.card.warning{
+    border-left:5px solid #dc2626;
+}
+
+.tanggal{
+    text-align:center;
+    font-weight:700;
+    margin-bottom:15px;
+    color:white;
+}
+
+.row{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    padding:8px 0;
+    border-bottom:1px solid rgba(255,255,255,.1);
+    color:#e2e8f0;
+    font-size:14px;
+}
+
+.row:last-child{
+    border-bottom:none;
+}
+
+.ok{
+    font-weight:600;
+    color:white;
+}
+
+.kosong{
+    color:#f87171;
+    font-weight:700;
+}
+
+.status-ok{
+    color:#4ade80;
+    font-weight:700;
+}
+
+.status-warning{
+    color:#f87171;
+    font-weight:700;
+}
+
+/* TABLET */
+@media(max-width:1024px){
+
+    .grid{
+        grid-template-columns:repeat(2,1fr);
+    }
+
+}
+
+/* HP */
+@media(max-width:768px){
+
+    body{
+        padding:15px;
+    }
+
+    .header h1{
+        font-size:36px;
+    }
+
+    .search-box{
+        flex-direction:column;
+    }
+
+    .grid{
+        grid-template-columns:repeat(2,1fr);
+        gap:10px;
+    }
+
+    .card{
+        padding:12px;
+    }
+
+    .row{
+        font-size:12px;
+    }
+
+    .tanggal{
+        font-size:13px;
+    }
+    .card.late{
+    border:2px solid #facc15;
+    background:rgba(250,204,21,.08);
+    box-shadow:0 0 15px rgba(250,204,21,.2);
+}
+}
+.menu-tab{
+    display:flex;
+    justify-content:center;
+    gap:12px;
+    margin-bottom:20px;
+}
+
+.menu-tab button{
+    padding:12px 22px;
+    border:none;
+    border-radius:14px;
+    cursor:pointer;
+    font-weight:600;
+    font-size:14px;
+
+    background:rgba(255,255,255,.08);
+    color:#cbd5e1;
+
+    transition:.2s;
+}
+
+.menu-tab button.active{
+    background:linear-gradient(
+        135deg,
+        #3b82f6,
+        #06b6d4
+    );
+
+    color:white;
+
+    box-shadow:
+    0 0 15px rgba(59,130,246,.35);
+}
+.search-box select{
+    flex:1;
+    height:56px;
+    padding:0 18px;
+    border-radius:18px;
+    border:1px solid rgba(255,255,255,.12);
+    background:rgba(255,255,255,.08);
+    backdrop-filter:blur(18px);
+
+    color:white;
+    font-size:15px;
+    font-weight:600;
+    font-family:'Outfit',sans-serif;
+
+    outline:none;
+    cursor:pointer;
+    transition:.25s;
+
+    appearance:none;
+    -webkit-appearance:none;
+
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='18' height='18' fill='white' viewBox='0 0 16 16'%3E%3Cpath d='M1.5 5.5l6 6 6-6'/%3E%3C/svg%3E");
+    background-repeat:no-repeat;
+    background-position:right 16px center;
+}
+
+.search-box select:hover{
+    border-color:rgba(96,165,250,.5);
+}
+
+.search-box select:focus{
+    border-color:#60a5fa;
+    box-shadow:
+      0 0 0 3px rgba(96,165,250,.15),
+      0 0 20px rgba(96,165,250,.25);
+}
+
+.search-box select option{
+    background:#111827;
+    color:white;
+}
+#nama{
+    width:100%;
+    padding:14px 16px;
+    border-radius:16px;
+    border:1px solid rgba(255,255,255,.15);
+    background:rgba(255,255,255,.08);
+    backdrop-filter:blur(12px);
+
+    color:white;
+    font-size:15px;
+    font-weight:600;
+
+    outline:none;
+    cursor:pointer;
+
+    appearance:none;
+    -webkit-appearance:none;
+    -moz-appearance:none;
+
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='20' fill='white'%3E%3Cpath d='M5 7l5 5 5-5'/%3E%3C/svg%3E");
+    background-repeat:no-repeat;
+    background-position:right 14px center;
+    padding-right:40px;
+}
+
+#nama:hover{
+    border-color:#60a5fa;
+}
+
+#nama:focus{
+    border-color:#3b82f6;
+    box-shadow:0 0 15px rgba(59,130,246,.35);
+} 
+    .popup-btn{
+  margin-top:20px;
+  padding:12px 30px;
+  border:none;
+  border-radius:14px;
+  cursor:pointer;
+  color:white;
+  font-weight:600;
+  font-size:14px;
+  background:linear-gradient(135deg,#2563eb,#06b6d4);
+  transition:.3s;
+}
+.spinner{
+  width:18px;
+  height:18px;
+  display:inline-block;
+  border:3px solid rgba(255,255,255,.3);
+  border-top:3px solid #fff;
+  border-radius:50%;
+  animation:spin .8s linear infinite;
+  vertical-align:middle;
+}
+
+@keyframes spin{
+  to{
+    transform:rotate(360deg);
+  }
+}   
+.popup-btn:hover{
+  transform:translateY(-2px);
+}
+ #logoutPopup{
+  display:none;
+  position:fixed;
+  top:0;
+  left:0;
+  width:100%;
+  height:100%;
+  background:rgba(0,0,0,.65);
+  z-index:99999;
+}
+
+#logoutBox{
+  position:absolute;
+  top:50%;
+  left:50%;
+  transform:translate(-50%,-50%);
+  background:#1e293b;
+  padding:25px;
+  border-radius:20px;
+  min-width:300px;
+  text-align:center;
+  border:1px solid rgba(255,255,255,.1);
+}
+
+#logoutBox h3{
+  margin-top:0;
+  color:white;
+}
+
+#logoutBox p{
+  color:#cbd5e1;
+  margin:15px 0 20px;
+}
+
+#btnBatal,
+#btnLogoutConfirm{
+  border:none;
+  padding:10px 20px;
+  border-radius:12px;
+  cursor:pointer;
+  color:white;
+  font-weight:600;
+  margin:5px;
+}
+
+#btnBatal{
+  background:#3b82f6;
+}
+
+#btnLogoutConfirm{
+  background:#dc2626;
+}   
+</style>
+</head>
+<body>
+<div id="loginBox" style="
+max-width:420px;
+margin:40px auto;
+padding:25px;
+background:rgba(255,255,255,.08);
+backdrop-filter:blur(18px);
+border-radius:24px;
+border:1px solid rgba(255,255,255,.12);
+">
+
+<h2 style="text-align:center;margin-top:0;">
+🔐 Login Dashboard
+</h2>
+
+<input
+id="loginNama"
+type="text"
+placeholder="Nama"
+style="
+width:100%;
+padding:14px;
+margin-bottom:12px;
+border-radius:14px;
+border:none;
+font-size:15px;
+">
+
+<input
+id="loginPin"
+type="password"
+placeholder="PIN"
+style="
+width:100%;
+padding:14px;
+margin-bottom:12px;
+border-radius:14px;
+border:none;
+font-size:15px;
+">
+
+<button
+id="btnLogin"
+onclick="login()"
+style="
+width:100%;
+padding:14px;
+border:none;
+border-radius:14px;
+cursor:pointer;
+font-weight:700;
+color:white;
+background:linear-gradient(135deg,#2563eb,#06b6d4);
+">
+LOGIN
+</button>
+
+</div>
+<div id="dashboard" style="display:none;">
+<div class="header">
+    <h1>UFO DASHBOARD</h1>
+    <p>Absensi & Penjualan Promotor UFO Kebonsari</p>
+</div>
+ <div id="loginInfo" style="
+  display:inline-block;
+  margin:12px auto 20px;
+  padding:10px 18px;
+  border-radius:999px;
+  background:rgba(255,255,255,.08);
+  border:1px solid rgba(255,255,255,.12);
+  color:#e2e8f0;
+  font-size:14px;
+  font-weight:600;
+"></div>
+<div style="text-align:right;margin-bottom:15px;">
+  <button onclick="logout()" style="
+    padding:10px 18px;
+    border:none;
+    border-radius:12px;
+    cursor:pointer;
+    color:white;
+    background:#dc2626;
+    font-weight:600;
+  ">
+    🚪 Logout
+  </button>
+</div>
+<div class="search-box">
+  <select id="nama"></select>
+</div>
+
+
+
+<div id="summary"></div>
+
+<div class="menu-tab">
+
+  <button
+    id="btnAbsen"
+    onclick="cari()">
+    📋 Absensi
+  </button>
+
+  <button
+    id="btnJual"
+    onclick="cariPenjualan()">
+    💰 Penjualan
+  </button>
+<button onclick="cariUC()" id="btnUC">
+  💎 UC
+</button>
+   <button onclick="cariPerolehan()" id="btnPerolehan">
+  📊 Perolehan
+</button> 
+</div>
+<div id="hasil" class="grid"></div>
+
+<script>
+
+const WEBAPP_URL =
+"https://script.google.com/macros/s/AKfycbwBMxlujfB7xE68welYbFrC5utj4cF7r9sx_kqWxr7iXL50B0jBWRWxUjJolc72HJ-8mA/exec";
+let currentUser = "";
+let currentRole = "";
+
+async function login() {
+const btn = document.getElementById("btnLogin");
+btn.disabled = true;
+btn.innerHTML = `
+  <span class="spinner" style="margin-right:8px;"></span>
+  LOGIN...
+`;
+  const nama = document
+    .getElementById("loginNama")
+    .value
+    .trim();
+
+  const pin = document
+    .getElementById("loginPin")
+    .value
+    .trim();
+
+  if (!nama || !pin) {
+    showPopup("Nama dan PIN harus diisi.");
+    return;
+  }
+
+  const res = await fetch(
+    WEBAPP_URL +
+    "?action=login&nama=" +
+    encodeURIComponent(nama) +
+    "&pin=" +
+    encodeURIComponent(pin)
+  );
+
+  const data = await res.json();console.log(data);
+
+if (!data.success) {
+    const btn = document.getElementById("btnLogin");
+    btn.disabled = false;
+    btn.innerHTML = "LOGIN";
+
+    alert(data.message || "Nama atau PIN salah");
+    return;
+}
+  currentUser = nama;
+  currentRole = data.role;
+    document.getElementById("loginInfo").innerHTML =
+  "⭕<b>" +
+  currentUser +
+  "</b>" +
+  (currentRole === "ADMIN" ? " (ADMIN)" : "");
+  document.getElementById("loginBox").style.display = "none";
+  document.getElementById("dashboard").style.display = "block";
+if (currentRole === "USER") {
+  document.querySelector(".search-box").style.display = "none";
+  document.getElementById("btnPerolehan").style.display = "none";
+} else {
+  document.querySelector(".search-box").style.display = "block";
+  document.getElementById("btnPerolehan").style.display = "inline-block";
+}
+  showPopup("Selamat Datang " + currentUser);
+if (currentRole === "USER") {
+  cari();
+}
+ localStorage.setItem("loginNama", currentUser);
+localStorage.setItem("loginRole", currentRole);   
+}
+ function logout() {
+
+  document.getElementById("logoutPopup").style.display = "block";
+
+}
+
+function tutupLogout() {
+
+  document.getElementById("logoutPopup").style.display = "none";
+
+}
+
+function logoutConfirm() {
+
+  document.getElementById("logoutPopup").style.display = "none";
+
+  currentUser = "";
+  currentRole = "";
+
+  document.getElementById("dashboard").style.display = "none";
+  document.getElementById("loginBox").style.display = "block";
+
+  document.getElementById("loginNama").value = "";
+  document.getElementById("loginPin").value = "";
+
+  document.getElementById("summary").innerHTML = "";
+  document.getElementById("hasil").innerHTML = "";
+
+  localStorage.removeItem("loginNama");
+  localStorage.removeItem("loginRole");
+localStorage.removeItem("sessionToken");
+    const btn = document.getElementById("btnLogin");
+btn.disabled = false;
+btn.innerHTML = "LOGIN";
+}    
+function tampil(v){
+
+    return (v && v.trim() !== "")
+    ? `<span class="ok">${v}</span>`
+    : `<span class="kosong">-</span>`;
+
+}
+
+async function cari() {
+
+  document.getElementById("btnJual").classList.remove("active");
+  document.getElementById("btnUC").classList.remove("active");
+  document.getElementById("btnAbsen").classList.add("active");
+  document.getElementById("btnPerolehan").classList.remove("active");
+
+  let nama;
+
+  if (currentRole === "USER") {
+    nama = currentUser;
+  } else {
+    nama = document.getElementById("nama").value.trim();
+  }
+
+  if (!nama) {
+    showPopup("Pilih nama terlebih dahulu");
+    return;
+  }
+
+  const res = await fetch(
+    WEBAPP_URL + "?nama=" + encodeURIComponent(nama)
+  );
+
+  const result = await res.json();
+
+  // lanjutkan kode yang sudah ada...
+const data = result.data || [];
+const terlambat = result.terlambat || 0;
+    data.sort(
+        (a,b)=>
+        Number(a.tanggal)-Number(b.tanggal)
+    );
+
+    let belumPulang = 0;
+
+    data.forEach(x=>{
+        if(!x.pulang){
+            belumPulang++;
+        }
+    });
+
+    if(data.length){
+
+        document.getElementById("summary").innerHTML = `
+        <div class="summary-card">
+            <h2>🏆 ${data[0].nama}</h2>
+            <p>Total Hari Absen : <b>${data.length}</b></p>
+            <p>Belum Finger Pulang : <b>${belumPulang}</b></p>
+            <p>Datang Terlambat : <b>${terlambat}</b></p>
+        </div>
+        `;
+
+    }else{
+
+        document.getElementById("summary").innerHTML = "";
+
+    }
+
+    let html = "";
+
+    data.forEach(x=>{
+
+    const isTerlambat =
+        (x.terlambat || "").toString().toUpperCase() === "YA";
+
+    const status =
+        x.pulang
+        ? '<span class="status-ok">Lengkap</span>'
+        : '<span class="status-warning">Belum Lengkap</span>';
+
+    const kelasCard =
+        x.pulang
+        ? "success"
+        : "warning";
+
+    const kelasTambahan =
+        isTerlambat ? "late" : "";
+
+    html += `
+    <div class="card ${kelasCard} ${kelasTambahan}">
+
+        <div class="tanggal">
+            📅 ${x.tanggal}<br>
+            ${status}
+
+            ${isTerlambat ? '<div style="color:#facc15;font-weight:700;margin-top:5px;">TERLAMBAT</div>' : ''}
+        </div>
+
+        <div class="row">
+            <span>Masuk</span>
+            ${tampil(x.masuk)}
+        </div>
+
+        <div class="row">
+            <span>Istirahat 1</span>
+            ${tampil(x.istirahat1)}
+        </div>
+
+        <div class="row">
+            <span>Kembali 1</span>
+            ${tampil(x.kembali1)}
+        </div>
+
+        <div class="row">
+            <span>Istirahat 2</span>
+            ${tampil(x.istirahat2)}
+        </div>
+
+        <div class="row">
+            <span>Kembali 2</span>
+            ${tampil(x.kembali2)}
+        </div>
+
+        <div class="row">
+            <span>Pulang</span>
+            ${tampil(x.pulang)}
+        </div>
+
+    </div>
+    `;
+});
+
+    if(data.length===0){
+
+        html = `
+        <div class="card">
+            Data tidak ditemukan
+        </div>
+        `;
+
+    }
+
+    document.getElementById("hasil").innerHTML = html;
+
+}
+async function cariPenjualan(){
+document.getElementById("btnAbsen")
+.classList.remove("active");
+    
+ document.getElementById("btnUC")
+.classList.remove("active"); 
+
+document.getElementById("btnJual")
+.classList.add("active");
+    document.getElementById("btnPerolehan").classList.remove("active");
+  let nama;
+
+if (currentRole === "USER") {
+  nama = currentUser;
+} else {
+  nama = document.getElementById("nama").value.trim();
+}
+  if (!nama) {
+   showPopup("Nama dan PIN harus diisi.");
+    return;
+}
+  const res =
+    await fetch(
+      WEBAPP_URL +
+      "?action=penjualan&nama=" +
+      encodeURIComponent(nama)
+    );
+
+  const data = await res.json();
+
+  document.getElementById("summary").innerHTML = `
+  <div class="summary-card">
+    <h2>💰 ${data.nama}</h2>
+<p>
+  Periode :
+  <b>${data.tanggalPertama} - ${data.tanggalTerakhir}</b>
+</p>
+
+    <p>Total Unit :
+<b>${data.totalUnit}</b></p>
+
+<span style="
+  font-weight:bold;
+  color:${
+    Number(data.totalOmzet) >= 100000000
+      ? '#22c55e'
+      : Number(data.totalOmzet) >= 80000000
+      ? '#f59e0b'
+      : '#ef4444'
+  };
+">
+  Rp ${Number(data.totalOmzet).toLocaleString("id-ID")}
+</span>
+    </div>
+  `;
+
+ let html = "";
+
+const grupTanggal = {};
+
+data.detail.forEach(x => {
+
+  if (!grupTanggal[x.tanggal]) {
+    grupTanggal[x.tanggal] = [];
+  }
+
+  grupTanggal[x.tanggal].push(x);
+
+});
+
+for (const tanggal in grupTanggal) {
+
+  let isiProduk = "";
+  let totalHari = 0;
+
+  grupTanggal[tanggal].forEach(item => {
+
+    totalHari += Number(item.omzet);
+
+    isiProduk += `
+      <div style="
+        margin-bottom:15px;
+        padding-bottom:10px;
+        border-bottom:1px solid rgba(255,255,255,.1);
+      ">
+
+        <div style="
+  font-size:9px;
+  font-weight:600;
+  line-height:1.4;
+  margin-bottom:9px;
+  color:#e2e8f0;
+">
+  ${item.produk}
+</div>
+
+        <div class="row">
+          <span>Qty</span>
+          <span>${item.qty}</span>
+        </div>
+
+        <div class="row">
+          <span>Omzet</span>
+          <span>
+            Rp ${Number(item.omzet).toLocaleString("id-ID")}
+          </span>
+        </div>
+
+      </div>
+    `;
+  });
+
+  html += `
+    <div class="card success">
+
+      <div class="tanggal">
+        📅 ${tanggal}
+      </div>
+
+      ${isiProduk}
+
+      <div class="row" style="
+        font-weight:700;
+        font-size:12px;
+      ">
+        <span>Total Hari Ini</span>
+        <span>
+          Rp ${totalHari.toLocaleString("id-ID")}
+        </span>
+      </div>
+
+    </div>
+  `;
+}
+
+document.getElementById("hasil").innerHTML = html;
+}
+function showPopup(pesan) {
+  console.log("showPopup dipanggil:", pesan);
+
+  const popup = document.getElementById("popup");
+  const text = document.getElementById("popupText");
+
+  console.log(popup);
+  console.log(text);
+
+  text.innerText = pesan;
+  popup.style.display = "flex";
+}
+    function tutupPopup() {
+  document.getElementById("popup").style.display = "none";
+}
+document
+.getElementById("nama")
+.addEventListener("keypress",function(e){
+
+    if(e.key==="Enter"){
+        cari();
+    }
+
+});
+async function loadNama(){
+
+  const res = await fetch(
+    WEBAPP_URL + "?action=nama"
+  );
+
+  const data = await res.json();
+
+  let html = `
+    <option value="" selected disabled>
+      👤 Pilih Nama Promotor
+    </option>
+  `;
+
+  data.forEach(nama => {
+    html += `<option value="${nama}">${nama}</option>`;
+  });
+
+  document.getElementById("nama").innerHTML = html;
+}
+
+loadNama();
+async function cariUC(){
+
+document.getElementById("btnAbsen")
+.classList.remove("active");
+
+document.getElementById("btnJual")
+.classList.remove("active");
+
+document.getElementById("btnUC")
+.classList.add("active");
+document.getElementById("btnPerolehan").classList.remove("active");
+let nama;
+
+if (currentRole === "USER") {
+  nama = currentUser;
+} else {
+  nama = document.getElementById("nama").value.trim();
+}
+
+if(!nama){
+showPopup("Pilih nama terlebih dahulu");
+return;
+}
+
+const res = await fetch(
+WEBAPP_URL +
+"?action=uc&nama=" +
+encodeURIComponent(nama)
+);
+
+const data = await res.json();
+document.getElementById("hasil").className = "grid";
+document.getElementById("summary").innerHTML = `
+<div class="summary-card">
+
+  <h2>💎 ${data.nama}</h2>
+
+  <p>
+    Periode :
+    <b>${data.tanggalPertama} - ${data.tanggalTerakhir}</b>
+  </p>
+
+  <p>
+    Total UC :
+    <b>${data.totalUC}</b>
+  </p>
+
+</div>
+  `;
+
+let html = "";
+
+data.detail.forEach(x=>{
+
+
+html += `
+<div class="card success">
+
+  <div class="tanggal">
+    📅 ${x.tanggal}
+  </div>
+
+  <div style="
+    font-size:11px;
+    font-weight:600;
+    line-height:1.4;
+    margin:12px 0;
+    color:#e2e8f0;
+  ">
+    ${x.produk}
+  </div>
+
+  <div class="row">
+    <span>Qty</span>
+    <span>${x.qty}</span>
+  </div>
+
+</div>
+`;
+
+
+});
+
+document.getElementById("hasil").innerHTML = html;
+}
+async function cariPerolehan() {
+
+  document.getElementById("btnAbsen").classList.remove("active");
+  document.getElementById("btnJual").classList.remove("active");
+  document.getElementById("btnUC").classList.remove("active");
+  document.getElementById("btnPerolehan").classList.add("active");
+
+  const res = await fetch(WEBAPP_URL + "?action=perolehan");
+  const data = await res.json();
+
+  const user = data.list.find(
+    x => (x.nama || "").toUpperCase() === (currentUser || "").toUpperCase()
+  );
+
+  const posisi = user
+    ? data.list.findIndex(
+        x => (x.nama || "").toUpperCase() === (currentUser || "").toUpperCase()
+      ) + 1
+    : 0;
+
+  document.getElementById("summary").innerHTML = `
+    <div class="summary-card">
+      <h2>📊 Perolehan</h2>
+      <p>👤 ${currentUser}</p>
+      <p>💰 Total Omzet :
+  <span style="
+    font-weight:bold;
+    color:${
+      Number(user ? user.omzet : 0) >= 100000000
+        ? '#22c55e'
+        : Number(user ? user.omzet : 0) >= 80000000
+        ? '#f59e0b'
+        : '#ef4444'
+    };
+  ">
+    Rp ${Number(user ? user.omzet : 0).toLocaleString("id-ID")}
+  </span>
+</p>
+      <p>🏅 Posisi :
+        <b>${posisi} dari ${data.list.length} Promotor</b>
+      </p>
+    </div>
+  `;
+
+let html = `<div class="summary-card">`;
+
+data.list.forEach((x, i) => {
+  html += `
+    <div style="
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      padding:14px 0;
+      border-bottom:1px solid rgba(255,255,255,.08);
+    ">
+
+      <div style="
+        display:flex;
+        align-items:center;
+        gap:12px;
+        flex:1;
+        min-width:0;
+      ">
+
+        <div style="
+          width:32px;
+          height:32px;
+          border-radius:50%;
+          background:rgba(59,130,246,.18);
+          display:flex;
+          align-items:center;
+          justify-content:center;
+          font-weight:700;
+          font-size:14px;
+          flex-shrink:0;
+        ">
+          ${i + 1}
+        </div>
+
+       <div style="
+  font-weight:600;
+  font-size:13px;
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+">
+  ${x.nama}
+</div>
+
+      </div>
+
+     <div style="
+  margin-left:15px;
+  text-align:right;
+  white-space:nowrap;
+">
+  <div style="
+    font-weight:800;
+    font-size:13px;
+    color:${
+      Number(x.omzet || 0) >= 100000000
+        ? '#22c55e'
+        : Number(x.omzet || 0) >= 80000000
+        ? '#f59e0b'
+        : '#ef4444'
+    };
+">
+  Rp ${Number(x.omzet || 0).toLocaleString("id-ID")}
+</div>
+  <div style="
+  font-size:12px;
+  font-weight:700;
+  color:#facc15;
+  margin-top:2px;
+">
+  💎 UC : ${x.uc || 0}
+</div>
+</div>
+    </div>
+  `;
+});
+
+html += `</div>`;
+
+document.getElementById("hasil").className = "";
+document.getElementById("hasil").innerHTML = html;
+loadNama();
+    }
+</script>
+
+<div id="popup" style="
+display:none;
+position:fixed;
+top:0;
+left:0;
+width:100%;
+height:100%;
+justify-content:center;
+align-items:center;
+background:rgba(0,0,0,.6);
+z-index:9999;
+">
+
+  <div style="
+  position:absolute;
+  top:50%;
+  left:50%;
+  transform:translate(-50%,-50%);
+  background:#1e293b;
+  color:white;
+  padding:25px;
+  border-radius:20px;
+  min-width:280px;
+  text-align:center;
+  ">
+
+ <h3 id="popupTitle">
+ Login Berhasil
+</h3>
+<div id="popupText" style="
+font-size:15px;
+line-height:1.5;
+">
+</div>
+ <button onclick="tutupPopup()" style="
+margin-top:20px;
+padding:10px 25px;
+border:none;
+border-radius:12px;
+cursor:pointer;
+color:white;
+background:linear-gradient(135deg,#3b82f6,#06b6d4);
+">
+  OK
+</button>
+
+</div> <!-- tutup kotak popup -->
+</div> <!-- tutup overlay popup -->     
+
+  <div id="logoutPopup" style="display:none;">
+  <div id="logoutBox">
+    <h3>🚪 Logout</h3>
+    <p>Yakin ingin logout?</p>
+
+    <button id="btnBatal" onclick="tutupLogout()">
+      Batal
+    </button>
+
+    <button id="btnLogoutConfirm" onclick="logoutConfirm()">
+      Logout
+    </button>
+  </div>
+   
+ 
+ 
+</body>
+</html>
