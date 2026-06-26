@@ -831,18 +831,21 @@ if (currentRole === "USER") {
     <p>Total Unit :
 <b>${data.totalUnit}</b></p>
 
-<span style="
-  font-weight:bold;
-  color:${
-    Number(data.totalOmzet) >= 100000000
-      ? '#22c55e'
-      : Number(data.totalOmzet) >= 80000000
-      ? '#f59e0b'
-      : '#ef4444'
-  };
-">
-  Rp ${Number(data.totalOmzet).toLocaleString("id-ID")}
-</span>
+<p>
+  Total Omzet :
+  <span style="
+    font-weight:bold;
+    color:${
+      Number(data.totalOmzet) >= 100000000
+        ? '#22c55e'
+        : Number(data.totalOmzet) >= 80000000
+        ? '#f59e0b'
+        : '#ef4444'
+    };
+  ">
+    Rp ${Number(data.totalOmzet).toLocaleString("id-ID")}
+  </span>
+</p>
     </div>
   `;
 
