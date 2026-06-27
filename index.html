@@ -540,7 +540,27 @@ LOGIN
 </button> 
 </div>
 <div id="hasil" class="grid"></div>
+if (currentRole === "ADMIN") {
 
+  document.getElementById("summary").innerHTML += `
+  <div style="margin-top:10px;text-align:center">
+    <button
+      onclick="exportExcelPerolehan()"
+      style="
+        background:#16a34a;
+        color:white;
+        border:none;
+        padding:10px 18px;
+        border-radius:8px;
+        cursor:pointer;
+        font-weight:bold;
+      ">
+      📊 Export Excel
+    </button>
+  </div>
+  `;
+
+}
 <script>
 
 const WEBAPP_URL =
