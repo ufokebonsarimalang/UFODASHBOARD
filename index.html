@@ -540,27 +540,7 @@ LOGIN
 </button> 
 </div>
 <div id="hasil" class="grid"></div>
-if (currentRole === "ADMIN") {
 
-  document.getElementById("summary").innerHTML += `
-  <div style="margin-top:10px;text-align:center">
-    <button
-      onclick="exportExcelPerolehan()"
-      style="
-        background:#16a34a;
-        color:white;
-        border:none;
-        padding:10px 18px;
-        border-radius:8px;
-        cursor:pointer;
-        font-weight:bold;
-      ">
-      📊 Export Excel
-    </button>
-  </div>
-  `;
-
-}
 <script>
 
 const WEBAPP_URL =
@@ -1109,104 +1089,7 @@ data.list.forEach(x => {
 });
  document.getElementById("summary").innerHTML = `
 <div class="summary-card">
-// =======================
-// EXPORT PEROLEHAN
-// =======================
-if (action === "exportPerolehan") {
 
-  const masterSales = SpreadsheetApp
-    .getActiveSpreadsheet()
-    .getSheetByName("MASTER_SALES")
-    .getDataRange()
-    .getDisplayValues();
-
-  const penjualan = SpreadsheetApp
-    .getActiveSpreadsheet()
-    .getSheetByName("PENJUALAN")
-    .getDataRange()
-    .getDisplayValues();
-
-  let map = {};
-  let mapUC = {};
-
-  const sekarang = new Date();
-
-  let awal, akhir;
-
-  if (sekarang.getDate() >= 25) {
-    awal = new Date(sekarang.getFullYear(), sekarang.getMonth(), 25);
-    akhir = new Date(sekarang.getFullYear(), sekarang.getMonth() + 1, 24);
-  } else {
-    awal = new Date(sekarang.getFullYear(), sekarang.getMonth() - 1, 25);
-    akhir = new Date(sekarang.getFullYear(), sekarang.getMonth(), 24);
-  }
-
-  for (let i = 1; i < penjualan.length; i++) {
-
-    const sales = (penjualan[i][15] || "").trim().toUpperCase();
-
-    if (!sales) continue;
-
-    const omzet = Number(
-      String(penjualan[i][10] || 0).replace(/,/g, "")
-    ) || 0;
-
-    if (!map[sales]) map[sales] = 0;
-
-    map[sales] += omzet;
-
-    const kategori = (penjualan[i][17] || "").trim().toUpperCase();
-
-    if (kategori === "GARANSI") {
-
-      const p = (penjualan[i][2] || "").split("/");
-
-      const tgl = new Date(
-        Number(p[2]),
-        Number(p[1]) - 1,
-        Number(p[0])
-      );
-
-      if (tgl >= awal && tgl <= akhir) {
-
-        if (!mapUC[sales]) mapUC[sales] = 0;
-
-        mapUC[sales] += Number(penjualan[i][6]) || 0;
-
-      }
-
-    }
-
-  }
-
-  let list = [];
-
-  for (let i = 1; i < masterSales.length; i++) {
-
-    if (
-      (masterSales[i][2] || "").toUpperCase() !== "YA" ||
-      (masterSales[i][5] || "").toUpperCase() !== "YA"
-    ) continue;
-
-    const nama = masterSales[i][0];
-
-    const sales = (masterSales[i][1] || "").toUpperCase();
-
-    list.push({
-      nama: nama,
-      omzet: map[sales] || 0,
-      uc: mapUC[sales] || 0
-    });
-
-  }
-
-  list.sort((a,b)=>b.omzet-a.omzet);
-
-  return ContentService
-    .createTextOutput(JSON.stringify(list))
-    .setMimeType(ContentService.MimeType.JSON);
-
-}
 <h2>📊 Perolehan</h2>
 
 ${
