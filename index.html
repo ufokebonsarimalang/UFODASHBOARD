@@ -540,11 +540,31 @@ LOGIN
 </button> 
 </div>
 <div id="hasil" class="grid"></div>
+if (currentRole === "ADMIN") {
 
+  document.getElementById("summary").innerHTML += `
+  <div style="margin-top:10px;text-align:center">
+    <button
+      onclick="exportExcelPerolehan()"
+      style="
+        background:#16a34a;
+        color:white;
+        border:none;
+        padding:10px 18px;
+        border-radius:8px;
+        cursor:pointer;
+        font-weight:bold;
+      ">
+      📊 Export Excel
+    </button>
+  </div>
+  `;
+
+}
 <script>
 
 const WEBAPP_URL =
-"https://script.google.com/macros/s/AKfycbwBMxlujfB7xE68welYbFrC5utj4cF7r9sx_kqWxr7iXL50B0jBWRWxUjJolc72HJ-8mA/exec";
+"https://script.google.com/macros/s/AKfycbwKbscxs_avurQJzcDDy2YB-laTL9kbzDNHcOuOV8TYGzQxiKtveG83AfvyvgoeB4pDpg/exec";
 let currentUser = "";
 let currentRole = "";
 
@@ -831,18 +851,21 @@ if (currentRole === "USER") {
     <p>Total Unit :
 <b>${data.totalUnit}</b></p>
 
-<span style="
-  font-weight:bold;
-  color:${
-    Number(data.totalOmzet) >= 100000000
-      ? '#22c55e'
-      : Number(data.totalOmzet) >= 80000000
-      ? '#f59e0b'
-      : '#ef4444'
-  };
-">
-  Rp ${Number(data.totalOmzet).toLocaleString("id-ID")}
-</span>
+<p>
+  Total Omzet Toko :
+  <span style="
+    font-weight:bold;
+    color:${
+      Number(data.totalOmzet) >= 100000000
+        ? '#22c55e'
+        : Number(data.totalOmzet) >= 80000000
+        ? '#f59e0b'
+        : '#ef4444'
+    };
+  ">
+    Rp ${Number(data.totalOmzet).toLocaleString("id-ID")}
+  </span>
+</p>
     </div>
   `;
 
@@ -1077,30 +1100,161 @@ async function cariPerolehan() {
         x => (x.nama || "").toUpperCase() === (currentUser || "").toUpperCase()
       ) + 1
     : 0;
+let totalOmzet = 0;
+let totalUC = 0;
 
-  document.getElementById("summary").innerHTML = `
-    <div class="summary-card">
-      <h2>📊 Perolehan</h2>
-      <p>👤 ${currentUser}</p>
-      <p>💰 Total Omzet :
-  <span style="
-    font-weight:bold;
-    color:${
-      Number(user ? user.omzet : 0) >= 100000000
-        ? '#22c55e'
-        : Number(user ? user.omzet : 0) >= 80000000
-        ? '#f59e0b'
-        : '#ef4444'
-    };
-  ">
-    Rp ${Number(user ? user.omzet : 0).toLocaleString("id-ID")}
-  </span>
+data.list.forEach(x => {
+  totalOmzet += Number(x.omzet || 0);
+  totalUC += Number(x.uc || 0);
+});
+ document.getElementById("summary").innerHTML = `
+<div class="summary-card">
+// =======================
+// EXPORT PEROLEHAN
+// =======================
+if (action === "exportPerolehan") {
+
+  const masterSales = SpreadsheetApp
+    .getActiveSpreadsheet()
+    .getSheetByName("MASTER_SALES")
+    .getDataRange()
+    .getDisplayValues();
+
+  const penjualan = SpreadsheetApp
+    .getActiveSpreadsheet()
+    .getSheetByName("PENJUALAN")
+    .getDataRange()
+    .getDisplayValues();
+
+  let map = {};
+  let mapUC = {};
+
+  const sekarang = new Date();
+
+  let awal, akhir;
+
+  if (sekarang.getDate() >= 25) {
+    awal = new Date(sekarang.getFullYear(), sekarang.getMonth(), 25);
+    akhir = new Date(sekarang.getFullYear(), sekarang.getMonth() + 1, 24);
+  } else {
+    awal = new Date(sekarang.getFullYear(), sekarang.getMonth() - 1, 25);
+    akhir = new Date(sekarang.getFullYear(), sekarang.getMonth(), 24);
+  }
+
+  for (let i = 1; i < penjualan.length; i++) {
+
+    const sales = (penjualan[i][15] || "").trim().toUpperCase();
+
+    if (!sales) continue;
+
+    const omzet = Number(
+      String(penjualan[i][10] || 0).replace(/,/g, "")
+    ) || 0;
+
+    if (!map[sales]) map[sales] = 0;
+
+    map[sales] += omzet;
+
+    const kategori = (penjualan[i][17] || "").trim().toUpperCase();
+
+    if (kategori === "GARANSI") {
+
+      const p = (penjualan[i][2] || "").split("/");
+
+      const tgl = new Date(
+        Number(p[2]),
+        Number(p[1]) - 1,
+        Number(p[0])
+      );
+
+      if (tgl >= awal && tgl <= akhir) {
+
+        if (!mapUC[sales]) mapUC[sales] = 0;
+
+        mapUC[sales] += Number(penjualan[i][6]) || 0;
+
+      }
+
+    }
+
+  }
+
+  let list = [];
+
+  for (let i = 1; i < masterSales.length; i++) {
+
+    if (
+      (masterSales[i][2] || "").toUpperCase() !== "YA" ||
+      (masterSales[i][5] || "").toUpperCase() !== "YA"
+    ) continue;
+
+    const nama = masterSales[i][0];
+
+    const sales = (masterSales[i][1] || "").toUpperCase();
+
+    list.push({
+      nama: nama,
+      omzet: map[sales] || 0,
+      uc: mapUC[sales] || 0
+    });
+
+  }
+
+  list.sort((a,b)=>b.omzet-a.omzet);
+
+  return ContentService
+    .createTextOutput(JSON.stringify(list))
+    .setMimeType(ContentService.MimeType.JSON);
+
+}
+<h2>📊 Perolehan</h2>
+
+${
+currentRole === "ADMIN"
+?
+
+`
+<p>👥 Jumlah Promotor :
+<b>${data.list.length}</b></p>
+
+<p>💰 Total Omzet :
+<span style="font-weight:bold;color:#22c55e">
+Rp ${totalOmzet.toLocaleString("id-ID")}
+</span>
 </p>
-      <p>🏅 Posisi :
-        <b>${posisi} dari ${data.list.length} Promotor</b>
-      </p>
-    </div>
-  `;
+
+<p>💎 Total UC :
+<b>${totalUC}</b></p>
+`
+
+:
+
+`
+<p>👤 ${currentUser}</p>
+
+<p>💰 Total Omzet :
+<span style="
+font-weight:bold;
+color:${
+Number(user ? user.omzet : 0) >= 100000000
+? '#22c55e'
+: Number(user ? user.omzet : 0) >= 80000000
+? '#f59e0b'
+: '#ef4444'
+};
+">
+Rp ${Number(user ? user.omzet : 0).toLocaleString("id-ID")}
+</span>
+</p>
+
+<p>🏅 Posisi :
+<b>${posisi} dari ${data.list.length} Promotor</b>
+</p>
+`
+}
+
+</div>
+`;
 
 let html = `<div class="summary-card">`;
 
