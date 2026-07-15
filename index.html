@@ -6,7 +6,11 @@
 
 <title>UFO Kebonsari</title>
 
-<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght=300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+<!-- 📚 SCRIPT TAMBAHAN UNTUK EKSPOR EXCEL & PDF -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 
 <style>
 *{
@@ -339,7 +343,7 @@ body{
     border-color:#3b82f6;
     box-shadow:0 0 15px rgba(59,130,246,.35);
 } 
-    .popup-btn{
+.popup-btn{
   margin-top:20px;
   padding:12px 30px;
   border:none;
@@ -421,7 +425,45 @@ body{
 
 #btnLogoutConfirm{
   background:#dc2626;
-}   
+}
+
+/* 💎 STYLE BARU UNTUK AREA DOWNLOAD FILE EXPORT */
+.export-container {
+    max-width: 1200px;
+    margin: 0 auto 15px;
+    display: none; /* muncul kalau data sudah diload */
+    justify-content: flex-end;
+    gap: 10px;
+}
+
+.btn-export {
+    padding: 10px 16px;
+    border: none;
+    border-radius: 12px;
+    font-weight: 700;
+    font-size: 13px;
+    cursor: pointer;
+    color: white;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    transition: .2s;
+}
+
+.btn-excel {
+    background: linear-gradient(135deg, #16a34a, #15803d);
+    box-shadow: 0 4px 12px rgba(22,163,74,0.25);
+}
+
+.btn-pdf {
+    background: linear-gradient(135deg, #dc2626, #b91c1c);
+    box-shadow: 0 4px 12px rgba(220,38,38,0.25);
+}
+
+.btn-export:hover {
+    transform: translateY(-2px);
+    opacity: 0.95;
+}
 </style>
 </head>
 <body>
@@ -539,6 +581,13 @@ LOGIN
   📊 Perolehan
 </button> 
 </div>
+
+<!-- 📦 CONTAINER TOMBOL EKSPOR DUA PILIHAN -->
+<div class="export-container" id="exportArea">
+    <button class="btn-export btn-excel" onclick="prosesEkspor('excel')">📥 Unduh Excel</button>
+    <button class="btn-export btn-pdf" onclick="prosesEkspor('pdf')">📄 Unduh PDF</button>
+</div>
+
 <div id="hasil" class="grid"></div>
 
 <script>
@@ -547,6 +596,7 @@ const WEBAPP_URL =
 "https://script.google.com/macros/s/AKfycbwKbscxs_avurQJzcDDy2YB-laTL9kbzDNHcOuOV8TYGzQxiKtveG83AfvyvgoeB4pDpg/exec";
 let currentUser = "";
 let currentRole = "";
+let activeTab = "Absensi"; // Menyimpan tracking tab aktif
 
 async function login() {
 const btn = document.getElementById("btnLogin");
@@ -638,6 +688,7 @@ function logoutConfirm() {
 
   document.getElementById("summary").innerHTML = "";
   document.getElementById("hasil").innerHTML = "";
+  document.getElementById("exportArea").style.display = "none";
 
   localStorage.removeItem("loginNama");
   localStorage.removeItem("loginRole");
@@ -655,7 +706,8 @@ function tampil(v){
 }
 
 async function cari() {
-
+  activeTab = "Absensi";
+  document.getElementById("exportArea").style.display = "none";
   document.getElementById("btnJual").classList.remove("active");
   document.getElementById("btnUC").classList.remove("active");
   document.getElementById("btnAbsen").classList.add("active");
@@ -680,7 +732,6 @@ async function cari() {
 
   const result = await res.json();
 
-  // lanjutkan kode yang sudah ada...
 const data = result.data || [];
 const terlambat = result.terlambat || 0;
     data.sort(
@@ -706,6 +757,7 @@ const terlambat = result.terlambat || 0;
             <p>Datang Terlambat : <b>${terlambat}</b></p>
         </div>
         `;
+        document.getElementById("exportArea").style.display = "flex";
 
     }else{
 
@@ -791,6 +843,8 @@ const terlambat = result.terlambat || 0;
 
 }
 async function cariPenjualan(){
+activeTab = "Penjualan";
+document.getElementById("exportArea").style.display = "none";
 document.getElementById("btnAbsen")
 .classList.remove("active");
     
@@ -928,6 +982,10 @@ for (const tanggal in grupTanggal) {
   `;
 }
 
+if(data.detail && data.detail.length > 0){
+    document.getElementById("exportArea").style.display = "flex";
+}
+
 document.getElementById("hasil").innerHTML = html;
 }
 function showPopup(pesan) {
@@ -977,7 +1035,8 @@ async function loadNama(){
 
 loadNama();
 async function cariUC(){
-
+activeTab = "UC";
+document.getElementById("exportArea").style.display = "none";
 document.getElementById("btnAbsen")
 .classList.remove("active");
 
@@ -1059,10 +1118,15 @@ html += `
 
 });
 
+if(data.detail && data.detail.length > 0){
+    document.getElementById("exportArea").style.display = "flex";
+}
+
 document.getElementById("hasil").innerHTML = html;
 }
 async function cariPerolehan() {
-
+  activeTab = "Perolehan";
+  document.getElementById("exportArea").style.display = "none";
   document.getElementById("btnAbsen").classList.remove("active");
   document.getElementById("btnJual").classList.remove("active");
   document.getElementById("btnUC").classList.remove("active");
@@ -1143,7 +1207,7 @@ let html = `<div class="summary-card">`;
 
 data.list.forEach((x, i) => {
   html += `
-    <div style="
+    <div class="row-perolehan-export" style="
       display:flex;
       align-items:center;
       justify-content:space-between;
@@ -1174,7 +1238,7 @@ data.list.forEach((x, i) => {
           ${i + 1}
         </div>
 
-       <div style="
+       <div class="nama-p" style="
   font-weight:600;
   font-size:13px;
   white-space:nowrap;
@@ -1191,7 +1255,7 @@ data.list.forEach((x, i) => {
   text-align:right;
   white-space:nowrap;
 ">
-  <div style="
+  <div class="omzet-p" style="
     font-weight:800;
     font-size:13px;
     color:${
@@ -1204,7 +1268,7 @@ data.list.forEach((x, i) => {
 ">
   Rp ${Number(x.omzet || 0).toLocaleString("id-ID")}
 </div>
-  <div style="
+  <div class="uc-p" style="
   font-size:12px;
   font-weight:700;
   color:#facc15;
@@ -1219,10 +1283,143 @@ data.list.forEach((x, i) => {
 
 html += `</div>`;
 
+if(data.list && data.list.length > 0){
+    document.getElementById("exportArea").style.display = "flex";
+}
+
 document.getElementById("hasil").className = "";
 document.getElementById("hasil").innerHTML = html;
 loadNama();
+}
+
+// 🚀 FUNGSI UTAMA PROSES EKSPOR EXCEL & PDF SMART SYSTEM
+function prosesEkspor(format) {
+    let namaKaryawan = "";
+    if (currentRole === "USER") {
+        namaKaryawan = currentUser;
+    } else {
+        namaKaryawan = document.getElementById("nama").value.trim() || "Semua_Promotor";
     }
+    
+    const namaFile = `Laporan_${activeTab}_${namaKaryawan.replace(/\s+/g, '_')}`;
+    const targetElement = document.getElementById("hasil");
+
+    // 1. JIKA REKUES FORMAT EXCEL (.xlsx)
+    if (format === 'excel') {
+        let rowsArr = [];
+
+        if (activeTab === "Absensi") {
+            rowsArr.push(["LAPORAN ABSENSI PROMOTOR: " + namaKaryawan.toUpperCase()], []);
+            rowsArr.push(["Tanggal", "Status", "Masuk", "Istirahat 1", "Kembali 1", "Istirahat 2", "Kembali 2", "Pulang"]);
+            
+            const cards = targetElement.querySelectorAll(".card");
+            cards.forEach(card => {
+                let tglText = card.querySelector(".tanggal").innerText.replace(/📅/g, '').split("\n")[0].trim();
+                let status = card.querySelector(".tanggal").innerText.includes("Lengkap") ? "Lengkap" : "Belum Lengkap";
+                if(card.querySelector(".tanggal").innerText.includes("TERLAMBAT")) status += " (Terlambat)";
+                
+                let rowsData = card.querySelectorAll(".row");
+                let jamMasuk = rowsData[0]?.querySelector(".ok, .kosong")?.innerText || "-";
+                let ist1 = rowsData[1]?.querySelector(".ok, .kosong")?.innerText || "-";
+                let kem1 = rowsData[2]?.querySelector(".ok, .kosong")?.innerText || "-";
+                let ist2 = rowsData[3]?.querySelector(".ok, .kosong")?.innerText || "-";
+                let kem2 = rowsData[4]?.querySelector(".ok, .kosong")?.innerText || "-";
+                let jamPulang = rowsData[5]?.querySelector(".ok, .kosong")?.innerText || "-";
+
+                rowsArr.push([tglText, status, jamMasuk, ist1, kem1, ist2, kem2, jamPulang]);
+            });
+        } 
+        else if (activeTab === "Penjualan") {
+            rowsArr.push(["LAPORAN PENJUALAN PROMOTOR: " + namaKaryawan.toUpperCase()], []);
+            rowsArr.push(["Tanggal", "Nama Produk / Deskripsi", "Qty", "Omzet"]);
+
+            const cards = targetElement.querySelectorAll(".card");
+            cards.forEach(card => {
+                let tglText = card.querySelector(".tanggal").innerText.replace(/📅/g, '').trim();
+                let rowsData = card.querySelectorAll(".row");
+                
+                // Iterasi item produk di dalam card hari tersebut (kecuali row total paling akhir)
+                let itemProduks = card.innerHTML.split(/<div style="[^"]*margin-bottom:15px;[^"]*">/i);
+                itemProduks.shift(); // hapus header pembagi awal
+
+                for(let i=0; i < itemProduks.length; i++) {
+                    let tempDiv = document.createElement("div");
+                    tempDiv.innerHTML = itemProduks[i];
+                    let namaProduk = tempDiv.innerText.split("Qty")[0].trim().replace(/\n/g, ' ');
+                    
+                    let qty = tempDiv.querySelectorAll(".row")[0]?.querySelectorAll("span")[1]?.innerText || "0";
+                    let omzet = tempDiv.querySelectorAll(".row")[1]?.querySelectorAll("span")[1]?.innerText || "0";
+                    
+                    rowsArr.push([tglText, namaProduk, qty, omzet]);
+                }
+                
+                // Tambahkan row total harian
+                let totalHari = rowsData[rowsData.length - 1]?.querySelectorAll("span")[1]?.innerText || "0";
+                rowsArr.push(["", "TOTAL HARI INI", "", totalHari], []);
+            });
+        }
+        else if (activeTab === "UC") {
+            rowsArr.push(["LAPORAN INSENTIF UC PROMOTOR: " + namaKaryawan.toUpperCase()], []);
+            rowsArr.push(["Tanggal", "Nama Produk", "Qty"]);
+
+            const cards = targetElement.querySelectorAll(".card");
+            cards.forEach(card => {
+                let tglText = card.querySelector(".tanggal").innerText.replace(/📅/g, '').trim();
+                let namaProduk = card.querySelector("div[style*='font-size:11px']")?.innerText.trim() || "-";
+                let qty = card.querySelector(".row span:last-child")?.innerText || "0";
+                rowsArr.push([tglText, namaProduk, qty]);
+            });
+        }
+        else if (activeTab === "Perolehan") {
+            rowsArr.push(["RANKING PEROLEHAN ALL PROMOTOR UFO KEBONSARI"], []);
+            rowsArr.push(["Posisi / No", "Nama Promotor", "Total Omzet", "Total UC"]);
+
+            const rowsData = targetElement.querySelectorAll(".row-perolehan-export");
+            rowsData.forEach((row, idx) => {
+                let nama = row.querySelector(".nama-p")?.innerText.trim() || "-";
+                let omzet = row.querySelector(".omzet-p")?.innerText.trim() || "0";
+                let uc = row.querySelector(".uc-p")?.innerText.replace(/💎 UC\s*:\s*/gi, '').trim() || "0";
+                rowsArr.push([idx + 1, nama, omzet, uc]);
+            });
+        }
+
+        // Generate workbook excel lembaran baru
+        const ws = XLSX.utils.aoa_to_sheet(rowsArr);
+        const wb = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(wb, ws, activeTab);
+        XLSX.writeFile(wb, `${namaFile}.xlsx`);
+    } 
+    // 2. JIKA REKUES FORMAT PDF (.pdf)
+    else if (format === 'pdf') {
+        // Kloning element agar tidak merusak tema asli di layar monitor dashboard saat proses print
+        const elemenPrint = targetElement.cloneNode(true);
+        elemenPrint.style.color = "#000000"; 
+        elemenPrint.style.background = "#ffffff"; 
+        elemenPrint.style.padding = "20px";
+        elemenPrint.style.width = "100%";
+        
+        // Atur agar border card terlihat tegas saat di lembar cetak kertas PDF putih
+        elemenPrint.querySelectorAll(".card, .summary-card").forEach(el => {
+            el.style.background = "#f8fafc";
+            el.style.border = "1px solid #cbd5e1";
+            el.style.color = "#000000";
+            el.style.marginBottom = "15px";
+        });
+        elemenPrint.querySelectorAll("span, div").forEach(el => {
+            el.style.color = "#000000";
+        });
+
+        const opsiPdf = {
+            margin:       [10, 10, 10, 10],
+            filename:     `${namaFile}.pdf`,
+            image:        { type: 'jpeg', quality: 0.98 },
+            html2canvas:  { scale: 2, useCORS: true, backgroundColor: '#ffffff' },
+            jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
+        };
+
+        html2pdf().set(opsiPdf).from(elemenPrint).save();
+    }
+}
 </script>
 
 <div id="popup" style="
@@ -1287,8 +1484,7 @@ background:linear-gradient(135deg,#3b82f6,#06b6d4);
       Logout
     </button>
   </div>
-   
- 
+</div>
  
 </body>
 </html>
