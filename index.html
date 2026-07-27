@@ -460,7 +460,8 @@ body {
 
     <div class="input-group">
         <label>USERNAME</label>
-        <input id="loginNama" type="text" placeholder="Masukkan Username">
+        <!-- Ditambahkan oninput agar huruf otomatis menjadi BESAR (Uppercase) -->
+        <input id="loginNama" type="text" placeholder="Masukkan Username" oninput="this.value = this.value.toUpperCase()">
     </div>
 
     <div class="input-group">
@@ -533,7 +534,8 @@ async function login() {
   btn.disabled = true;
   btn.innerHTML = `<span class="spinner" style="margin-right:8px;"></span>MEMPROSES...`;
   
-  const nama = document.getElementById("loginNama").value.trim();
+  // Dipaksa huruf besar (.toUpperCase()) saat dikirim ke server
+  const nama = document.getElementById("loginNama").value.trim().toUpperCase();
   const pin = document.getElementById("loginPin").value.trim();
 
   if (!nama || !pin) {
@@ -553,7 +555,8 @@ async function login() {
       return;
   }
 
-  currentUser = nama;
+  // Nama profil dipastikan menggunakan huruf besar
+  currentUser = nama.toUpperCase();
   currentRole = data.role;
   document.getElementById("loginInfo").innerHTML = "⭕ <b>" + currentUser + "</b>" + (currentRole === "ADMIN" ? " (ADMIN)" : "");
   document.getElementById("loginBox").style.display = "none";
