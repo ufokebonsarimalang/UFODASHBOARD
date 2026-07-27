@@ -3,1377 +3,580 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>UFO Kebonsari Malang</title>
 
-<title>UFO Kebonsari</title>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 
-<link href="https://fonts.googleapis.com/css2?family=Outfit:wght=300;400;500;600;700;800&display=swap" rel="stylesheet">
-
-<!-- 📚 SCRIPT TAMBAHAN UNTUK EKSPOR EXCEL & PDF -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 
 <style>
-*{
-    box-sizing:border-box;
-}
+*{ box-sizing:border-box; }
 
 body{
-    margin:0;
-    padding:25px;
+    margin:0; padding:25px;
     font-family:'Outfit',sans-serif;
     min-height:100vh;
-
-    background:
-    radial-gradient(
-        circle at top,
-        rgba(59,130,246,.12) 0%,
-        transparent 45%
-    ),
-    linear-gradient(
-        180deg,
-        #0f172a 0%,
-        #111827 100%
-    );
-
+    background: radial-gradient(circle at top, rgba(59,130,246,.12) 0%, transparent 45%), linear-gradient(180deg, #0f172a 0%, #111827 100%);
     color:white;
 }
-.header{
-    text-align:center;
-    margin-bottom:30px;
-}
 
+.header{ text-align:center; margin-bottom:30px; }
 .header h1{
-    font-size:52px;
-    font-weight:800;
-    margin:0;
-    letter-spacing:-2px;
-
-    background:linear-gradient(
-        90deg,
-        #ffffff,
-        #60a5fa
-    );
-
-    -webkit-background-clip:text;
-    -webkit-text-fill-color:transparent;
+    font-size:52px; font-weight:800; margin:0; letter-spacing:-2px;
+    background:linear-gradient(90deg, #ffffff, #60a5fa);
+    -webkit-background-clip:text; -webkit-text-fill-color:transparent;
 }
+.header p{ color:#94a3b8; font-size:15px; margin-top:8px; }
 
-.header p{
-    color:#94a3b8;
-    font-size:15px;
-    margin-top:8px;
-}
-.search-box{
-    max-width:700px;
-    margin:0 auto 25px;
-    display:flex;
-    gap:10px;
-}
-
-.search-box input{
-    flex:1;
-    padding:14px;
-    border-radius:16px;
-    border:1px solid rgba(255,255,255,.15);
-    background:rgba(255,255,255,.08);
-    backdrop-filter:blur(12px);
-    color:white;
-    font-size:16px;
-}
-
-.search-box input::placeholder{
-    color:#cbd5e1;
-}
-
-.search-box button{
-    padding:14px 24px;
-    border:none;
-    border-radius:16px;
-    cursor:pointer;
-    font-weight:600;
-    color:white;
-
-    background:linear-gradient(
-        135deg,
-        #3b82f6,
-        #06b6d4
-    );
-}
-
-.search-box button:hover{
-    opacity:.9;
-}
-
-#summary{
-    max-width:1200px;
-    margin:0 auto 25px;
-}
-
-.summary-card{
-    background:rgba(255,255,255,.08);
-    backdrop-filter:blur(18px);
-    border:1px solid rgba(255,255,255,.12);
-    border-radius:24px;
-    padding:20px;
-    color:white;
-}
-
-.summary-card h2{
-    margin-top:0;
-}
-
-.grid{
-    display:grid;
-    grid-template-columns:repeat(4,1fr);
-    gap:18px;
-}
-
-.card{
-    background:rgba(255,255,255,.08);
-    backdrop-filter:blur(18px);
-    border:1px solid rgba(255,255,255,.12);
-    border-radius:24px;
-    padding:18px;
-    transition:.2s;
-}
-
-.card:hover{
-    transform:translateY(-4px);
-}
-
-.card.success{
-    border-left:5px solid #16a34a;
-}
-
-.card.warning{
-    border-left:5px solid #dc2626;
-}
-
-.tanggal{
-    text-align:center;
-    font-weight:700;
-    margin-bottom:15px;
-    color:white;
-}
-
-.row{
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
-    padding:8px 0;
-    border-bottom:1px solid rgba(255,255,255,.1);
-    color:#e2e8f0;
-    font-size:14px;
-}
-
-.row:last-child{
-    border-bottom:none;
-}
-
-.ok{
-    font-weight:600;
-    color:white;
-}
-
-.kosong{
-    color:#f87171;
-    font-weight:700;
-}
-
-.status-ok{
-    color:#4ade80;
-    font-weight:700;
-}
-
-.status-warning{
-    color:#f87171;
-    font-weight:700;
-}
-
-/* TABLET */
-@media(max-width:1024px){
-
-    .grid{
-        grid-template-columns:repeat(2,1fr);
-    }
-
-}
-
-/* HP */
-@media(max-width:768px){
-
-    body{
-        padding:15px;
-    }
-
-    .header h1{
-        font-size:36px;
-    }
-
-    .search-box{
-        flex-direction:column;
-    }
-
-    .grid{
-        grid-template-columns:repeat(2,1fr);
-        gap:10px;
-    }
-
-    .card{
-        padding:12px;
-    }
-
-    .row{
-        font-size:12px;
-    }
-
-    .tanggal{
-        font-size:13px;
-    }
-    .card.late{
-    border:2px solid #facc15;
-    background:rgba(250,204,21,.08);
-    box-shadow:0 0 15px rgba(250,204,21,.2);
-}
-}
-.menu-tab{
-    display:flex;
-    justify-content:center;
-    gap:12px;
-    margin-bottom:20px;
-}
-
-.menu-tab button{
-    padding:12px 22px;
-    border:none;
-    border-radius:14px;
-    cursor:pointer;
-    font-weight:600;
-    font-size:14px;
-
-    background:rgba(255,255,255,.08);
-    color:#cbd5e1;
-
-    transition:.2s;
-}
-
-.menu-tab button.active{
-    background:linear-gradient(
-        135deg,
-        #3b82f6,
-        #06b6d4
-    );
-
-    color:white;
-
-    box-shadow:
-    0 0 15px rgba(59,130,246,.35);
-}
+.search-box{ max-width:700px; margin:0 auto 25px; display:flex; gap:10px; }
 .search-box select{
-    flex:1;
-    height:56px;
-    padding:0 18px;
-    border-radius:18px;
-    border:1px solid rgba(255,255,255,.12);
-    background:rgba(255,255,255,.08);
-    backdrop-filter:blur(18px);
-
-    color:white;
-    font-size:15px;
-    font-weight:600;
-    font-family:'Outfit',sans-serif;
-
-    outline:none;
-    cursor:pointer;
-    transition:.25s;
-
-    appearance:none;
-    -webkit-appearance:none;
-
+    flex:1; height:56px; padding:0 18px; border-radius:18px;
+    border:1px solid rgba(255,255,255,.12); background:rgba(255,255,255,.08);
+    backdrop-filter:blur(18px); color:white; font-size:15px; font-weight:600;
+    outline:none; cursor:pointer; appearance:none; -webkit-appearance:none;
     background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='18' height='18' fill='white' viewBox='0 0 16 16'%3E%3Cpath d='M1.5 5.5l6 6 6-6'/%3E%3C/svg%3E");
-    background-repeat:no-repeat;
-    background-position:right 16px center;
+    background-repeat:no-repeat; background-position:right 16px center;
+}
+.search-box select option{ background:#111827; color:white; }
+
+#summary{ max-width:1200px; margin:0 auto 25px; }
+.summary-card{
+    background:rgba(255,255,255,.08); backdrop-filter:blur(18px);
+    border:1px solid rgba(255,255,255,.12); border-radius:24px;
+    padding:20px; color:white;
+}
+.summary-card h2{ margin-top:0; }
+
+.grid{ display:grid; grid-template-columns:repeat(4,1fr); gap:18px; }
+.card{
+    background:rgba(255,255,255,.08); backdrop-filter:blur(18px);
+    border:1px solid rgba(255,255,255,.12); border-radius:24px; padding:18px; transition:.2s;
+}
+.card:hover{ transform:translateY(-4px); }
+.card.success{ border-left:5px solid #16a34a; }
+.card.warning{ border-left:5px solid #dc2626; }
+.card.late{ border:2px solid #facc15; background:rgba(250,204,21,.08); box-shadow:0 0 15px rgba(250,204,21,.2); }
+
+.tanggal{ text-align:center; font-weight:700; margin-bottom:15px; color:white; }
+.row{
+    display:flex; justify-content:space-between; align-items:center;
+    padding:8px 0; border-bottom:1px solid rgba(255,255,255,.1); color:#e2e8f0; font-size:14px;
+}
+.row:last-child{ border-bottom:none; }
+.ok{ font-weight:600; color:white; }
+.kosong{ color:#f87171; font-weight:700; }
+.status-ok{ color:#4ade80; font-weight:700; }
+.status-warning{ color:#f87171; font-weight:700; }
+
+.menu-tab{ display:flex; justify-content:center; flex-wrap:wrap; gap:10px; margin-bottom:20px; }
+.menu-tab button{
+    padding:12px 18px; border:none; border-radius:14px; cursor:pointer;
+    font-weight:600; font-size:13px; background:rgba(255,255,255,.08); color:#cbd5e1; transition:.2s;
+}
+.menu-tab button.active{
+    background:linear-gradient(135deg, #3b82f6, #06b6d4); color:white;
+    box-shadow: 0 0 15px rgba(59,130,246,.35);
 }
 
-.search-box select:hover{
-    border-color:rgba(96,165,250,.5);
-}
-
-.search-box select:focus{
-    border-color:#60a5fa;
-    box-shadow:
-      0 0 0 3px rgba(96,165,250,.15),
-      0 0 20px rgba(96,165,250,.25);
-}
-
-.search-box select option{
-    background:#111827;
-    color:white;
-}
-#nama{
-    width:100%;
-    padding:14px 16px;
-    border-radius:16px;
-    border:1px solid rgba(255,255,255,.15);
-    background:rgba(255,255,255,.08);
-    backdrop-filter:blur(12px);
-
-    color:white;
-    font-size:15px;
-    font-weight:600;
-
-    outline:none;
-    cursor:pointer;
-
-    appearance:none;
-    -webkit-appearance:none;
-    -moz-appearance:none;
-
-    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='20' fill='white'%3E%3Cpath d='M5 7l5 5 5-5'/%3E%3C/svg%3E");
-    background-repeat:no-repeat;
-    background-position:right 14px center;
-    padding-right:40px;
-}
-
-#nama:hover{
-    border-color:#60a5fa;
-}
-
-#nama:focus{
-    border-color:#3b82f6;
-    box-shadow:0 0 15px rgba(59,130,246,.35);
-} 
-.popup-btn{
-  margin-top:20px;
-  padding:12px 30px;
-  border:none;
-  border-radius:14px;
-  cursor:pointer;
-  color:white;
-  font-weight:600;
-  font-size:14px;
-  background:linear-gradient(135deg,#2563eb,#06b6d4);
-  transition:.3s;
-}
-.spinner{
-  width:18px;
-  height:18px;
-  display:inline-block;
-  border:3px solid rgba(255,255,255,.3);
-  border-top:3px solid #fff;
-  border-radius:50%;
-  animation:spin .8s linear infinite;
-  vertical-align:middle;
-}
-
-@keyframes spin{
-  to{
-    transform:rotate(360deg);
-  }
-}   
-.popup-btn:hover{
-  transform:translateY(-2px);
-}
- #logoutPopup{
-  display:none;
-  position:fixed;
-  top:0;
-  left:0;
-  width:100%;
-  height:100%;
-  background:rgba(0,0,0,.65);
-  z-index:99999;
-}
-
-#logoutBox{
-  position:absolute;
-  top:50%;
-  left:50%;
-  transform:translate(-50%,-50%);
-  background:#1e293b;
-  padding:25px;
-  border-radius:20px;
-  min-width:300px;
-  text-align:center;
-  border:1px solid rgba(255,255,255,.1);
-}
-
-#logoutBox h3{
-  margin-top:0;
-  color:white;
-}
-
-#logoutBox p{
-  color:#cbd5e1;
-  margin:15px 0 20px;
-}
-
-#btnBatal,
-#btnLogoutConfirm{
-  border:none;
-  padding:10px 20px;
-  border-radius:12px;
-  cursor:pointer;
-  color:white;
-  font-weight:600;
-  margin:5px;
-}
-
-#btnBatal{
-  background:#3b82f6;
-}
-
-#btnLogoutConfirm{
-  background:#dc2626;
-}
-
-/* 💎 STYLE BARU UNTUK AREA DOWNLOAD FILE EXPORT */
-.export-container {
-    max-width: 1200px;
-    margin: 0 auto 15px;
-    display: none; /* muncul kalau data sudah diload */
-    justify-content: flex-end;
-    gap: 10px;
-}
-
+.export-container { max-width: 1200px; margin: 0 auto 15px; display: none; justify-content: flex-end; gap: 10px; }
 .btn-export {
-    padding: 10px 16px;
-    border: none;
-    border-radius: 12px;
-    font-weight: 700;
-    font-size: 13px;
-    cursor: pointer;
-    color: white;
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    transition: .2s;
+    padding: 10px 16px; border: none; border-radius: 12px; font-weight: 700; font-size: 13px;
+    cursor: pointer; color: white; display: flex; align-items: center; gap: 6px; transition: .2s;
 }
+.btn-excel { background: linear-gradient(135deg, #16a34a, #15803d); box-shadow: 0 4px 12px rgba(22,163,74,0.25); }
+.btn-pdf { background: linear-gradient(135deg, #dc2626, #b91c1c); box-shadow: 0 4px 12px rgba(220,38,38,0.25); }
+.btn-export:hover { transform: translateY(-2px); opacity: 0.95; }
 
-.btn-excel {
-    background: linear-gradient(135deg, #16a34a, #15803d);
-    box-shadow: 0 4px 12px rgba(22,163,74,0.25);
+.spinner{
+    width:18px; height:18px; display:inline-block; border:3px solid rgba(255,255,255,.3);
+    border-top:3px solid #fff; border-radius:50%; animation:spin .8s linear infinite; vertical-align:middle;
 }
+@keyframes spin{ to{ transform:rotate(360deg); } }
 
-.btn-pdf {
-    background: linear-gradient(135deg, #dc2626, #b91c1c);
-    box-shadow: 0 4px 12px rgba(220,38,38,0.25);
-}
-
-.btn-export:hover {
-    transform: translateY(-2px);
-    opacity: 0.95;
+@media(max-width:1024px){ .grid{ grid-template-columns:repeat(2,1fr); } }
+@media(max-width:768px){
+    body{ padding:15px; }
+    .header h1{ font-size:36px; }
+    .grid{ grid-template-columns:repeat(1,1fr); gap:10px; }
+    .card{ padding:12px; }
 }
 </style>
 </head>
 <body>
-<div id="loginBox" style="
-max-width:420px;
-margin:40px auto;
-padding:25px;
-background:rgba(255,255,255,.08);
-backdrop-filter:blur(18px);
-border-radius:24px;
-border:1px solid rgba(255,255,255,.12);
-">
 
-<h2 style="text-align:center;margin-top:0;">
-🔐 Login Dashboard
-</h2>
-
-<input
-id="loginNama"
-type="text"
-placeholder="Nama"
-style="
-width:100%;
-padding:14px;
-margin-bottom:12px;
-border-radius:14px;
-border:none;
-font-size:15px;
-">
-
-<input
-id="loginPin"
-type="password"
-placeholder="PIN"
-style="
-width:100%;
-padding:14px;
-margin-bottom:12px;
-border-radius:14px;
-border:none;
-font-size:15px;
-">
-
-<button
-id="btnLogin"
-onclick="login()"
-style="
-width:100%;
-padding:14px;
-border:none;
-border-radius:14px;
-cursor:pointer;
-font-weight:700;
-color:white;
-background:linear-gradient(135deg,#2563eb,#06b6d4);
-">
-LOGIN
-</button>
-
+<!-- LOGIN BOX -->
+<div id="loginBox" style="max-width:420px; margin:40px auto; padding:25px; background:rgba(255,255,255,.08); backdrop-filter:blur(18px); border-radius:24px; border:1px solid rgba(255,255,255,.12);">
+    <h2 style="text-align:center; margin-top:0;">🔐 Login Dashboard</h2>
+    <input id="loginNama" type="text" placeholder="Nama Promotor" style="width:100%; padding:14px; margin-bottom:12px; border-radius:14px; border:none; font-size:15px;">
+    <input id="loginPin" type="password" placeholder="PIN" style="width:100%; padding:14px; margin-bottom:12px; border-radius:14px; border:none; font-size:15px;">
+    <button id="btnLogin" onclick="login()" style="width:100%; padding:14px; border:none; border-radius:14px; cursor:pointer; font-weight:700; color:white; background:linear-gradient(135deg,#2563eb,#06b6d4);">LOGIN</button>
 </div>
+
+<!-- DASHBOARD CONTAINER -->
 <div id="dashboard" style="display:none;">
-<div class="header">
-    <h1>UFO DASHBOARD</h1>
-    <p>Absensi & Penjualan Promotor UFO Kebonsari</p>
-</div>
- <div id="loginInfo" style="
-  display:inline-block;
-  margin:12px auto 20px;
-  padding:10px 18px;
-  border-radius:999px;
-  background:rgba(255,255,255,.08);
-  border:1px solid rgba(255,255,255,.12);
-  color:#e2e8f0;
-  font-size:14px;
-  font-weight:600;
-"></div>
-<div style="text-align:right;margin-bottom:15px;">
-  <button onclick="logout()" style="
-    padding:10px 18px;
-    border:none;
-    border-radius:12px;
-    cursor:pointer;
-    color:white;
-    background:#dc2626;
-    font-weight:600;
-  ">
-    🚪 Logout
-  </button>
-</div>
-<div class="search-box">
-  <select id="nama"></select>
-</div>
+    <div class="header">
+        <h1>UFO DASHBOARD</h1>
+        <p>Absensi, Penjualan, & Operasional Promotor UFO Kebonsari</p>
+    </div>
 
+    <div style="display:flex; justify-content:space-between; align-items:center; max-width:1200px; margin:0 auto 15px;">
+        <div id="loginInfo" style="padding:10px 18px; border-radius:999px; background:rgba(255,255,255,.08); border:1px solid rgba(255,255,255,.12); color:#e2e8f0; font-size:14px; font-weight:600;"></div>
+        <button onclick="logout()" style="padding:10px 18px; border:none; border-radius:12px; cursor:pointer; color:white; background:#dc2626; font-weight:600;">🚪 Logout</button>
+    </div>
 
+    <div class="search-box">
+        <select id="nama"></select>
+    </div>
 
-<div id="summary"></div>
+    <div id="summary"></div>
 
-<div class="menu-tab">
+    <!-- MENU TAB TAMPILANLENGKAP -->
+    <div class="menu-tab">
+        <button id="btnAbsen" onclick="cari()">📋 Absensi</button>
+        <button id="btnJual" onclick="cariPenjualan()">💰 Penjualan</button>
+        <button id="btnUC" onclick="cariUC()">💎 UC</button>
+        <button id="btnPerolehan" onclick="cariPerolehan()">📊 Perolehan</button>
+        <button id="btnDenda" onclick="tampilDendaUC()">⚖️ Denda & Late</button>
+        <button id="btnPromo" onclick="tampilPromo()">📢 Info Promo</button>
+        <button id="btnRules" onclick="tampilRules()">🧹 Aturan Display</button>
+    </div>
 
-  <button
-    id="btnAbsen"
-    onclick="cari()">
-    📋 Absensi
-  </button>
+    <div class="export-container" id="exportArea">
+        <button class="btn-export btn-excel" onclick="prosesEkspor('excel')">📥 Unduh Excel</button>
+        <button class="btn-export btn-pdf" onclick="prosesEkspor('pdf')">📄 Unduh PDF</button>
+    </div>
 
-  <button
-    id="btnJual"
-    onclick="cariPenjualan()">
-    💰 Penjualan
-  </button>
-<button onclick="cariUC()" id="btnUC">
-  💎 UC
-</button>
-   <button onclick="cariPerolehan()" id="btnPerolehan">
-  📊 Perolehan
-</button> 
+    <div id="hasil" class="grid"></div>
 </div>
 
-<!-- 📦 CONTAINER TOMBOL EKSPOR DUA PILIHAN -->
-<div class="export-container" id="exportArea">
-    <button class="btn-export btn-excel" onclick="prosesEkspor('excel')">📥 Unduh Excel</button>
-    <button class="btn-export btn-pdf" onclick="prosesEkspor('pdf')">📄 Unduh PDF</button>
+<!-- POPUP MODALS -->
+<div id="popup" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; justify-content:center; align-items:center; background:rgba(0,0,0,.6); z-index:9999;">
+    <div style="position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); background:#1e293b; color:white; padding:25px; border-radius:20px; min-width:280px; text-align:center;">
+        <h3 id="popupTitle">Notifikasi</h3>
+        <div id="popupText" style="font-size:15px; line-height:1.5;"></div>
+        <button onclick="tutupPopup()" style="margin-top:20px; padding:10px 25px; border:none; border-radius:12px; cursor:pointer; color:white; background:linear-gradient(135deg,#3b82f6,#06b6d4);">OK</button>
+    </div>
 </div>
 
-<div id="hasil" class="grid"></div>
+<div id="logoutPopup" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,.65); z-index:99999;">
+    <div style="position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); background:#1e293b; padding:25px; border-radius:20px; min-width:300px; text-align:center; border:1px solid rgba(255,255,255,.1);">
+        <h3 style="color:white; margin-top:0;">🚪 Logout</h3>
+        <p style="color:#cbd5e1; margin:15px 0 20px;">Yakin ingin keluar aplikasi?</p>
+        <button onclick="tutupLogout()" style="background:#3b82f6; border:none; padding:10px 20px; border-radius:12px; cursor:pointer; color:white; font-weight:600; margin:5px;">Batal</button>
+        <button onclick="logoutConfirm()" style="background:#dc2626; border:none; padding:10px 20px; border-radius:12px; cursor:pointer; color:white; font-weight:600; margin:5px;">Logout</button>
+    </div>
+</div>
 
 <script>
+const WEBAPP_URL = "https://script.google.com/macros/s/AKfycbwKbscxs_avurQJzcDDy2YB-laTL9kbzDNHcOuOV8TYGzQxiKtveG83AfvyvgoeB4pDpg/exec";
 
-const WEBAPP_URL =
-"https://script.google.com/macros/s/AKfycbwKbscxs_avurQJzcDDy2YB-laTL9kbzDNHcOuOV8TYGzQxiKtveG83AfvyvgoeB4pDpg/exec";
 let currentUser = "";
 let currentRole = "";
-let activeTab = "Absensi"; // Menyimpan tracking tab aktif
+let activeTab = "Absensi";
 
 async function login() {
-const btn = document.getElementById("btnLogin");
-btn.disabled = true;
-btn.innerHTML = `
-  <span class="spinner" style="margin-right:8px;"></span>
-  LOGIN...
-`;
-  const nama = document
-    .getElementById("loginNama")
-    .value
-    .trim();
-
-  const pin = document
-    .getElementById("loginPin")
-    .value
-    .trim();
-
-  if (!nama || !pin) {
-    showPopup("Nama dan PIN harus diisi.");
-    return;
-  }
-
-  const res = await fetch(
-    WEBAPP_URL +
-    "?action=login&nama=" +
-    encodeURIComponent(nama) +
-    "&pin=" +
-    encodeURIComponent(pin)
-  );
-
-  const data = await res.json();console.log(data);
-
-if (!data.success) {
     const btn = document.getElementById("btnLogin");
-    btn.disabled = false;
-    btn.innerHTML = "LOGIN";
+    btn.disabled = true;
+    btn.innerHTML = `<span class="spinner" style="margin-right:8px;"></span> LOGIN...`;
 
-    alert(data.message || "Nama atau PIN salah");
-    return;
+    const nama = document.getElementById("loginNama").value.trim();
+    const pin = document.getElementById("loginPin").value.trim();
+
+    if (!nama || !pin) {
+        showPopup("Nama dan PIN harus diisi.");
+        btn.disabled = false; btn.innerHTML = "LOGIN";
+        return;
+    }
+
+    try {
+        const res = await fetch(WEBAPP_URL + "?action=login&nama=" + encodeURIComponent(nama) + "&pin=" + encodeURIComponent(pin));
+        const data = await res.json();
+
+        if (!data.success) {
+            btn.disabled = false; btn.innerHTML = "LOGIN";
+            alert(data.message || "Nama atau PIN salah");
+            return;
+        }
+
+        currentUser = nama;
+        currentRole = data.role;
+
+        document.getElementById("loginInfo").innerHTML = "⭕ <b>" + currentUser + "</b>" + (currentRole === "ADMIN" ? " (ADMIN)" : "");
+        document.getElementById("loginBox").style.display = "none";
+        document.getElementById("dashboard").style.display = "block";
+
+        if (currentRole === "USER") {
+            document.querySelector(".search-box").style.display = "none";
+            document.getElementById("btnPerolehan").style.display = "none";
+        } else {
+            document.querySelector(".search-box").style.display = "block";
+            document.getElementById("btnPerolehan").style.display = "inline-block";
+        }
+
+        showPopup("Selamat Datang " + currentUser);
+        if (currentRole === "USER") cari();
+        loadNama();
+    } catch(err) {
+        alert("Gagal login. Periksa koneksi internet.");
+        btn.disabled = false; btn.innerHTML = "LOGIN";
+    }
 }
-  currentUser = nama;
-  currentRole = data.role;
-    document.getElementById("loginInfo").innerHTML =
-  "⭕<b>" +
-  currentUser +
-  "</b>" +
-  (currentRole === "ADMIN" ? " (ADMIN)" : "");
-  document.getElementById("loginBox").style.display = "none";
-  document.getElementById("dashboard").style.display = "block";
-if (currentRole === "USER") {
-  document.querySelector(".search-box").style.display = "none";
-  document.getElementById("btnPerolehan").style.display = "none";
-} else {
-  document.querySelector(".search-box").style.display = "block";
-  document.getElementById("btnPerolehan").style.display = "inline-block";
-}
-  showPopup("Selamat Datang " + currentUser);
-if (currentRole === "USER") {
-  cari();
-}
- localStorage.setItem("loginNama", currentUser);
-localStorage.setItem("loginRole", currentRole);   
-}
- function logout() {
 
-  document.getElementById("logoutPopup").style.display = "block";
-
-}
-
-function tutupLogout() {
-
-  document.getElementById("logoutPopup").style.display = "none";
-
-}
-
+function logout() { document.getElementById("logoutPopup").style.display = "block"; }
+function tutupLogout() { document.getElementById("logoutPopup").style.display = "none"; }
 function logoutConfirm() {
-
-  document.getElementById("logoutPopup").style.display = "none";
-
-  currentUser = "";
-  currentRole = "";
-
-  document.getElementById("dashboard").style.display = "none";
-  document.getElementById("loginBox").style.display = "block";
-
-  document.getElementById("loginNama").value = "";
-  document.getElementById("loginPin").value = "";
-
-  document.getElementById("summary").innerHTML = "";
-  document.getElementById("hasil").innerHTML = "";
-  document.getElementById("exportArea").style.display = "none";
-
-  localStorage.removeItem("loginNama");
-  localStorage.removeItem("loginRole");
-localStorage.removeItem("sessionToken");
+    document.getElementById("logoutPopup").style.display = "none";
+    currentUser = ""; currentRole = "";
+    document.getElementById("dashboard").style.display = "none";
+    document.getElementById("loginBox").style.display = "block";
+    document.getElementById("loginNama").value = "";
+    document.getElementById("loginPin").value = "";
+    document.getElementById("summary").innerHTML = "";
+    document.getElementById("hasil").innerHTML = "";
+    document.getElementById("exportArea").style.display = "none";
     const btn = document.getElementById("btnLogin");
-btn.disabled = false;
-btn.innerHTML = "LOGIN";
-}    
-function tampil(v){
-
-    return (v && v.trim() !== "")
-    ? `<span class="ok">${v}</span>`
-    : `<span class="kosong">-</span>`;
-
+    btn.disabled = false; btn.innerHTML = "LOGIN";
 }
 
+function tampil(v){
+    return (v && v.trim() !== "") ? `<span class="ok">${v}</span>` : `<span class="kosong">-</span>`;
+}
+
+function resetTabButtons(activeId) {
+    const tabs = ["btnAbsen", "btnJual", "btnUC", "btnPerolehan", "btnDenda", "btnPromo", "btnRules"];
+    tabs.forEach(id => {
+        const el = document.getElementById(id);
+        if(el) el.classList.remove("active");
+    });
+    if(document.getElementById(activeId)) document.getElementById(activeId).classList.add("active");
+    document.getElementById("exportArea").style.display = "none";
+}
+
+/* 📋 1. ABSENSI */
 async function cari() {
-  activeTab = "Absensi";
-  document.getElementById("exportArea").style.display = "none";
-  document.getElementById("btnJual").classList.remove("active");
-  document.getElementById("btnUC").classList.remove("active");
-  document.getElementById("btnAbsen").classList.add("active");
-  document.getElementById("btnPerolehan").classList.remove("active");
+    activeTab = "Absensi";
+    resetTabButtons("btnAbsen");
 
-  let nama;
+    let nama = (currentRole === "USER") ? currentUser : document.getElementById("nama").value.trim();
+    if (!nama) { showPopup("Pilih nama terlebih dahulu"); return; }
 
-  if (currentRole === "USER") {
-    nama = currentUser;
-  } else {
-    nama = document.getElementById("nama").value.trim();
-  }
-
-  if (!nama) {
-    showPopup("Pilih nama terlebih dahulu");
-    return;
-  }
-
-  const res = await fetch(
-    WEBAPP_URL + "?nama=" + encodeURIComponent(nama)
-  );
-
-  const result = await res.json();
-
-const data = result.data || [];
-const terlambat = result.terlambat || 0;
-    data.sort(
-        (a,b)=>
-        Number(a.tanggal)-Number(b.tanggal)
-    );
+    const res = await fetch(WEBAPP_URL + "?nama=" + encodeURIComponent(nama));
+    const result = await res.json();
+    const data = result.data || [];
+    const terlambat = result.terlambat || 0;
 
     let belumPulang = 0;
-
-    data.forEach(x=>{
-        if(!x.pulang){
-            belumPulang++;
-        }
-    });
+    data.forEach(x => { if(!x.pulang) belumPulang++; });
 
     if(data.length){
-
         document.getElementById("summary").innerHTML = `
         <div class="summary-card">
             <h2>🏆 ${data[0].nama}</h2>
             <p>Total Hari Absen : <b>${data.length}</b></p>
             <p>Belum Finger Pulang : <b>${belumPulang}</b></p>
-            <p>Datang Terlambat : <b>${terlambat}</b></p>
-        </div>
-        `;
+            <p>Datang Terlambat : <b style="color:#f87171;">${terlambat} Kali</b></p>
+        </div>`;
         document.getElementById("exportArea").style.display = "flex";
-
-    }else{
-
-        document.getElementById("summary").innerHTML = "";
-
-    }
+    } else { document.getElementById("summary").innerHTML = ""; }
 
     let html = "";
+    data.forEach(x => {
+        const isTerlambat = (x.terlambat || "").toString().toUpperCase() === "YA";
+        const status = x.pulang ? '<span class="status-ok">Lengkap</span>' : '<span class="status-warning">Belum Lengkap</span>';
+        const kelasCard = x.pulang ? "success" : "warning";
+        const kelasTambahan = isTerlambat ? "late" : "";
 
-    data.forEach(x=>{
+        html += `
+        <div class="card ${kelasCard} ${kelasTambahan}">
+            <div class="tanggal">
+                📅 ${x.tanggal}<br>${status}
+                ${isTerlambat ? '<div style="color:#facc15;font-weight:700;margin-top:5px;">⚠️ TERLAMBAT</div>' : ''}
+            </div>
+            <div class="row"><span>Masuk</span>${tampil(x.masuk)}</div>
+            <div class="row"><span>Istirahat 1</span>${tampil(x.istirahat1)}</div>
+            <div class="row"><span>Kembali 1</span>${tampil(x.kembali1)}</div>
+            <div class="row"><span>Istirahat 2</span>${tampil(x.istirahat2)}</div>
+            <div class="row"><span>Kembali 2</span>${tampil(x.kembali2)}</div>
+            <div class="row"><span>Pulang</span>${tampil(x.pulang)}</div>
+        </div>`;
+    });
 
-    const isTerlambat =
-        (x.terlambat || "").toString().toUpperCase() === "YA";
-
-    const status =
-        x.pulang
-        ? '<span class="status-ok">Lengkap</span>'
-        : '<span class="status-warning">Belum Lengkap</span>';
-
-    const kelasCard =
-        x.pulang
-        ? "success"
-        : "warning";
-
-    const kelasTambahan =
-        isTerlambat ? "late" : "";
-
-    html += `
-    <div class="card ${kelasCard} ${kelasTambahan}">
-
-        <div class="tanggal">
-            📅 ${x.tanggal}<br>
-            ${status}
-
-            ${isTerlambat ? '<div style="color:#facc15;font-weight:700;margin-top:5px;">TERLAMBAT</div>' : ''}
-        </div>
-
-        <div class="row">
-            <span>Masuk</span>
-            ${tampil(x.masuk)}
-        </div>
-
-        <div class="row">
-            <span>Istirahat 1</span>
-            ${tampil(x.istirahat1)}
-        </div>
-
-        <div class="row">
-            <span>Kembali 1</span>
-            ${tampil(x.kembali1)}
-        </div>
-
-        <div class="row">
-            <span>Istirahat 2</span>
-            ${tampil(x.istirahat2)}
-        </div>
-
-        <div class="row">
-            <span>Kembali 2</span>
-            ${tampil(x.kembali2)}
-        </div>
-
-        <div class="row">
-            <span>Pulang</span>
-            ${tampil(x.pulang)}
-        </div>
-
-    </div>
-    `;
-});
-
-    if(data.length===0){
-
-        html = `
-        <div class="card">
-            Data tidak ditemukan
-        </div>
-        `;
-
-    }
-
-    document.getElementById("hasil").innerHTML = html;
-
+    document.getElementById("hasil").className = "grid";
+    document.getElementById("hasil").innerHTML = html || `<div class="card">Data tidak ditemukan</div>`;
 }
+
+/* 💰 2. PENJUALAN */
 async function cariPenjualan(){
-activeTab = "Penjualan";
-document.getElementById("exportArea").style.display = "none";
-document.getElementById("btnAbsen")
-.classList.remove("active");
-    
- document.getElementById("btnUC")
-.classList.remove("active"); 
+    activeTab = "Penjualan";
+    resetTabButtons("btnJual");
 
-document.getElementById("btnJual")
-.classList.add("active");
-    document.getElementById("btnPerolehan").classList.remove("active");
-  let nama;
+    let nama = (currentRole === "USER") ? currentUser : document.getElementById("nama").value.trim();
+    if (!nama) { showPopup("Pilih nama terlebih dahulu."); return; }
 
-if (currentRole === "USER") {
-  nama = currentUser;
-} else {
-  nama = document.getElementById("nama").value.trim();
-}
-  if (!nama) {
-   showPopup("Nama dan PIN harus diisi.");
-    return;
-}
-  const res =
-    await fetch(
-      WEBAPP_URL +
-      "?action=penjualan&nama=" +
-      encodeURIComponent(nama)
-    );
+    const res = await fetch(WEBAPP_URL + "?action=penjualan&nama=" + encodeURIComponent(nama));
+    const data = await res.json();
 
-  const data = await res.json();
+    document.getElementById("summary").innerHTML = `
+    <div class="summary-card">
+        <h2>💰 ${data.nama}</h2>
+        <p>Periode : <b>${data.tanggalPertama} - ${data.tanggalTerakhir}</b></p>
+        <p>Total Unit : <b>${data.totalUnit}</b></p>
+        <p>Total Omzet Toko : 
+            <span style="font-weight:bold; color:${Number(data.totalOmzet) >= 100000000 ? '#22c55e' : Number(data.totalOmzet) >= 80000000 ? '#f59e0b' : '#ef4444'};">
+                Rp ${Number(data.totalOmzet).toLocaleString("id-ID")}
+            </span>
+        </p>
+    </div>`;
 
-  document.getElementById("summary").innerHTML = `
-  <div class="summary-card">
-    <h2>💰 ${data.nama}</h2>
-<p>
-  Periode :
-  <b>${data.tanggalPertama} - ${data.tanggalTerakhir}</b>
-</p>
+    let html = "";
+    const grupTanggal = {};
+    (data.detail || []).forEach(x => {
+        if (!grupTanggal[x.tanggal]) grupTanggal[x.tanggal] = [];
+        grupTanggal[x.tanggal].push(x);
+    });
 
-    <p>Total Unit :
-<b>${data.totalUnit}</b></p>
+    for (const tanggal in grupTanggal) {
+        let isiProduk = "", totalHari = 0;
+        grupTanggal[tanggal].forEach(item => {
+            totalHari += Number(item.omzet);
+            isiProduk += `
+            <div style="margin-bottom:12px; padding-bottom:8px; border-bottom:1px solid rgba(255,255,255,.1);">
+                <div style="font-size:11px; font-weight:600; color:#e2e8f0;">${item.produk}</div>
+                <div class="row"><span>Qty</span><span>${item.qty}</span></div>
+                <div class="row"><span>Omzet</span><span>Rp ${Number(item.omzet).toLocaleString("id-ID")}</span></div>
+            </div>`;
+        });
 
-<p>
-  Total Omzet Toko :
-  <span style="
-    font-weight:bold;
-    color:${
-      Number(data.totalOmzet) >= 100000000
-        ? '#22c55e'
-        : Number(data.totalOmzet) >= 80000000
-        ? '#f59e0b'
-        : '#ef4444'
-    };
-  ">
-    Rp ${Number(data.totalOmzet).toLocaleString("id-ID")}
-  </span>
-</p>
-    </div>
-  `;
-
- let html = "";
-
-const grupTanggal = {};
-
-data.detail.forEach(x => {
-
-  if (!grupTanggal[x.tanggal]) {
-    grupTanggal[x.tanggal] = [];
-  }
-
-  grupTanggal[x.tanggal].push(x);
-
-});
-
-for (const tanggal in grupTanggal) {
-
-  let isiProduk = "";
-  let totalHari = 0;
-
-  grupTanggal[tanggal].forEach(item => {
-
-    totalHari += Number(item.omzet);
-
-    isiProduk += `
-      <div style="
-        margin-bottom:15px;
-        padding-bottom:10px;
-        border-bottom:1px solid rgba(255,255,255,.1);
-      ">
-
-        <div style="
-  font-size:9px;
-  font-weight:600;
-  line-height:1.4;
-  margin-bottom:9px;
-  color:#e2e8f0;
-">
-  ${item.produk}
-</div>
-
-        <div class="row">
-          <span>Qty</span>
-          <span>${item.qty}</span>
-        </div>
-
-        <div class="row">
-          <span>Omzet</span>
-          <span>
-            Rp ${Number(item.omzet).toLocaleString("id-ID")}
-          </span>
-        </div>
-
-      </div>
-    `;
-  });
-
-  html += `
-    <div class="card success">
-
-      <div class="tanggal">
-        📅 ${tanggal}
-      </div>
-
-      ${isiProduk}
-
-      <div class="row" style="
-        font-weight:700;
-        font-size:12px;
-      ">
-        <span>Total Hari Ini</span>
-        <span>
-          Rp ${totalHari.toLocaleString("id-ID")}
-        </span>
-      </div>
-
-    </div>
-  `;
-}
-
-if(data.detail && data.detail.length > 0){
-    document.getElementById("exportArea").style.display = "flex";
-}
-
-document.getElementById("hasil").innerHTML = html;
-}
-function showPopup(pesan) {
-  console.log("showPopup dipanggil:", pesan);
-
-  const popup = document.getElementById("popup");
-  const text = document.getElementById("popupText");
-
-  console.log(popup);
-  console.log(text);
-
-  text.innerText = pesan;
-  popup.style.display = "flex";
-}
-    function tutupPopup() {
-  document.getElementById("popup").style.display = "none";
-}
-document
-.getElementById("nama")
-.addEventListener("keypress",function(e){
-
-    if(e.key==="Enter"){
-        cari();
+        html += `
+        <div class="card success">
+            <div class="tanggal">📅 ${tanggal}</div>
+            ${isiProduk}
+            <div class="row" style="font-weight:700;"><span>Total Hari Ini</span><span>Rp ${totalHari.toLocaleString("id-ID")}</span></div>
+        </div>`;
     }
 
-});
-async function loadNama(){
-
-  const res = await fetch(
-    WEBAPP_URL + "?action=nama"
-  );
-
-  const data = await res.json();
-
-  let html = `
-    <option value="" selected disabled>
-      👤 Pilih Nama Promotor
-    </option>
-  `;
-
-  data.forEach(nama => {
-    html += `<option value="${nama}">${nama}</option>`;
-  });
-
-  document.getElementById("nama").innerHTML = html;
+    if(data.detail && data.detail.length > 0) document.getElementById("exportArea").style.display = "flex";
+    document.getElementById("hasil").className = "grid";
+    document.getElementById("hasil").innerHTML = html;
 }
 
-loadNama();
+/* 💎 3. INSENTIF UC */
 async function cariUC(){
-activeTab = "UC";
-document.getElementById("exportArea").style.display = "none";
-document.getElementById("btnAbsen")
-.classList.remove("active");
+    activeTab = "UC";
+    resetTabButtons("btnUC");
 
-document.getElementById("btnJual")
-.classList.remove("active");
+    let nama = (currentRole === "USER") ? currentUser : document.getElementById("nama").value.trim();
+    if(!nama){ showPopup("Pilih nama terlebih dahulu"); return; }
 
-document.getElementById("btnUC")
-.classList.add("active");
-document.getElementById("btnPerolehan").classList.remove("active");
-let nama;
+    const res = await fetch(WEBAPP_URL + "?action=uc&nama=" + encodeURIComponent(nama));
+    const data = await res.json();
 
-if (currentRole === "USER") {
-  nama = currentUser;
-} else {
-  nama = document.getElementById("nama").value.trim();
+    document.getElementById("summary").innerHTML = `
+    <div class="summary-card">
+        <h2>💎 ${data.nama}</h2>
+        <p>Periode UC (25 - 24) : <b>${data.tanggalPertama} - ${data.tanggalTerakhir}</b></p>
+        <p>Total Unit UC : <b style="color:#facc15; font-size:18px;">${data.totalUC} Unit</b></p>
+    </div>`;
+
+    let html = "";
+    (data.detail || []).forEach(x => {
+        html += `
+        <div class="card success">
+            <div class="tanggal">📅 ${x.tanggal}</div>
+            <div style="font-size:12px; font-weight:600; margin:12px 0; color:#e2e8f0;">${x.produk}</div>
+            <div class="row"><span>Qty UC</span><span><b>${x.qty}</b></span></div>
+        </div>`;
+    });
+
+    if(data.detail && data.detail.length > 0) document.getElementById("exportArea").style.display = "flex";
+    document.getElementById("hasil").className = "grid";
+    document.getElementById("hasil").innerHTML = html;
 }
 
-if(!nama){
-showPopup("Pilih nama terlebih dahulu");
-return;
-}
-
-const res = await fetch(
-WEBAPP_URL +
-"?action=uc&nama=" +
-encodeURIComponent(nama)
-);
-
-const data = await res.json();
-document.getElementById("hasil").className = "grid";
-document.getElementById("summary").innerHTML = `
-<div class="summary-card">
-
-  <h2>💎 ${data.nama}</h2>
-
-  <p>
-    Periode :
-    <b>${data.tanggalPertama} - ${data.tanggalTerakhir}</b>
-  </p>
-
-  <p>
-    Total UC :
-    <b>${data.totalUC}</b>
-  </p>
-
-</div>
-  `;
-
-let html = "";
-
-data.detail.forEach(x=>{
-
-
-html += `
-<div class="card success">
-
-  <div class="tanggal">
-    📅 ${x.tanggal}
-  </div>
-
-  <div style="
-    font-size:11px;
-    font-weight:600;
-    line-height:1.4;
-    margin:12px 0;
-    color:#e2e8f0;
-  ">
-    ${x.produk}
-  </div>
-
-  <div class="row">
-    <span>Qty</span>
-    <span>${x.qty}</span>
-  </div>
-
-</div>
-`;
-
-
-});
-
-if(data.detail && data.detail.length > 0){
-    document.getElementById("exportArea").style.display = "flex";
-}
-
-document.getElementById("hasil").innerHTML = html;
-}
+/* 📊 4. PEROLEHAN ALL PROMOTOR */
 async function cariPerolehan() {
-  activeTab = "Perolehan";
-  document.getElementById("exportArea").style.display = "none";
-  document.getElementById("btnAbsen").classList.remove("active");
-  document.getElementById("btnJual").classList.remove("active");
-  document.getElementById("btnUC").classList.remove("active");
-  document.getElementById("btnPerolehan").classList.add("active");
+    activeTab = "Perolehan";
+    resetTabButtons("btnPerolehan");
 
-  const res = await fetch(WEBAPP_URL + "?action=perolehan");
-  const data = await res.json();
+    const res = await fetch(WEBAPP_URL + "?action=perolehan");
+    const data = await res.json();
 
-  const user = data.list.find(
-    x => (x.nama || "").toUpperCase() === (currentUser || "").toUpperCase()
-  );
+    let totalOmzet = 0, totalUC = 0;
+    (data.list || []).forEach(x => {
+        totalOmzet += Number(x.omzet || 0);
+        totalUC += Number(x.uc || 0);
+    });
 
-  const posisi = user
-    ? data.list.findIndex(
-        x => (x.nama || "").toUpperCase() === (currentUser || "").toUpperCase()
-      ) + 1
-    : 0;
-let totalOmzet = 0;
-let totalUC = 0;
+    document.getElementById("summary").innerHTML = `
+    <div class="summary-card">
+        <h2>📊 Perolehan Ranking Promotor</h2>
+        <p>👥 Total Promotor : <b>${data.list.length}</b></p>
+        <p>💰 Total Omzet Toko : <span style="font-weight:bold; color:#22c55e">Rp ${totalOmzet.toLocaleString("id-ID")}</span></p>
+        <p>💎 Total UC Toko : <b>${totalUC} Unit</b></p>
+    </div>`;
 
-data.list.forEach(x => {
-  totalOmzet += Number(x.omzet || 0);
-  totalUC += Number(x.uc || 0);
-});
- document.getElementById("summary").innerHTML = `
-<div class="summary-card">
+    let html = `<div class="summary-card">`;
+    data.list.forEach((x, i) => {
+        html += `
+        <div class="row-perolehan-export" style="display:flex; align-items:center; justify-content:space-between; padding:12px 0; border-bottom:1px solid rgba(255,255,255,.08);">
+            <div style="display:flex; align-items:center; gap:12px;">
+                <div style="width:30px; height:30px; border-radius:50%; background:rgba(59,130,246,.2); display:flex; align-items:center; justify-content:center; font-weight:800; color:#60a5fa;">${i + 1}</div>
+                <div class="nama-p" style="font-weight:600; font-size:14px;">${x.nama}</div>
+            </div>
+            <div style="text-align:right;">
+                <div class="omzet-p" style="font-weight:800; font-size:14px; color:#22c55e;">Rp ${Number(x.omzet || 0).toLocaleString("id-ID")}</div>
+                <div class="uc-p" style="font-size:12px; font-weight:700; color:#facc15;">💎 UC : ${x.uc || 0}</div>
+            </div>
+        </div>`;
+    });
+    html += `</div>`;
 
-<h2>📊 Perolehan</h2>
-
-${
-currentRole === "ADMIN"
-?
-
-`
-<p>👥 Jumlah Promotor :
-<b>${data.list.length}</b></p>
-
-<p>💰 Total Omzet Toko :
-<span style="font-weight:bold;color:#22c55e">
-Rp ${totalOmzet.toLocaleString("id-ID")}
-</span>
-</p>
-
-<p>💎 Total UC :
-<b>${totalUC}</b></p>
-`
-
-:
-
-`
-<p>👤 ${currentUser}</p>
-
-<p>💰 Total Omzet :
-<span style="
-font-weight:bold;
-color:${
-Number(user ? user.omzet : 0) >= 100000000
-? '#22c55e'
-: Number(user ? user.omzet : 0) >= 80000000
-? '#f59e0b'
-: '#ef4444'
-};
-">
-Rp ${Number(user ? user.omzet : 0).toLocaleString("id-ID")}
-</span>
-</p>
-
-<p>🏅 Posisi :
-<b>${posisi} dari ${data.list.length} Promotor</b>
-</p>
-`
+    if(data.list && data.list.length > 0) document.getElementById("exportArea").style.display = "flex";
+    document.getElementById("hasil").className = "";
+    document.getElementById("hasil").innerHTML = html;
 }
 
-</div>
-`;
+/* ⚖️ 5. REKAP DENDA TARGET UC (<16) & KETERLAMBATAN */
+async function tampilDendaUC() {
+    activeTab = "DendaUC";
+    resetTabButtons("btnDenda");
 
-let html = `<div class="summary-card">`;
+    const TARGET_MIN_UC = 16;
+    const DENDA_PER_UNIT = 25000; // Nominal denda Rp 25.000 per kekurangan unit UC
 
-data.list.forEach((x, i) => {
-  html += `
-    <div class="row-perolehan-export" style="
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      padding:14px 0;
-      border-bottom:1px solid rgba(255,255,255,.08);
-    ">
+    const [resPerolehan, resLate] = await Promise.all([
+        fetch(WEBAPP_URL + "?action=perolehan").then(r => r.json()),
+        fetch(WEBAPP_URL + "?action=rekap_terlambat").then(r => r.json())
+    ]);
 
-      <div style="
-        display:flex;
-        align-items:center;
-        gap:12px;
-        flex:1;
-        min-width:0;
-      ">
+    const lateMap = {};
+    (resLate.list || []).forEach(x => { lateMap[x.nama.toUpperCase()] = x.terlambat; });
 
-        <div style="
-          width:32px;
-          height:32px;
-          border-radius:50%;
-          background:rgba(59,130,246,.18);
-          display:flex;
-          align-items:center;
-          justify-content:center;
-          font-weight:700;
-          font-size:14px;
-          flex-shrink:0;
-        ">
-          ${i + 1}
-        </div>
+    document.getElementById("summary").innerHTML = `
+    <div class="summary-card">
+        <h2>⚖️ Rekap Kedisiplinan & Target UC</h2>
+        <p>Aturan Toko: Minimal pencapaian UC per bulan adalah <b>16 Unit</b>. Kekurangan unit dikenakan denda selisih unit.</p>
+    </div>`;
 
-       <div class="nama-p" style="
-  font-weight:600;
-  font-size:13px;
-  white-space:nowrap;
-  overflow:hidden;
-  text-overflow:ellipsis;
-">
-  ${x.nama}
-</div>
+    let html = `<div class="summary-card">`;
+    (resPerolehan.list || []).forEach((x, i) => {
+        const totalUC = Number(x.uc || 0);
+        const kurangUC = totalUC < TARGET_MIN_UC ? (TARGET_MIN_UC - totalUC) : 0;
+        const nominalDenda = kurangUC * DENDA_PER_UNIT;
+        const totalTerlambat = lateMap[x.nama.toUpperCase()] || 0;
 
-      </div>
+        html += `
+        <div class="row-perolehan-export" style="padding:14px 0; border-bottom:1px solid rgba(255,255,255,.08);">
+            <div style="display:flex; justify-content:space-between; align-items:center;">
+                <div>
+                    <div class="nama-p" style="font-size:15px; font-weight:700; color:#fff;">${i+1}. ${x.nama}</div>
+                    <div style="font-size:12px; margin-top:4px; color:#94a3b8;">
+                        Total Late : <b style="color:${totalTerlambat > 0 ? '#f87171' : '#4ade80'};">${totalTerlambat} Kali</b>
+                    </div>
+                </div>
+                <div style="text-align:right;">
+                    <div style="font-size:12px; color:#cbd5e1;">Pencapaian UC: <b>${totalUC} / 16</b></div>
+                    <div style="font-weight:800; font-size:13px; margin-top:3px; color:${nominalDenda > 0 ? '#f87171' : '#4ade80'};">
+                        ${nominalDenda > 0 ? '⚠️ Denda UC: Rp ' + nominalDenda.toLocaleString("id-ID") + ' ('+kurangUC+' Unit)' : '✅ Target Terpenuhi'}
+                    </div>
+                </div>
+            </div>
+        </div>`;
+    });
+    html += `</div>`;
 
-     <div style="
-  margin-left:15px;
-  text-align:right;
-  white-space:nowrap;
-">
-  <div class="omzet-p" style="
-    font-weight:800;
-    font-size:13px;
-    color:${
-      Number(x.omzet || 0) >= 100000000
-        ? '#22c55e'
-        : Number(x.omzet || 0) >= 80000000
-        ? '#f59e0b'
-        : '#ef4444'
-    };
-">
-  Rp ${Number(x.omzet || 0).toLocaleString("id-ID")}
-</div>
-  <div class="uc-p" style="
-  font-size:12px;
-  font-weight:700;
-  color:#facc15;
-  margin-top:2px;
-">
-  💎 UC : ${x.uc || 0}
-</div>
-</div>
-    </div>
-  `;
-});
-
-html += `</div>`;
-
-if(data.list && data.list.length > 0){
     document.getElementById("exportArea").style.display = "flex";
+    document.getElementById("hasil").className = "";
+    document.getElementById("hasil").innerHTML = html;
 }
 
-document.getElementById("hasil").className = "";
-document.getElementById("hasil").innerHTML = html;
-loadNama();
+/* 📢 6. INFO PROMO TOKO */
+function tampilPromo() {
+    activeTab = "Promo";
+    resetTabButtons("btnPromo");
+
+    document.getElementById("summary").innerHTML = `
+    <div class="summary-card">
+        <h2>📢 Informasi Promo Aktivasi Toko</h2>
+        <p>Program promosi khusus toko UFO Kebonsari Malang bulan ini.</p>
+    </div>`;
+
+    const promoList = [
+        { judul: "PROMO CASHBACK TV LED 55 INCH", periode: "Bulan Ini", detail: "Setiap pembelian TV 55 Inch ke atas mendapatkan voucher cashback langsung Rp 200.000." },
+        { judul: "PROGRAM BUNDLING MESIN CUCI & DETERJEN", periode: "Bulan Ini", detail: "Bonus deterjen cair 2L untuk transaksi mesin cuci Front Loading all brand." },
+        { judul: "SPECIAL RATE CICILAN 0%", periode: "Bulan Ini", detail: "Bebas biaya admin untuk pembiayaan Spektra & Kredit Plus tenor 6/12 bulan." }
+    ];
+
+    let html = "";
+    promoList.forEach(p => {
+        html += `
+        <div class="card success">
+            <div class="tanggal" style="text-align:left; font-size:15px; color:#60a5fa;">🔥 ${p.judul}</div>
+            <div style="font-size:11px; color:#cbd5e1; margin:6px 0;"><b>Periode:</b> ${p.periode}</div>
+            <div style="font-size:13px; line-height:1.5; color:#e2e8f0;">${p.detail}</div>
+        </div>`;
+    });
+
+    document.getElementById("hasil").className = "grid";
+    document.getElementById("hasil").innerHTML = html;
 }
 
-// 🚀 FUNGSI UTAMA PROSES EKSPOR EXCEL & PDF SMART SYSTEM
+/* 🧹 7. ATURAN & KEBERSIHAN DISPLAY BOOTH */
+function tampilRules() {
+    activeTab = "Rules";
+    resetTabButtons("btnRules");
+
+    document.getElementById("summary").innerHTML = `
+    <div class="summary-card">
+        <h2>🧹 Aturan Toko & Kebersihan Display Booth</h2>
+        <p>Wajib dipatuhi oleh seluruh promotor demi kenyamanan customer di toko UFO Kebonsari.</p>
+    </div>`;
+
+    const aturan = [
+        { poin: "Kebersihan Unit Display", desc: "Sapu area booth & lap dust free produk display setiap pagi sebelum toko buka (Maksimal Pkl 08.30)." },
+        { poin: "Price Tag & Kerapian Kabel", desc: "Pastikan price tag sesuai dengan promo terbaru, pop promo rapi, dan kabel power tidak berantakan." },
+        { poin: "Atribut Resmi Promotor", desc: "Wajib memakai seragam resmi brand/seragam toko, celana kain hitam, sepatu tertutup, & nametag." },
+        { poin: "Kedisiplinan Standby Area", desc: "Dilarang mengosongkan booth display tanpa izin/serah terima dengan partner shift setim." }
+    ];
+
+    let html = "";
+    aturan.forEach(a => {
+        html += `
+        <div class="card warning">
+            <div class="tanggal" style="text-align:left; font-size:15px; color:#facc15;">📌 ${a.poin}</div>
+            <div style="font-size:13px; line-height:1.5; color:#e2e8f0; margin-top:8px;">${a.desc}</div>
+        </div>`;
+    });
+
+    document.getElementById("hasil").className = "grid";
+    document.getElementById("hasil").innerHTML = html;
+}
+
+/* 🚀 FUNGSI EKSPOR EXCEL & PDF SMART SYSTEM */
 function prosesEkspor(format) {
-    let namaKaryawan = "";
-    if (currentRole === "USER") {
-        namaKaryawan = currentUser;
-    } else {
-        namaKaryawan = document.getElementById("nama").value.trim() || "Semua_Promotor";
-    }
-    
+    let namaKaryawan = (currentRole === "USER") ? currentUser : (document.getElementById("nama").value.trim() || "All_Promotor");
     const namaFile = `Laporan_${activeTab}_${namaKaryawan.replace(/\s+/g, '_')}`;
     const targetElement = document.getElementById("hasil");
 
-    // 1. JIKA REKUES FORMAT EXCEL (.xlsx)
     if (format === 'excel') {
         let rowsArr = [];
+        if (activeTab === "DendaUC") {
+            rowsArr.push(["REKAP DENDA UC (<16 UNIT) & KETERLAMBATAN PROMOTOR"], []);
+            rowsArr.push(["No", "Nama Promotor", "Total Late (Kali)", "Pencapaian UC", "Status / Nominal Denda"]);
 
-        if (activeTab === "Absensi") {
-            rowsArr.push(["LAPORAN ABSENSI PROMOTOR: " + namaKaryawan.toUpperCase()], []);
-            rowsArr.push(["Tanggal", "Status", "Masuk", "Istirahat 1", "Kembali 1", "Istirahat 2", "Kembali 2", "Pulang"]);
-            
-            const cards = targetElement.querySelectorAll(".card");
-            cards.forEach(card => {
-                let tglText = card.querySelector(".tanggal").innerText.replace(/📅/g, '').split("\n")[0].trim();
-                let status = card.querySelector(".tanggal").innerText.includes("Lengkap") ? "Lengkap" : "Belum Lengkap";
-                if(card.querySelector(".tanggal").innerText.includes("TERLAMBAT")) status += " (Terlambat)";
-                
-                let rowsData = card.querySelectorAll(".row");
-                let jamMasuk = rowsData[0]?.querySelector(".ok, .kosong")?.innerText || "-";
-                let ist1 = rowsData[1]?.querySelector(".ok, .kosong")?.innerText || "-";
-                let kem1 = rowsData[2]?.querySelector(".ok, .kosong")?.innerText || "-";
-                let ist2 = rowsData[3]?.querySelector(".ok, .kosong")?.innerText || "-";
-                let kem2 = rowsData[4]?.querySelector(".ok, .kosong")?.innerText || "-";
-                let jamPulang = rowsData[5]?.querySelector(".ok, .kosong")?.innerText || "-";
-
-                rowsArr.push([tglText, status, jamMasuk, ist1, kem1, ist2, kem2, jamPulang]);
+            const rowsData = targetElement.querySelectorAll(".row-perolehan-export");
+            rowsData.forEach((row, idx) => {
+                let nama = row.querySelector(".nama-p")?.innerText.trim() || "-";
+                let late = row.querySelector("b")?.innerText.trim() || "0";
+                let textRight = row.querySelectorAll("div[style*='text-align:right'] div");
+                let uc = textRight[0]?.innerText.replace("Pencapaian UC:", "").trim() || "0";
+                let denda = textRight[1]?.innerText.trim() || "-";
+                rowsArr.push([idx + 1, nama, late, uc, denda]);
             });
-        } 
-        else if (activeTab === "Penjualan") {
-            rowsArr.push(["LAPORAN PENJUALAN PROMOTOR: " + namaKaryawan.toUpperCase()], []);
-            rowsArr.push(["Tanggal", "Nama Produk / Deskripsi", "Qty", "Omzet"]);
-
-            const cards = targetElement.querySelectorAll(".card");
-            cards.forEach(card => {
-                let tglText = card.querySelector(".tanggal").innerText.replace(/📅/g, '').trim();
-                let rowsData = card.querySelectorAll(".row");
-                
-                // Iterasi item produk di dalam card hari tersebut (kecuali row total paling akhir)
-                let itemProduks = card.innerHTML.split(/<div style="[^"]*margin-bottom:15px;[^"]*">/i);
-                itemProduks.shift(); // hapus header pembagi awal
-
-                for(let i=0; i < itemProduks.length; i++) {
-                    let tempDiv = document.createElement("div");
-                    tempDiv.innerHTML = itemProduks[i];
-                    let namaProduk = tempDiv.innerText.split("Qty")[0].trim().replace(/\n/g, ' ');
-                    
-                    let qty = tempDiv.querySelectorAll(".row")[0]?.querySelectorAll("span")[1]?.innerText || "0";
-                    let omzet = tempDiv.querySelectorAll(".row")[1]?.querySelectorAll("span")[1]?.innerText || "0";
-                    
-                    rowsArr.push([tglText, namaProduk, qty, omzet]);
-                }
-                
-                // Tambahkan row total harian
-                let totalHari = rowsData[rowsData.length - 1]?.querySelectorAll("span")[1]?.innerText || "0";
-                rowsArr.push(["", "TOTAL HARI INI", "", totalHari], []);
-            });
-        }
-        else if (activeTab === "UC") {
-            rowsArr.push(["LAPORAN INSENTIF UC PROMOTOR: " + namaKaryawan.toUpperCase()], []);
-            rowsArr.push(["Tanggal", "Nama Produk", "Qty"]);
-
-            const cards = targetElement.querySelectorAll(".card");
-            cards.forEach(card => {
-                let tglText = card.querySelector(".tanggal").innerText.replace(/📅/g, '').trim();
-                let namaProduk = card.querySelector("div[style*='font-size:11px']")?.innerText.trim() || "-";
-                let qty = card.querySelector(".row span:last-child")?.innerText || "0";
-                rowsArr.push([tglText, namaProduk, qty]);
-            });
-        }
-        else if (activeTab === "Perolehan") {
+        } else if (activeTab === "Perolehan") {
             rowsArr.push(["RANKING PEROLEHAN ALL PROMOTOR UFO KEBONSARI"], []);
-            rowsArr.push(["Posisi / No", "Nama Promotor", "Total Omzet", "Total UC"]);
-
+            rowsArr.push(["Posisi", "Nama Promotor", "Total Omzet", "Total UC"]);
             const rowsData = targetElement.querySelectorAll(".row-perolehan-export");
             rowsData.forEach((row, idx) => {
                 let nama = row.querySelector(".nama-p")?.innerText.trim() || "-";
@@ -1383,108 +586,41 @@ function prosesEkspor(format) {
             });
         }
 
-        // Generate workbook excel lembaran baru
         const ws = XLSX.utils.aoa_to_sheet(rowsArr);
         const wb = XLSX.utils.book_new();
         XLSX.utils.book_append_sheet(wb, ws, activeTab);
         XLSX.writeFile(wb, `${namaFile}.xlsx`);
-    } 
-    // 2. JIKA REKUES FORMAT PDF (.pdf)
-    else if (format === 'pdf') {
-        // Kloning element agar tidak merusak tema asli di layar monitor dashboard saat proses print
+    } else if (format === 'pdf') {
         const elemenPrint = targetElement.cloneNode(true);
-        elemenPrint.style.color = "#000000"; 
-        elemenPrint.style.background = "#ffffff"; 
-        elemenPrint.style.padding = "20px";
-        elemenPrint.style.width = "100%";
-        
-        // Atur agar border card terlihat tegas saat di lembar cetak kertas PDF putih
+        elemenPrint.style.color = "#000000"; elemenPrint.style.background = "#ffffff"; elemenPrint.style.padding = "20px";
         elemenPrint.querySelectorAll(".card, .summary-card").forEach(el => {
-            el.style.background = "#f8fafc";
-            el.style.border = "1px solid #cbd5e1";
-            el.style.color = "#000000";
-            el.style.marginBottom = "15px";
+            el.style.background = "#f8fafc"; el.style.border = "1px solid #cbd5e1"; el.style.color = "#000000";
         });
-        elemenPrint.querySelectorAll("span, div").forEach(el => {
-            el.style.color = "#000000";
-        });
+        elemenPrint.querySelectorAll("span, div").forEach(el => { el.style.color = "#000000"; });
 
         const opsiPdf = {
-            margin:       [10, 10, 10, 10],
-            filename:     `${namaFile}.pdf`,
-            image:        { type: 'jpeg', quality: 0.98 },
-            html2canvas:  { scale: 2, useCORS: true, backgroundColor: '#ffffff' },
-            jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
+            margin: [10, 10, 10, 10], filename: `${namaFile}.pdf`, image: { type: 'jpeg', quality: 0.98 },
+            html2canvas: { scale: 2, backgroundColor: '#ffffff' }, jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
         };
-
         html2pdf().set(opsiPdf).from(elemenPrint).save();
     }
 }
+
+function showPopup(pesan) {
+    document.getElementById("popupText").innerText = pesan;
+    document.getElementById("popup").style.display = "flex";
+}
+function tutupPopup() { document.getElementById("popup").style.display = "none"; }
+
+async function loadNama(){
+    try {
+        const res = await fetch(WEBAPP_URL + "?action=nama");
+        const data = await res.json();
+        let html = `<option value="" selected disabled>👤 Pilih Nama Promotor</option>`;
+        data.forEach(nama => { html += `<option value="${nama}">${nama}</option>`; });
+        document.getElementById("nama").innerHTML = html;
+    } catch(e){}
+}
 </script>
-
-<div id="popup" style="
-display:none;
-position:fixed;
-top:0;
-left:0;
-width:100%;
-height:100%;
-justify-content:center;
-align-items:center;
-background:rgba(0,0,0,.6);
-z-index:9999;
-">
-
-  <div style="
-  position:absolute;
-  top:50%;
-  left:50%;
-  transform:translate(-50%,-50%);
-  background:#1e293b;
-  color:white;
-  padding:25px;
-  border-radius:20px;
-  min-width:280px;
-  text-align:center;
-  ">
-
- <h3 id="popupTitle">
- Login Berhasil
-</h3>
-<div id="popupText" style="
-font-size:15px;
-line-height:1.5;
-">
-</div>
- <button onclick="tutupPopup()" style="
-margin-top:20px;
-padding:10px 25px;
-border:none;
-border-radius:12px;
-cursor:pointer;
-color:white;
-background:linear-gradient(135deg,#3b82f6,#06b6d4);
-">
-  OK
-</button>
-
-</div> <!-- tutup kotak popup -->
-</div> <!-- tutup overlay popup -->     
-
-  <div id="logoutPopup" style="display:none;">
-  <div id="logoutBox">
-    <h3>🚪 Logout</h3>
-    <p>Yakin ingin logout?</p>
-
-    <button id="btnBatal" onclick="tutupLogout()">
-      Batal
-    </button>
-
-    <button id="btnLogoutConfirm" onclick="logoutConfirm()">
-      Logout
-    </button>
-  </div>
-</div>
- 
 </body>
 </html>
