@@ -436,14 +436,13 @@ async function cariPerolehan() {
     document.getElementById("hasil").className = "";
     document.getElementById("hasil").innerHTML = html;
 }
-
-/* ⚖️ 5. REKAP DENDA TARGET UC (<16) & KETERLAMBATAN */
+/* ⚖️ 5. REKAP DENDA TARGET UC (<16) & KETERLAMBATAN (DENDA Rp 5.000 / UNIT) */
 async function tampilDendaUC() {
     activeTab = "DendaUC";
     resetTabButtons("btnDenda");
 
     const TARGET_MIN_UC = 16;
-    const DENDA_PER_UNIT = 25000; // Nominal denda Rp 25.000 per kekurangan unit UC
+    const DENDA_PER_UNIT = 5000; // 💸 Denda disesuaikan menjadi Rp 5.000 per unit
 
     const [resPerolehan, resLate] = await Promise.all([
         fetch(WEBAPP_URL + "?action=perolehan").then(r => r.json()),
@@ -456,14 +455,14 @@ async function tampilDendaUC() {
     document.getElementById("summary").innerHTML = `
     <div class="summary-card">
         <h2>⚖️ Rekap Kedisiplinan & Target UC</h2>
-        <p>Aturan Toko: Minimal pencapaian UC per bulan adalah <b>16 Unit</b>. Kekurangan unit dikenakan denda selisih unit.</p>
+        <p>Aturan Toko: Target minimal UC adalah <b>16 Unit</b>. Kekurangan unit dikenakan denda <b>Rp 5.000 / unit</b>.</p>
     </div>`;
 
     let html = `<div class="summary-card">`;
     (resPerolehan.list || []).forEach((x, i) => {
         const totalUC = Number(x.uc || 0);
         const kurangUC = totalUC < TARGET_MIN_UC ? (TARGET_MIN_UC - totalUC) : 0;
-        const nominalDenda = kurangUC * DENDA_PER_UNIT;
+        const nominalDenda = kurangUC * DENDA_PER_UNIT; // Perhitungan: Kurang Unit x Rp 5.000
         const totalTerlambat = lateMap[x.nama.toUpperCase()] || 0;
 
         html += `
@@ -478,7 +477,7 @@ async function tampilDendaUC() {
                 <div style="text-align:right;">
                     <div style="font-size:12px; color:#cbd5e1;">Pencapaian UC: <b>${totalUC} / 16</b></div>
                     <div style="font-weight:800; font-size:13px; margin-top:3px; color:${nominalDenda > 0 ? '#f87171' : '#4ade80'};">
-                        ${nominalDenda > 0 ? '⚠️ Denda UC: Rp ' + nominalDenda.toLocaleString("id-ID") + ' ('+kurangUC+' Unit)' : '✅ Target Terpenuhi'}
+                        ${nominalDenda > 0 ? '⚠️ Denda UC: Rp ' + nominalDenda.toLocaleString("id-ID") + ' (' + kurangUC + ' x Rp 5.000)' : '✅ Target Terpenuhi'}
                     </div>
                 </div>
             </div>
@@ -490,7 +489,6 @@ async function tampilDendaUC() {
     document.getElementById("hasil").className = "";
     document.getElementById("hasil").innerHTML = html;
 }
-
 /* 📢 6. INFO PROMO TOKO */
 function tampilPromo() {
     activeTab = "Promo";
