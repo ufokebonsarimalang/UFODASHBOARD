@@ -895,26 +895,23 @@ function renderDendaUC(dendaObj) {
       const totalUC = Number(x.uc || 0);
       const isIkutUC = (x.ikutUC || "YA") !== "TIDAK";
       
-      // Perhitungan otomatis kekurangan UC terhadap target 16 unit (berkurang otomatis setiap nambah penjualan UC)
       const kurangUC = (isIkutUC && totalUC < TARGET_MIN_UC) ? (TARGET_MIN_UC - totalUC) : 0;
       const dendaUC = kurangUC * DENDA_UC_PER_UNIT;
       
       const totalTerlambat = lateMap[x.nama.toUpperCase()] || 0;
       const dendaLate = totalTerlambat * DENDA_LATE_PER_KALI;
-      
-      // Total denda gabungan (Terlambat + UC)
       const totalDenda = dendaUC + dendaLate;
 
       html += `
-      <div class="row-perolehan-export" style="display:flex; justify-content:space-between; align-items:center; padding:12px 0; border-bottom:1px solid rgba(255,255,255,0.06);">
-          <div>
-              <div class="nama-p" style="font-size:13.5px; font-weight:700; color:#fff;">${i+1}. ${x.nama}</div>
+      <div class="row-perolehan-export" style="display:flex; justify-content:space-between; align-items:center; padding:14px 0; border-bottom:1px solid rgba(255,255,255,0.08); gap:15px;">
+          <div style="flex-shrink: 0;">
+              <div class="nama-p" style="font-size:14px; font-weight:700; color:#fff;">${i+1}. ${x.nama}</div>
           </div>
-          <div style="text-align:right;">
+          <div style="text-align:right; white-space:nowrap;">
               ${totalDenda > 0 
-                  ? `<div style="font-weight:700; font-size:13.5px; color:#ef4444;">Rp ${totalDenda.toLocaleString("id-ID")}</div>
-                     <div style="font-size:11px; color:#fca5a5; margin-top:2px;">Kurang UC: ${kurangUC} (${dendaUC/1000}k) | Late: ${totalTerlambat}x (${dendaLate/1000}k)</div>`
-                  : `<div style="font-weight:700; font-size:12.5px; color:#34d399;">Aman (Capai Target)</div>`
+                  ? `<div style="font-weight:800; font-size:15px; color:#ff3333; text-shadow: 0 0 10px rgba(255, 51, 51, 0.4);">Rp ${totalDenda.toLocaleString("id-ID")}</div>
+                     <div style="font-size:11.5px; color:#fca5a5; margin-top:3px; font-weight:500;">Kurang UC: ${kurangUC} (${(dendaUC/1000).toFixed(0)}k) | Late: ${totalTerlambat}x (${(dendaLate/1000).toFixed(0)}k)</div>`
+                  : `<div style="font-weight:700; font-size:13px; color:#34d399;">✅ Aman (Lunas/Capai Target)</div>`
               }
           </div>
       </div>`;
@@ -925,33 +922,6 @@ function renderDendaUC(dendaObj) {
   document.getElementById("hasil").className = "";
   document.getElementById("hasil").innerHTML = html;
 }
-
-function renderPromo(result) {
-  if(!result) return;
-  const list = result.data || [];
-  document.getElementById("summary").innerHTML = `
-  <div class="summary-card">
-      <h2>🏷️ Promo Toko</h2>
-  </div>`;
-
-  let html = "";
-  if (list.length === 0) {
-      html = `<div class="card">Data tidak ditemukan</div>`;
-  } else {
-      list.forEach(p => {
-          html += `
-          <div class="card success">
-              <div class="tanggal" style="text-align:left; font-size:14px; color:#60a5fa;">🔥 ${p.judul || p.Judul || ""}</div>
-              <div style="font-size:11.5px; color:#cbd5e1; margin:6px 0;"><b>Periode:</b> ${p.periode || p.Periode || ""}</div>
-              <div style="font-size:13px; line-height:1.5; color:#e2e8f0; border-top:1px solid rgba(255,255,255,0.06); padding-top:8px;">${p.detail || p.Detail || ""}</div>
-          </div>`;
-      });
-  }
-
-  document.getElementById("hasil").className = "grid";
-  document.getElementById("hasil").innerHTML = html;
-}
-
 function renderRules(result) {
   if(!result) return;
   const list = result.data || [];
