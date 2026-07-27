@@ -28,7 +28,7 @@ body {
     color: #f8fafc;
 }
 
-/* KOTAK LOGIN YANG CANTIK & ELEGAN */
+/* KOTAK LOGIN */
 #loginBox {
     max-width: 420px;
     margin: 60px auto;
@@ -47,7 +47,6 @@ body {
     margin-bottom: 25px;
     font-size: 26px;
     font-weight: 700;
-    letter-spacing: -0.5px;
     color: #ffffff;
 }
 
@@ -91,7 +90,6 @@ body {
 #btnLogin:hover {
     transform: translateY(-2px);
     opacity: 0.95;
-    box-shadow: 0 15px 30px -5px rgba(37, 99, 235, 0.5);
 }
 
 /* HEADER DASHBOARD */
@@ -114,7 +112,6 @@ body {
     color: #94a3b8;
     font-size: 15px;
     margin-top: 8px;
-    font-weight: 400;
 }
 
 /* KOTAK PENCARIAN / DROPDOWN NAMA */
@@ -225,6 +222,7 @@ body {
     margin: 8px 0;
     color: #cbd5e1;
     font-size: 14px;
+    line-height: 1.5;
 }
 
 .grid {
@@ -248,7 +246,6 @@ body {
 .card:hover {
     transform: translateY(-4px);
     border-color: rgba(255, 255, 255, 0.15);
-    box-shadow: 0 15px 35px rgba(0,0,0,0.25);
 }
 
 .card.success {
@@ -262,7 +259,6 @@ body {
 .card.late {
     border: 2px solid #facc15;
     background: rgba(250, 204, 21, 0.05);
-    box-shadow: 0 0 20px rgba(250, 204, 21, 0.15);
 }
 
 .card-notice {
@@ -281,6 +277,7 @@ body {
     margin-bottom: 16px;
     color: white;
     font-size: 14px;
+    line-height: 1.4;
 }
 
 .row {
@@ -317,7 +314,7 @@ body {
     font-weight: 700;
 }
 
-/* TOMBOL EKSPOR EXCEL & PDF */
+/* TOMBOL EKSPOR */
 .export-container {
     max-width: 1200px;
     margin: 0 auto 20px;
@@ -342,12 +339,10 @@ body {
 
 .btn-excel {
     background: linear-gradient(135deg, #059669, #10b981);
-    box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3);
 }
 
 .btn-pdf {
     background: linear-gradient(135deg, #dc2626, #ef4444);
-    box-shadow: 0 4px 15px rgba(239, 68, 68, 0.3);
 }
 
 .btn-export:hover {
@@ -355,7 +350,7 @@ body {
     opacity: 0.95;
 }
 
-/* POPUP MODAL */
+/* POPUP */
 #popup, #logoutPopup {
     display: none;
     position: fixed;
@@ -377,7 +372,6 @@ body {
     min-width: 320px;
     text-align: center;
     border: 1px solid rgba(255, 255, 255, 0.1);
-    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
 }
 
 #logoutBox h3, #popup h3 {
@@ -389,7 +383,8 @@ body {
 #logoutBox p, #popupText {
     color: #cbd5e1;
     margin: 15px 0 25px;
-    font-size: 14.5jlpx;
+    font-size: 14.5px;
+    line-height: 1.5;
 }
 
 #btnBatal, #btnLogoutConfirm, #popup button {
@@ -400,20 +395,10 @@ body {
     color: white;
     font-weight: 600;
     font-size: 14px;
-    transition: all 0.2s ease;
 }
 
-#btnBatal {
-    background: #475569;
-}
-
-#btnLogoutConfirm {
-    background: #ef4444;
-}
-
-#popup button, #btnBatal:hover, #btnLogoutConfirm:hover {
-    opacity: 0.9;
-}
+#btnBatal { background: #475569; }
+#btnLogoutConfirm { background: #ef4444; }
 
 .spinner {
     width: 18px;
@@ -430,11 +415,8 @@ body {
     to { transform: rotate(360deg); }
 }
 
-/* RESPONSIF HP & TABLET */
 @media(max-width: 1024px) {
-    .grid {
-        grid-template-columns: repeat(2, 1fr);
-    }
+    .grid { grid-template-columns: repeat(2, 1fr); }
 }
 
 @media(max-width: 768px) {
@@ -447,7 +429,6 @@ body {
 </head>
 <body>
 
-<!-- KOTAK LOGIN AWAL -->
 <div id="loginBox">
     <h2>🔐 Login Dashboard</h2>
     <input id="loginNama" type="text" placeholder="Masukkan Nama">
@@ -455,7 +436,6 @@ body {
     <button id="btnLogin" onclick="login()">LOGIN</button>
 </div>
 
-<!-- DASHBOARD UTAMA -->
 <div id="dashboard" style="display:none;">
     <div class="header">
         <h1>UFO DASHBOARD</h1>
@@ -467,7 +447,7 @@ body {
     </div>
 
     <div style="max-width:1200px; margin:0 auto 15px; text-align:right;">
-        <button onclick="logout()" style="padding:9px 16px; border:none; border-radius:12px; cursor:pointer; color:white; background:#ef4444; font-weight:600; font-size:13px; box-shadow:0 4px 12px rgba(239,68,68,0.3);">
+        <button onclick="logout()" style="padding:9px 16px; border:none; border-radius:12px; cursor:pointer; color:white; background:#ef4444; font-weight:600; font-size:13px;">
             🚪 Logout
         </button>
     </div>
@@ -489,7 +469,6 @@ body {
         <button id="btnNotice" onclick="cariNotice()">📌 Notice</button>
     </div>
 
-    <!-- AREA EKSPOR EXCEL & PDF -->
     <div class="export-container" id="exportArea">
         <button class="btn-export btn-excel" onclick="prosesEkspor('excel')">📥 Unduh Excel</button>
         <button class="btn-export btn-pdf" onclick="prosesEkspor('pdf')">📄 Unduh PDF</button>
@@ -1053,7 +1032,6 @@ function prosesEkspor(format) {
 }
 </script>
 
-<!-- POPUP NOTIFIKASI -->
 <div id="popup">
   <div>
     <h3>Informasi</h3>
@@ -1062,7 +1040,6 @@ function prosesEkspor(format) {
   </div>
 </div>
 
-<!-- POPUP LOGOUT -->
 <div id="logoutPopup">
   <div id="logoutBox">
     <h3>🚪 Logout</h3>
