@@ -501,16 +501,21 @@ body {
     <div id="summary"></div>
 
     <div class="menu-tab">
+        <!-- Kelompok Operasional / Kinerja -->
         <button id="btnAbsen" onclick="pindahMenu('Absensi')">📅 Absensi</button>
         <button id="btnJual" onclick="pindahMenu('Penjualan')">💼 Penjualan</button>
         <button id="btnUC" onclick="pindahMenu('UC')">⭐ UC</button>
         <button id="btnPerolehan" onclick="pindahMenu('Perolehan')">📈 Perolehan</button> 
         <button id="btnDenda" onclick="pindahMenu('DendaUC')">⚡ Denda & Late</button>
+        
+        <!-- Pemisah Kecil / Jarak Khusus untuk Menu Informasi -->
+        <span style="width: 100%; display: block; height: 0; margin: 2px 0;"></span>
+
+        <!-- Kelompok Informasi Toko -->
         <button id="btnPromo" onclick="pindahMenu('Promo')">🏷️ Promo Toko</button>
         <button id="btnRules" onclick="pindahMenu('Rules')">✨ SOP Promotor</button>
         <button id="btnNotice" onclick="pindahMenu('Notice')">🔔 Notice</button>
     </div>
-
     <!-- AREA EKSPOR (HANYA MUNCUL UNTUK ADMIN) -->
     <div class="export-container" id="exportArea">
         <button class="btn-export btn-excel" onclick="prosesEkspor('excel')">📥 Unduh Excel</button>
