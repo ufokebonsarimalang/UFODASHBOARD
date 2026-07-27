@@ -28,48 +28,83 @@ body {
     color: #f8fafc;
 }
 
-/* KOTAK LOGIN MODERN */
+/* KOTAK LOGIN SESUAI CONTOH GAMBAR (MODERN & BERSIH) */
 #loginBox {
     max-width: 420px;
-    margin: 60px auto;
-    padding: 35px 30px;
-    background: rgba(255, 255, 255, 0.04);
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
-    border: 1px solid rgba(255, 255, 255, 0.08);
+    margin: 40px auto;
+    padding: 40px 30px;
+    background: #ffffff;
     border-radius: 28px;
-    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.35);
+    color: #1e293b;
 }
 
-#loginBox h2 {
+.login-logo-container {
     text-align: center;
-    margin-top: 0;
-    margin-bottom: 25px;
-    font-size: 26px;
+    margin-bottom: 20px;
+}
+
+.login-logo-container img {
+    width: 90px;
+    height: 90px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 3px solid #f1f5f9;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+}
+
+.login-title-area {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.login-title-area h2 {
+    margin: 0;
+    font-size: 22px;
+    font-weight: 800;
+    color: #0f172a;
+    letter-spacing: -0.5px;
+}
+
+.login-title-area p {
+    margin: 6px 0 0;
+    font-size: 13.5px;
+    color: #64748b;
+    font-weight: 500;
+}
+
+.input-group {
+    margin-bottom: 20px;
+}
+
+.input-group label {
+    display: block;
+    font-size: 12px;
     font-weight: 700;
-    color: #ffffff;
+    color: #334155;
+    margin-bottom: 8px;
+    letter-spacing: 0.5px;
 }
 
-#loginBox input {
+.input-group input {
     width: 100%;
-    padding: 16px 18px;
-    margin-bottom: 16px;
-    border-radius: 16px;
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    background: rgba(255, 255, 255, 0.06);
-    color: white;
-    font-size: 15px;
+    padding: 15px 18px;
+    border-radius: 14px;
+    border: 1px solid #cbd5e1;
+    background: #f8fafc;
+    color: #0f172a;
+    font-size: 14.5px;
     outline: none;
-    transition: all 0.3s ease;
+    transition: all 0.25s ease;
 }
 
-#loginBox input:focus {
-    border-color: #3b82f6;
-    box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.15);
-    background: rgba(255, 255, 255, 0.09);
+.input-group input:focus {
+    border-color: #6366f1;
+    background: #ffffff;
+    box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.12);
 }
 
-#loginBox input::placeholder {
+.input-group input::placeholder {
     color: #94a3b8;
 }
 
@@ -77,29 +112,31 @@ body {
     width: 100%;
     padding: 16px;
     border: none;
-    border-radius: 16px;
+    border-radius: 14px;
     cursor: pointer;
     font-weight: 700;
     font-size: 15px;
     color: white;
-    background: linear-gradient(135deg, #2563eb, #06b6d4);
-    box-shadow: 0 10px 25px -5px rgba(37, 99, 235, 0.4);
-    transition: all 0.3s ease;
+    background: #5b21b6;
+    box-shadow: 0 10px 20px -5px rgba(91, 33, 182, 0.4);
+    transition: all 0.25s ease;
+    letter-spacing: 0.5px;
 }
 
 #btnLogin:hover {
     transform: translateY(-2px);
-    opacity: 0.95;
+    background: #4c1d95;
+    box-shadow: 0 14px 24px -5px rgba(91, 33, 182, 0.5);
 }
 
 /* HEADER DASHBOARD */
 .header {
     text-align: center;
-    margin-bottom: 30px;
+    margin-bottom: 25px;
 }
 
 .header h1 {
-    font-size: 44px;
+    font-size: 40px;
     font-weight: 800;
     margin: 0;
     letter-spacing: -1.5px;
@@ -110,28 +147,28 @@ body {
 
 .header p {
     color: #94a3b8;
-    font-size: 15px;
-    margin-top: 8px;
+    font-size: 14.5px;
+    margin-top: 6px;
 }
 
 /* KOTAK PENCARIAN / DROPDOWN NAMA */
 .search-box {
     max-width: 600px;
-    margin: 0 auto 25px;
+    margin: 0 auto 20px;
     display: flex;
     gap: 12px;
 }
 
 #nama {
     width: 100%;
-    height: 56px;
+    height: 52px;
     padding: 0 20px;
-    border-radius: 18px;
+    border-radius: 16px;
     border: 1px solid rgba(255, 255, 255, 0.1);
     background: rgba(255, 255, 255, 0.05);
     backdrop-filter: blur(16px);
     color: white;
-    font-size: 15px;
+    font-size: 14.5px;
     font-weight: 600;
     outline: none;
     cursor: pointer;
@@ -143,50 +180,40 @@ body {
     transition: all 0.3s ease;
 }
 
-#nama:hover {
-    border-color: rgba(96, 165, 250, 0.4);
-}
+#nama:hover { border-color: rgba(96, 165, 250, 0.4); }
+#nama:focus { border-color: #3b82f6; box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.15); }
+#nama option { background: #0f172a; color: white; }
 
-#nama:focus {
-    border-color: #3b82f6;
-    box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.15);
-}
-
-#nama option {
-    background: #0f172a;
-    color: white;
-}
-
-/* MENU TAB NAVIGASI (Diraikan & Diberi Ikon Modern) */
+/* MENU TAB NAVIGASI RAPI DENGAN IKON MODERN */
 .menu-tab {
     display: flex;
     justify-content: center;
-    gap: 10px;
+    gap: 8px;
     margin-bottom: 25px;
     flex-wrap: wrap;
-    max-width: 1100px;
+    max-width: 1050px;
     margin-left: auto;
     margin-right: auto;
 }
 
 .menu-tab button {
-    padding: 12px 20px;
+    padding: 11px 18px;
     border: none;
     border-radius: 14px;
     cursor: pointer;
     font-weight: 600;
-    font-size: 13.5px;
-    background: rgba(255, 255, 255, 0.05);
+    font-size: 13px;
+    background: rgba(255, 255, 255, 0.04);
     border: 1px solid rgba(255, 255, 255, 0.08);
     color: #cbd5e1;
     transition: all 0.25s ease;
-    display: flex;
+    display: inline-flex;
     align-items: center;
-    gap: 8px;
+    gap: 6px;
 }
 
 .menu-tab button:hover {
-    background: rgba(255, 255, 255, 0.09);
+    background: rgba(255, 255, 255, 0.08);
     color: white;
     transform: translateY(-2px);
 }
@@ -195,43 +222,42 @@ body {
     background: linear-gradient(135deg, #3b82f6, #06b6d4);
     color: white;
     border-color: transparent;
-    box-shadow: 0 8px 20px -4px rgba(59, 130, 246, 0.4);
+    box-shadow: 0 6px 18px -4px rgba(59, 130, 246, 0.4);
 }
 
 /* SUMMARY & KARTU DATA */
 #summary {
     max-width: 1200px;
-    margin: 0 auto 25px;
+    margin: 0 auto 20px;
 }
 
 .summary-card {
     background: rgba(255, 255, 255, 0.04);
     backdrop-filter: blur(20px);
     border: 1px solid rgba(255, 255, 255, 0.08);
-    border-radius: 24px;
-    padding: 24px;
+    border-radius: 22px;
+    padding: 22px;
     color: white;
     box-shadow: 0 10px 30px rgba(0,0,0,0.2);
 }
 
 .summary-card h2 {
     margin-top: 0;
-    font-size: 20px;
+    font-size: 19px;
     font-weight: 700;
-    margin-bottom: 15px;
+    margin-bottom: 12px;
 }
 
 .summary-card p {
-    margin: 8px 0;
+    margin: 6px 0;
     color: #cbd5e1;
-    font-size: 14px;
-    line-height: 1.5;
+    font-size: 13.5px;
 }
 
 .grid {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
-    gap: 18px;
+    gap: 16px;
     max-width: 1200px;
     margin: 0 auto;
 }
@@ -240,98 +266,62 @@ body {
     background: rgba(255, 255, 255, 0.04);
     backdrop-filter: blur(20px);
     border: 1px solid rgba(255, 255, 255, 0.08);
-    border-radius: 24px;
-    padding: 20px;
+    border-radius: 22px;
+    padding: 18px;
     transition: all 0.3s ease;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+    box-shadow: 0 10px 25px rgba(0,0,0,0.15);
 }
 
 .card:hover {
-    transform: translateY(-4px);
+    transform: translateY(-3px);
     border-color: rgba(255, 255, 255, 0.15);
 }
 
-.card.success {
-    border-left: 5px solid #10b981;
-}
-
-.card.warning {
-    border-left: 5px solid #ef4444;
-}
-
-.card.late {
-    border: 2px solid #facc15;
-    background: rgba(250, 204, 21, 0.05);
-}
-
-.card-notice {
-    border-left: 5px solid #3b82f6;
-    background: rgba(59, 130, 246, 0.05);
-}
-
-.card-rules {
-    border-left: 5px solid #facc15;
-    background: rgba(250, 204, 21, 0.05);
-}
+.card.success { border-left: 5px solid #10b981; }
+.card.warning { border-left: 5px solid #ef4444; }
+.card.late { border: 2px solid #facc15; background: rgba(250, 204, 21, 0.04); }
+.card-notice { border-left: 5px solid #3b82f6; background: rgba(59, 130, 246, 0.04); }
+.card-rules { border-left: 5px solid #facc15; background: rgba(250, 204, 21, 0.04); }
 
 .tanggal {
     text-align: center;
     font-weight: 700;
-    margin-bottom: 16px;
+    margin-bottom: 14px;
     color: white;
-    font-size: 14px;
-    line-height: 1.4;
+    font-size: 13.5px;
 }
 
 .row {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 9px 0;
+    padding: 8px 0;
     border-bottom: 1px solid rgba(255, 255, 255, 0.06);
     color: #cbd5e1;
-    font-size: 13.5px;
+    font-size: 13px;
 }
 
-.row:last-child {
-    border-bottom: none;
-}
+.row:last-child { border-bottom: none; }
+.ok { font-weight: 600; color: white; }
+.kosong { color: #f87171; font-weight: 700; }
+.status-ok { color: #34d399; font-weight: 700; }
+.status-warning { color: #f87171; font-weight: 700; }
 
-.ok {
-    font-weight: 600;
-    color: white;
-}
-
-.kosong {
-    color: #f87171;
-    font-weight: 700;
-}
-
-.status-ok {
-    color: #34d399;
-    font-weight: 700;
-}
-
-.status-warning {
-    color: #f87171;
-    font-weight: 700;
-}
-
-/* TOMBOL EKSPOR (Hanya untuk Admin) */
+/* TOMBOL EKSPOR KHUSUS ADMIN */
 .export-container {
     max-width: 1200px;
-    margin: 0 auto 20px;
+    margin: 0 auto 15px;
     display: none;
     justify-content: flex-end;
     gap: 10px;
 }
 
 .btn-export {
-    padding: 10px 18px;
+    padding: 10px 16px;
     border: none;
     border-radius: 12px;
     font-weight: 700;
-    font-size: 13px;
+    font-size: 12.5px;
     cursor: pointer;
     color: white;
     display: flex;
@@ -340,85 +330,78 @@ body {
     transition: all 0.25s ease;
 }
 
-.btn-excel {
-    background: linear-gradient(135deg, #059669, #10b981);
-}
+.btn-excel { background: linear-gradient(135deg, #059669, #10b981); }
+.btn-pdf { background: linear-gradient(135deg, #dc2626, #ef4444); }
+.btn-export:hover { transform: translateY(-2px); opacity: 0.95; }
 
-.btn-pdf {
-    background: linear-gradient(135deg, #dc2626, #ef4444);
-}
-
-.btn-export:hover {
-    transform: translateY(-2px);
-    opacity: 0.95;
-}
-
-/* POPUP MODERN (Gaya Glassmorphism & Tombol OK Kontras) */
+/* POPUP MODERN (TEMA GELAP ELEGAN) */
 #popup, #logoutPopup {
     display: none;
     position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0, 0, 0, 0.7);
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: rgba(0, 0, 0, 0.65);
     backdrop-filter: blur(8px);
     z-index: 99999;
     justify-content: center;
     align-items: center;
 }
 
-#logoutBox, #popup > div {
+.modern-popup-box {
     background: #1e293b;
     padding: 30px 25px;
-    border-radius: 24px;
-    min-width: 320px;
+    border-radius: 22px;
+    min-width: 310px;
     text-align: center;
     border: 1px solid rgba(255, 255, 255, 0.1);
     box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
 }
 
-#logoutBox h3, #popup h3 {
+.modern-popup-box h3 {
     margin-top: 0;
     color: white;
-    font-size: 20px;
+    font-size: 19px;
+    font-weight: 700;
 }
 
-#logoutBox p, #popupText {
+.modern-popup-box p, #popupText {
     color: #cbd5e1;
-    margin: 15px 0 25px;
-    font-size: 14.5px;
+    margin: 14px 0 22px;
+    font-size: 14px;
     line-height: 1.5;
 }
 
-#btnBatal, #btnLogoutConfirm, #popup button {
+/* TOMBOL OK MODERN (TIDAK PUTIH) */
+.btn-popup-ok {
     border: none;
-    padding: 12px 24px;
-    border-radius: 14px;
+    padding: 11px 28px;
+    border-radius: 12px;
     cursor: pointer;
     color: white;
     font-weight: 600;
-    font-size: 14px;
+    font-size: 13.5px;
+    background: linear-gradient(135deg, #3b82f6, #06b6d4);
+    box-shadow: 0 4px 15px rgba(59, 130, 246, 0.4);
     transition: all 0.2s ease;
 }
 
+.btn-popup-ok:hover { opacity: 0.9; transform: translateY(-1px); }
+
+#btnBatal, #btnLogoutConfirm {
+    border: none;
+    padding: 10px 20px;
+    border-radius: 12px;
+    cursor: pointer;
+    color: white;
+    font-weight: 600;
+    font-size: 13.5px;
+    margin: 4px;
+}
 #btnBatal { background: #475569; }
 #btnLogoutConfirm { background: #ef4444; }
 
-/* Tombol OK di popup: latar belakang gelap/biru agar kontras dengan teks putih */
-#popup button {
-    background: linear-gradient(135deg, #3b82f6, #06b6d4);
-    box-shadow: 0 4px 15px rgba(59, 130, 246, 0.4);
-}
-
-#popup button:hover, #btnBatal:hover, #btnLogoutConfirm:hover {
-    opacity: 0.9;
-    transform: translateY(-1px);
-}
-
 .spinner {
-    width: 18px;
-    height: 18px;
+    width: 18px; height: 18px;
     display: inline-block;
     border: 3px solid rgba(255,255,255,.3);
     border-top: 3px solid #fff;
@@ -427,17 +410,12 @@ body {
     vertical-align: middle;
 }
 
-@keyframes spin {
-    to { transform: rotate(360deg); }
-}
+@keyframes spin { to { transform: rotate(360deg); } }
 
-@media(max-width: 1024px) {
-    .grid { grid-template-columns: repeat(2, 1fr); }
-}
-
+@media(max-width: 1024px) { .grid { grid-template-columns: repeat(2, 1fr); } }
 @media(max-width: 768px) {
     body { padding: 15px; }
-    .header h1 { font-size: 32px; }
+    .header h1 { font-size: 28px; }
     .grid { grid-template-columns: 1fr; }
     .search-box { flex-direction: column; }
 }
@@ -445,12 +423,27 @@ body {
 </head>
 <body>
 
-<!-- KOTAK LOGIN MODERN -->
+<!-- KOTAK LOGIN BARU SESUAI CONTOH -->
 <div id="loginBox">
-    <h2>🔐 Login Dashboard</h2>
-    <input id="loginNama" type="text" placeholder="Masukkan Nama">
-    <input id="loginPin" type="password" placeholder="Masukkan PIN">
-    <button id="btnLogin" onclick="login()">LOGIN</button>
+    <div class="login-logo-container">
+        <img src="https://i.ibb.co.com/84c2R8c/ufo-avatar.png" alt="UFO Logo" onerror="this.src='https://cdn-icons-png.flaticon.com/512/3135/3135715.png'">
+    </div>
+    <div class="login-title-area">
+        <h2>UFO KEBONSARI MALANG</h2>
+        <p>Sistem Dashboard Promotor</p>
+    </div>
+
+    <div class="input-group">
+        <label>USERNAME</label>
+        <input id="loginNama" type="text" placeholder="Masukkan Username">
+    </div>
+
+    <div class="input-group">
+        <label>PASSWORD</label>
+        <input id="loginPin" type="password" placeholder="Masukkan Password">
+    </div>
+
+    <button id="btnLogin" onclick="login()">MASUK</button>
 </div>
 
 <!-- DASHBOARD UTAMA -->
@@ -461,11 +454,11 @@ body {
     </div>
 
     <div style="text-align:center;">
-        <div id="loginInfo" style="display:inline-block; margin-bottom:15px; padding:8px 16px; border-radius:99px; background:rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.08); color:#e2e8f0; font-size:13.5px; font-weight:600;"></div>
+        <div id="loginInfo" style="display:inline-block; margin-bottom:12px; padding:7px 16px; border-radius:99px; background:rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.08); color:#e2e8f0; font-size:13px; font-weight:600;"></div>
     </div>
 
-    <div style="max-width:1200px; margin:0 auto 15px; text-align:right;">
-        <button onclick="logout()" style="padding:9px 16px; border:none; border-radius:12px; cursor:pointer; color:white; background:#ef4444; font-weight:600; font-size:13px; box-shadow:0 4px 12px rgba(239,68,68,0.3);">
+    <div style="max-width:1200px; margin:0 auto 12px; text-align:right;">
+        <button onclick="logout()" style="padding:8px 16px; border:none; border-radius:12px; cursor:pointer; color:white; background:#ef4444; font-weight:600; font-size:12.5px; box-shadow:0 4px 12px rgba(239,68,68,0.3);">
             🚪 Logout
         </button>
     </div>
@@ -476,7 +469,6 @@ body {
 
     <div id="summary"></div>
 
-    <!-- MENU TAB DENGAN IKON MODERN & TATA LETAK RAPI -->
     <div class="menu-tab">
         <button id="btnAbsen" onclick="cari()">📋 Absensi</button>
         <button id="btnJual" onclick="cariPenjualan()">💰 Penjualan</button>
@@ -488,7 +480,7 @@ body {
         <button id="btnNotice" onclick="cariNotice()">📌 Notice</button>
     </div>
 
-    <!-- AREA EKSPOR (Hanya Tampil untuk Admin) -->
+    <!-- AREA EKSPOR (HANYA MUNCUL UNTUK ADMIN) -->
     <div class="export-container" id="exportArea">
         <button class="btn-export btn-excel" onclick="prosesEkspor('excel')">📥 Unduh Excel</button>
         <button class="btn-export btn-pdf" onclick="prosesEkspor('pdf')">📄 Unduh PDF</button>
@@ -514,15 +506,15 @@ function resetActiveButtons() {
 async function login() {
   const btn = document.getElementById("btnLogin");
   btn.disabled = true;
-  btn.innerHTML = `<span class="spinner" style="margin-right:8px;"></span>LOGIN...`;
+  btn.innerHTML = `<span class="spinner" style="margin-right:8px;"></span>MEMPROSES...`;
   
   const nama = document.getElementById("loginNama").value.trim();
   const pin = document.getElementById("loginPin").value.trim();
 
   if (!nama || !pin) {
-    showPopup("Nama dan PIN harus diisi.");
+    showPopup("Username dan Password harus diisi.");
     btn.disabled = false;
-    btn.innerHTML = "LOGIN";
+    btn.innerHTML = "MASUK";
     return;
   }
 
@@ -531,8 +523,8 @@ async function login() {
 
   if (!data.success) {
       btn.disabled = false;
-      btn.innerHTML = "LOGIN";
-      showPopup(data.message || "Nama atau PIN salah");
+      btn.innerHTML = "MASUK";
+      showPopup(data.message || "Username atau Password salah");
       return;
   }
 
@@ -585,7 +577,7 @@ function logoutConfirm() {
 
   const btn = document.getElementById("btnLogin");
   btn.disabled = false;
-  btn.innerHTML = "LOGIN";
+  btn.innerHTML = "MASUK";
 }    
 
 function tampil(v){
@@ -621,9 +613,7 @@ async function cari() {
           <p>Belum Finger Pulang : <b>${belumPulang}</b></p>
           <p>Datang Terlambat : <b>${terlambat}</b></p>
       </div>`;
-      if (currentRole === "ADMIN") {
-          document.getElementById("exportArea").style.display = "flex";
-      }
+      if(currentRole === "ADMIN") document.getElementById("exportArea").style.display = "flex";
   } else {
       document.getElementById("summary").innerHTML = "";
   }
@@ -662,7 +652,7 @@ async function cariPenjualan(){
 
   let nama = (currentRole === "USER") ? currentUser : document.getElementById("nama").value.trim();
   if (!nama) {
-   showPopup("Nama dan PIN harus diisi.");
+   showPopup("Username dan Password harus diisi.");
    return;
   }
 
@@ -705,9 +695,7 @@ async function cariPenjualan(){
     </div>`;
   }
 
-  if(data.detail && data.detail.length > 0 && currentRole === "ADMIN") {
-      document.getElementById("exportArea").style.display = "flex";
-  }
+  if(data.detail && data.detail.length > 0 && currentRole === "ADMIN") document.getElementById("exportArea").style.display = "flex";
   document.getElementById("hasil").className = "grid";
   document.getElementById("hasil").innerHTML = html;
 }
@@ -766,9 +754,7 @@ async function cariUC(){
     </div>`;
   });
 
-  if(data.detail && data.detail.length > 0 && currentRole === "ADMIN") {
-      document.getElementById("exportArea").style.display = "flex";
-  }
+  if(data.detail && data.detail.length > 0 && currentRole === "ADMIN") document.getElementById("exportArea").style.display = "flex";
   document.getElementById("hasil").innerHTML = html;
 }
 
@@ -820,9 +806,7 @@ async function cariPerolehan() {
   });
   html += `</div>`;
 
-  if(data.list && data.list.length > 0 && currentRole === "ADMIN") {
-      document.getElementById("exportArea").style.display = "flex";
-  }
+  if(data.list && data.list.length > 0 && currentRole === "ADMIN") document.getElementById("exportArea").style.display = "flex";
   document.getElementById("hasil").className = "";
   document.getElementById("hasil").innerHTML = html;
 }
@@ -1060,22 +1044,24 @@ function prosesEkspor(format) {
 }
 </script>
 
-<!-- POPUP INFORMASI -->
+<!-- POPUP INFORMASI / SALAH LOGIN (MODERN) -->
 <div id="popup">
-  <div>
+  <div class="modern-popup-box">
     <h3>Informasi</h3>
     <div id="popupText"></div>
-    <button onclick="tutupPopup()">OK</button>
+    <button class="btn-popup-ok" onclick="tutupPopup()">OK</button>
   </div>
 </div>
 
 <!-- POPUP LOGOUT -->
 <div id="logoutPopup">
-  <div id="logoutBox">
+  <div class="modern-popup-box">
     <h3>🚪 Logout</h3>
     <p>Yakin ingin logout?</p>
-    <button id="btnBatal" onclick="tutupLogout()">Batal</button>
-    <button id="btnLogoutConfirm" onclick="logoutConfirm()">Logout</button>
+    <div>
+      <button id="btnBatal" onclick="tutupLogout()">Batal</button>
+      <button id="btnLogoutConfirm" onclick="logoutConfirm()">Logout</button>
+    </div>
   </div>
 </div>
 
