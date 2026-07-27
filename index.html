@@ -184,7 +184,7 @@ body{
         <button id="btnDenda" onclick="tampilDendaUC()">⚖️ Denda & Late</button>
         <button id="btnPromo" onclick="tampilPromo()">📢 Promo Toko</button>
         <button id="btnRules" onclick="tampilRules()">🧹 Aturan Display</button>
-        <button id="btnSpv" onclick="tampilSpv()">💬 Pesan SPV</button>
+        <button id="btnNotice" onclick="tampilNotice()">📌 Notice</button>
     </div>
 
     <!-- CONTAINER EKSPOR (ADMIN ONLY) -->
@@ -308,14 +308,13 @@ async function login() {
 }
 
 function resetTabButtons(activeId) {
-    const tabs = ["btnAbsen", "btnJual", "btnUC", "btnPerolehan", "btnDenda", "btnPromo", "btnRules", "btnSpv"];
+    const tabs = ["btnAbsen", "btnJual", "btnUC", "btnPerolehan", "btnDenda", "btnPromo", "btnRules", "btnNotice"];
     tabs.forEach(id => {
         const el = document.getElementById(id);
         if(el) el.classList.remove("active");
     });
     if(document.getElementById(activeId)) document.getElementById(activeId).classList.add("active");
     
-    // Fitur Ekspor HANYA TAMPIL jika Role === ADMIN
     document.getElementById("exportArea").style.display = "none";
 }
 
@@ -664,35 +663,35 @@ async function tampilRules() {
     }
 }
 
-/* 💬 8. PESAN SUPERVISOR (FITUR BARU) */
-async function tampilSpv() {
-    activeTab = "Spv";
-    resetTabButtons("btnSpv");
+/* 📌 8. NOTICE BOARD TOKO */
+async function tampilNotice() {
+    activeTab = "Notice";
+    resetTabButtons("btnNotice");
 
     document.getElementById("summary").innerHTML = `
     <div class="summary-card">
-        <h2>💬 Pengumuman & Instruksi Supervisor</h2>
-        <p>Memuat instruksi terbaru...</p>
+        <h2>📌 Notice Board Toko</h2>
+        <p>Memuat pengumuman terbaru...</p>
     </div>`;
 
-    document.getElementById("hasil").innerHTML = `<div class="card">🔄 Mengambil pesan SPV...</div>`;
+    document.getElementById("hasil").innerHTML = `<div class="card">🔄 Mengambil data notice...</div>`;
 
     try {
-        const res = await fetch(WEBAPP_URL + "?action=spv");
+        const res = await fetch(WEBAPP_URL + "?action=notice");
         const result = await res.json();
-        const pesanList = result.data || [];
+        const noticeList = result.data || [];
 
         document.getElementById("summary").innerHTML = `
         <div class="summary-card">
-            <h2>💬 Pengumuman & Instruksi Supervisor</h2>
-            <p>Pesan, memo, dan pengarahan langsung dari Supervisor untuk seluruh Promotor.</p>
+            <h2>📌 Notice Board Toko</h2>
+            <p>Pesan penting, pengumuman, dan catatan resmi dari Manajemen Toko.</p>
         </div>`;
 
         let html = "";
-        if (pesanList.length === 0) {
-            html = `<div class="card">Belum ada pesan dari Supervisor.</div>`;
+        if (noticeList.length === 0) {
+            html = `<div class="card">Belum ada pengumuman notice saat ini.</div>`;
         } else {
-            pesanList.forEach(p => {
+            noticeList.forEach(p => {
                 html += `
                 <div class="card notice" style="border-left:4px solid #38bdf8;">
                     <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
@@ -708,7 +707,7 @@ async function tampilSpv() {
         document.getElementById("hasil").className = "grid";
         document.getElementById("hasil").innerHTML = html;
     } catch(e) {
-        document.getElementById("hasil").innerHTML = `<div class="card">Gagal memuat pesan Supervisor.</div>`;
+        document.getElementById("hasil").innerHTML = `<div class="card">Gagal memuat Notice Board.</div>`;
     }
 }
 
