@@ -6,7 +6,7 @@
 
 <title>UFO Kebonsari</title>
 
-<link href="https://fonts.googleapis.com/css2?family=Outfit:wght=300;400;500;600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 
 <!-- 📚 SCRIPT TAMBAHAN UNTUK EKSPOR EXCEL & PDF -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
@@ -428,11 +428,11 @@ body{
   background:#dc2626;
 }
 
-/* 💎 STYLE BARU UNTUK AREA DOWNLOAD FILE EXPORT */
+/* 💎 STYLE UNTUK AREA DOWNLOAD FILE EXPORT */
 .export-container {
     max-width: 1200px;
     margin: 0 auto 15px;
-    display: none; /* muncul kalau data sudah diload */
+    display: none;
     justify-content: flex-end;
     gap: 10px;
 }
@@ -466,7 +466,6 @@ body{
     opacity: 0.95;
 }
 
-/* Style khusus notice card */
 .card-notice {
     border-left: 5px solid #3b82f6;
     background: rgba(59, 130, 246, 0.08);
@@ -588,9 +587,9 @@ LOGIN
     📊 Perolehan
   </button> 
 
-  <!-- TAMBAHAN TOMBOL NOTICE -->
+  <!-- FITUR NOTICE BOARD -->
   <button onclick="cariNotice()" id="btnNotice">
-    📢 Notice
+    📌 Notice
   </button>
 
 </div>
@@ -609,7 +608,7 @@ const WEBAPP_URL =
 "https://script.google.com/macros/s/AKfycbwKbscxs_avurQJzcDDy2YB-laTL9kbzDNHcOuOV8TYGzQxiKtveG83AfvyvgoeB4pDpg/exec";
 let currentUser = "";
 let currentRole = "";
-let activeTab = "Absensi"; // Menyimpan tracking tab aktif
+let activeTab = "Absensi"; 
 
 async function login() {
 const btn = document.getElementById("btnLogin");
@@ -674,20 +673,16 @@ if (currentRole === "USER") {
  localStorage.setItem("loginNama", currentUser);
 localStorage.setItem("loginRole", currentRole);   
 }
- function logout() {
 
+function logout() {
   document.getElementById("logoutPopup").style.display = "block";
-
 }
 
 function tutupLogout() {
-
   document.getElementById("logoutPopup").style.display = "none";
-
 }
 
 function logoutConfirm() {
-
   document.getElementById("logoutPopup").style.display = "none";
 
   currentUser = "";
@@ -705,17 +700,16 @@ function logoutConfirm() {
 
   localStorage.removeItem("loginNama");
   localStorage.removeItem("loginRole");
-localStorage.removeItem("sessionToken");
-    const btn = document.getElementById("btnLogin");
-btn.disabled = false;
-btn.innerHTML = "LOGIN";
+  localStorage.removeItem("sessionToken");
+  const btn = document.getElementById("btnLogin");
+  btn.disabled = false;
+  btn.innerHTML = "LOGIN";
 }    
-function tampil(v){
 
+function tampil(v){
     return (v && v.trim() !== "")
     ? `<span class="ok">${v}</span>`
     : `<span class="kosong">-</span>`;
-
 }
 
 async function cari() {
@@ -725,7 +719,7 @@ async function cari() {
   document.getElementById("btnUC").classList.remove("active");
   document.getElementById("btnAbsen").classList.add("active");
   document.getElementById("btnPerolehan").classList.remove("active");
-  document.getElementById("btnNotice").classList.remove("active");
+  if(document.getElementById("btnNotice")) document.getElementById("btnNotice").classList.remove("active");
 
   let nama;
 
@@ -746,114 +740,115 @@ async function cari() {
 
   const result = await res.json();
 
-const data = result.data || [];
-const terlambat = result.terlambat || 0;
-    data.sort(
-        (a,b)=>
-        Number(a.tanggal)-Number(b.tanggal)
-    );
+  const data = result.data || [];
+  const terlambat = result.terlambat || 0;
+  data.sort(
+      (a,b)=>
+      Number(a.tanggal)-Number(b.tanggal)
+  );
 
-    let belumPulang = 0;
+  let belumPulang = 0;
 
-    data.forEach(x=>{
-        if(!x.pulang){
-            belumPulang++;
-        }
-    });
+  data.forEach(x=>{
+      if(!x.pulang){
+          belumPulang++;
+      }
+  });
 
-    if(data.length){
+  if(data.length){
 
-        document.getElementById("summary").innerHTML = `
-        <div class="summary-card">
-            <h2>🏆 ${data[0].nama}</h2>
-            <p>Total Hari Absen : <b>${data.length}</b></p>
-            <p>Belum Finger Pulang : <b>${belumPulang}</b></p>
-            <p>Datang Terlambat : <b>${terlambat}</b></p>
-        </div>
-        `;
-        document.getElementById("exportArea").style.display = "flex";
+      document.getElementById("summary").innerHTML = `
+      <div class="summary-card">
+          <h2>🏆 ${data[0].nama}</h2>
+          <p>Total Hari Absen : <b>${data.length}</b></p>
+          <p>Belum Finger Pulang : <b>${belumPulang}</b></p>
+          <p>Datang Terlambat : <b>${terlambat}</b></p>
+      </div>
+      `;
+      document.getElementById("exportArea").style.display = "flex";
 
-    }else{
+  }else{
 
-        document.getElementById("summary").innerHTML = "";
+      document.getElementById("summary").innerHTML = "";
 
-    }
+  }
 
-    let html = "";
+  let html = "";
 
-    data.forEach(x=>{
+  data.forEach(x=>{
 
-    const isTerlambat =
-        (x.terlambat || "").toString().toUpperCase() === "YA";
+  const isTerlambat =
+      (x.terlambat || "").toString().toUpperCase() === "YA";
 
-    const status =
-        x.pulang
-        ? '<span class="status-ok">Lengkap</span>'
-        : '<span class="status-warning">Belum Lengkap</span>';
+  const status =
+      x.pulang
+      ? '<span class="status-ok">Lengkap</span>'
+      : '<span class="status-warning">Belum Lengkap</span>';
 
-    const kelasCard =
-        x.pulang
-        ? "success"
-        : "warning";
+  const kelasCard =
+      x.pulang
+      ? "success"
+      : "warning";
 
-    const kelasTambahan =
-        isTerlambat ? "late" : "";
+  const kelasTambahan =
+      isTerlambat ? "late" : "";
 
-    html += `
-    <div class="card ${kelasCard} ${kelasTambahan}">
+  html += `
+  <div class="card ${kelasCard} ${kelasTambahan}">
 
-        <div class="tanggal">
-            📅 ${x.tanggal}<br>
-            ${status}
+      <div class="tanggal">
+          📅 ${x.tanggal}<br>
+          ${status}
 
-            ${isTerlambat ? '<div style="color:#facc15;font-weight:700;margin-top:5px;">TERLAMBAT</div>' : ''}
-        </div>
+          ${isTerlambat ? '<div style="color:#facc15;font-weight:700;margin-top:5px;">TERLAMBAT</div>' : ''}
+      </div>
 
-        <div class="row">
-            <span>Masuk</span>
-            ${tampil(x.masuk)}
-        </div>
+      <div class="row">
+          <span>Masuk</span>
+          ${tampil(x.masuk)}
+      </div>
 
-        <div class="row">
-            <span>Istirahat 1</span>
-            ${tampil(x.istirahat1)}
-        </div>
+      <div class="row">
+          <span>Istirahat 1</span>
+          ${tampil(x.istirahat1)}
+      </div>
 
-        <div class="row">
-            <span>Kembali 1</span>
-            ${tampil(x.kembali1)}
-        </div>
+      <div class="row">
+          <span>Kembali 1</span>
+          ${tampil(x.kembali1)}
+      </div>
 
-        <div class="row">
-            <span>Istirahat 2</span>
-            ${tampil(x.istirahat2)}
-        </div>
+      <div class="row">
+          <span>Istirahat 2</span>
+          ${tampil(x.istirahat2)}
+      </div>
 
-        <div class="row">
-            <span>Kembali 2</span>
-            ${tampil(x.kembali2)}
-        </div>
+      <div class="row">
+          <span>Kembali 2</span>
+          ${tampil(x.kembali2)}
+      </div>
 
-        <div class="row">
-            <span>Pulang</span>
-            ${tampil(x.pulang)}
-        </div>
+      <div class="row">
+          <span>Pulang</span>
+          ${tampil(x.pulang)}
+      </div>
 
-    </div>
-    `;
+  </div>
+  `;
 });
 
-    if(data.length===0){
+  if(data.length===0){
 
-        html = `
-        <div class="card">
-            Data tidak ditemukan
-        </div>
-        `;
+      html = `
+      <div class="card">
+          Data tidak ditemukan
+      </div>
+      `;
 
-    }
+  }
 
-    document.getElementById("hasil").innerHTML = html;
+  document.getElementById("hasil").className = "grid";
+  document.getElementById("hasil").innerHTML = html;
 
 }
 
@@ -864,7 +859,7 @@ document.getElementById("btnAbsen").classList.remove("active");
 document.getElementById("btnUC").classList.remove("active"); 
 document.getElementById("btnJual").classList.add("active");
 document.getElementById("btnPerolehan").classList.remove("active");
-document.getElementById("btnNotice").classList.remove("active");
+if(document.getElementById("btnNotice")) document.getElementById("btnNotice").classList.remove("active");
 
 let nama;
 
@@ -998,6 +993,7 @@ if(data.detail && data.detail.length > 0){
     document.getElementById("exportArea").style.display = "flex";
 }
 
+document.getElementById("hasil").className = "grid";
 document.getElementById("hasil").innerHTML = html;
 }
 
@@ -1058,7 +1054,7 @@ document.getElementById("btnAbsen").classList.remove("active");
 document.getElementById("btnJual").classList.remove("active");
 document.getElementById("btnUC").classList.add("active");
 document.getElementById("btnPerolehan").classList.remove("active");
-document.getElementById("btnNotice").classList.remove("active");
+if(document.getElementById("btnNotice")) document.getElementById("btnNotice").classList.remove("active");
 
 let nama;
 
@@ -1103,7 +1099,6 @@ let html = "";
 
 data.detail.forEach(x=>{
 
-
 html += `
 <div class="card success">
 
@@ -1129,7 +1124,6 @@ html += `
 </div>
 `;
 
-
 });
 
 if(data.detail && data.detail.length > 0){
@@ -1146,7 +1140,7 @@ async function cariPerolehan() {
   document.getElementById("btnJual").classList.remove("active");
   document.getElementById("btnUC").classList.remove("active");
   document.getElementById("btnPerolehan").classList.add("active");
-  document.getElementById("btnNotice").classList.remove("active");
+  if(document.getElementById("btnNotice")) document.getElementById("btnNotice").classList.remove("active");
 
   const res = await fetch(WEBAPP_URL + "?action=perolehan");
   const data = await res.json();
@@ -1308,7 +1302,7 @@ document.getElementById("hasil").innerHTML = html;
 loadNama();
 }
 
-// 📢 FUNGSI TAMBAHAN UNTUK LOAD MEMO / NOTICE
+// FUNGSI UNTUK NOTICE BOARD
 async function cariNotice() {
   activeTab = "Notice";
   document.getElementById("exportArea").style.display = "none";
@@ -1324,27 +1318,26 @@ async function cariNotice() {
 
   document.getElementById("summary").innerHTML = `
     <div class="summary-card">
-      <h2>📢 Notice & Pengumuman Toko</h2>
-      <p>Informasi & instruksi penting dari Management / SPV</p>
+      <h2>📌 Notice</h2>
     </div>
   `;
 
   let html = "";
   if (list.length === 0) {
-    html = `<div class="card card-notice">Belum ada pengumuman terbaru.</div>`;
+    html = `<div class="card card-notice">Tidak ada data notice</div>`;
   } else {
     list.forEach(x => {
       html += `
         <div class="card card-notice">
           <div class="tanggal">📅 ${x.tanggal || "-"}</div>
           <div style="font-weight:700;font-size:15px;color:#60a5fa;margin-bottom:8px;">
-            ${x.judul || "Pengumuman"}
+            ${x.judul || ""}
           </div>
           <div style="font-size:13px;line-height:1.5;color:#e2e8f0;margin-bottom:12px;">
             ${x.pesan || ""}
           </div>
           <div style="font-size:11px;color:#94a3b8;text-align:right;">
-            Oleh: <b>${x.dari || "Supervisor"}</b>
+            Dari: <b>${x.dari || "Supervisor"}</b>
           </div>
         </div>
       `;
@@ -1355,7 +1348,7 @@ async function cariNotice() {
   document.getElementById("hasil").innerHTML = html;
 }
 
-// 🚀 FUNGSI UTAMA PROSES EKSPOR EXCEL & PDF SMART SYSTEM
+// 🚀 FUNGSI UTAMA PROSES EKSPOR EXCEL & PDF
 function prosesEkspor(format) {
     let namaKaryawan = "";
     if (currentRole === "USER") {
@@ -1367,12 +1360,11 @@ function prosesEkspor(format) {
     const namaFile = `Laporan_${activeTab}_${namaKaryawan.replace(/\s+/g, '_')}`;
     const targetElement = document.getElementById("hasil");
 
-    // 1. JIKA REKUES FORMAT EXCEL (.xlsx)
     if (format === 'excel') {
         let rowsArr = [];
 
         if (activeTab === "Absensi") {
-            rowsArr.push(["LAPORAN ABSENSI PROMOTOR: " + namaKaryawan.toUpperCase()], []);
+            rowsArr.push(["LAPORAN ABSENSI: " + namaKaryawan.toUpperCase()], []);
             rowsArr.push(["Tanggal", "Status", "Masuk", "Istirahat 1", "Kembali 1", "Istirahat 2", "Kembali 2", "Pulang"]);
             
             const cards = targetElement.querySelectorAll(".card");
@@ -1393,17 +1385,16 @@ function prosesEkspor(format) {
             });
         } 
         else if (activeTab === "Penjualan") {
-            rowsArr.push(["LAPORAN PENJUALAN PROMOTOR: " + namaKaryawan.toUpperCase()], []);
-            rowsArr.push(["Tanggal", "Nama Produk / Deskripsi", "Qty", "Omzet"]);
+            rowsArr.push(["LAPORAN PENJUALAN: " + namaKaryawan.toUpperCase()], []);
+            rowsArr.push(["Tanggal", "Produk", "Qty", "Omzet"]);
 
             const cards = targetElement.querySelectorAll(".card");
             cards.forEach(card => {
                 let tglText = card.querySelector(".tanggal").innerText.replace(/📅/g, '').trim();
                 let rowsData = card.querySelectorAll(".row");
                 
-                // Iterasi item produk di dalam card hari tersebut (kecuali row total paling akhir)
                 let itemProduks = card.innerHTML.split(/<div style="[^"]*margin-bottom:15px;[^"]*">/i);
-                itemProduks.shift(); // hapus header pembagi awal
+                itemProduks.shift();
 
                 for(let i=0; i < itemProduks.length; i++) {
                     let tempDiv = document.createElement("div");
@@ -1416,14 +1407,13 @@ function prosesEkspor(format) {
                     rowsArr.push([tglText, namaProduk, qty, omzet]);
                 }
                 
-                // Tambahkan row total harian
                 let totalHari = rowsData[rowsData.length - 1]?.querySelectorAll("span")[1]?.innerText || "0";
                 rowsArr.push(["", "TOTAL HARI INI", "", totalHari], []);
             });
         }
         else if (activeTab === "UC") {
-            rowsArr.push(["LAPORAN INSENTIF UC PROMOTOR: " + namaKaryawan.toUpperCase()], []);
-            rowsArr.push(["Tanggal", "Nama Produk", "Qty"]);
+            rowsArr.push(["LAPORAN UC: " + namaKaryawan.toUpperCase()], []);
+            rowsArr.push(["Tanggal", "Produk", "Qty"]);
 
             const cards = targetElement.querySelectorAll(".card");
             cards.forEach(card => {
@@ -1434,8 +1424,8 @@ function prosesEkspor(format) {
             });
         }
         else if (activeTab === "Perolehan") {
-            rowsArr.push(["RANKING PEROLEHAN ALL PROMOTOR UFO KEBONSARI"], []);
-            rowsArr.push(["Posisi / No", "Nama Promotor", "Total Omzet", "Total UC"]);
+            rowsArr.push(["PEROLEHAN"], []);
+            rowsArr.push(["No", "Nama", "Omzet", "UC"]);
 
             const rowsData = targetElement.querySelectorAll(".row-perolehan-export");
             rowsData.forEach((row, idx) => {
@@ -1446,22 +1436,18 @@ function prosesEkspor(format) {
             });
         }
 
-        // Generate workbook excel lembaran baru
         const ws = XLSX.utils.aoa_to_sheet(rowsArr);
         const wb = XLSX.utils.book_new();
         XLSX.utils.book_append_sheet(wb, ws, activeTab);
         XLSX.writeFile(wb, `${namaFile}.xlsx`);
     } 
-    // 2. JIKA REKUES FORMAT PDF (.pdf)
     else if (format === 'pdf') {
-        // Kloning element agar tidak merusak tema asli di layar monitor dashboard saat proses print
         const elemenPrint = targetElement.cloneNode(true);
         elemenPrint.style.color = "#000000"; 
         elemenPrint.style.background = "#ffffff"; 
         elemenPrint.style.padding = "20px";
         elemenPrint.style.width = "100%";
         
-        // Atur agar border card terlihat tegas saat di lembar cetak kertas PDF putih
         elemenPrint.querySelectorAll(".card, .summary-card").forEach(el => {
             el.style.background = "#f8fafc";
             el.style.border = "1px solid #cbd5e1";
