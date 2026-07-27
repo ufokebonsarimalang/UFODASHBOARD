@@ -894,26 +894,27 @@ function renderDendaUC(dendaObj) {
   (resPerolehan.list || []).forEach((x, i) => {
       const totalUC = Number(x.uc || 0);
       const isIkutUC = (x.ikutUC || "YA") !== "TIDAK";
+      
+      // Perhitungan otomatis kekurangan UC terhadap target 16 unit (berkurang otomatis setiap nambah penjualan UC)
       const kurangUC = (isIkutUC && totalUC < TARGET_MIN_UC) ? (TARGET_MIN_UC - totalUC) : 0;
       const dendaUC = kurangUC * DENDA_UC_PER_UNIT;
+      
       const totalTerlambat = lateMap[x.nama.toUpperCase()] || 0;
       const dendaLate = totalTerlambat * DENDA_LATE_PER_KALI;
+      
+      // Total denda gabungan (Terlambat + UC)
       const totalDenda = dendaUC + dendaLate;
-
-      let rincianUC = isIkutUC ? `UC: <b style="color:#38bdf8;">${totalUC}/16</b>` : `UC: <i style="color:#94a3b8;">Non-Target</i>`;
-      let rincianLate = `Late: <b style="color:#f59e0b;">${totalTerlambat}x</b>`;
 
       html += `
       <div class="row-perolehan-export" style="display:flex; justify-content:space-between; align-items:center; padding:12px 0; border-bottom:1px solid rgba(255,255,255,0.06);">
           <div>
               <div class="nama-p" style="font-size:13.5px; font-weight:700; color:#fff;">${i+1}. ${x.nama}</div>
-              <div style="font-size:12px; margin-top:3px; color:#cbd5e1;">${rincianUC} &nbsp;|&nbsp; ${rincianLate}</div>
           </div>
           <div style="text-align:right;">
               ${totalDenda > 0 
                   ? `<div style="font-weight:700; font-size:13.5px; color:#ef4444;">Rp ${totalDenda.toLocaleString("id-ID")}</div>
-                     <div style="font-size:10px; color:#fca5a5; margin-top:2px;">(UC: ${dendaUC/1000}k + Late: ${dendaLate/1000}k)</div>`
-                  : `<div style="font-weight:700; font-size:12.5px; color:#34d399;">✅ Aman</div>`
+                     <div style="font-size:11px; color:#fca5a5; margin-top:2px;">Kurang UC: ${kurangUC} (${dendaUC/1000}k) | Late: ${totalTerlambat}x (${dendaLate/1000}k)</div>`
+                  : `<div style="font-weight:700; font-size:12.5px; color:#34d399;">Aman (Capai Target)</div>`
               }
           </div>
       </div>`;
