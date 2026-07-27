@@ -28,7 +28,7 @@ body {
     color: #f8fafc;
 }
 
-/* KOTAK LOGIN */
+/* KOTAK LOGIN MODERN */
 #loginBox {
     max-width: 420px;
     margin: 60px auto;
@@ -157,14 +157,14 @@ body {
     color: white;
 }
 
-/* MENU TAB NAVIGASI */
+/* MENU TAB NAVIGASI (Diraikan & Diberi Ikon Modern) */
 .menu-tab {
     display: flex;
     justify-content: center;
     gap: 10px;
     margin-bottom: 25px;
     flex-wrap: wrap;
-    max-width: 1000px;
+    max-width: 1100px;
     margin-left: auto;
     margin-right: auto;
 }
@@ -180,6 +180,9 @@ body {
     border: 1px solid rgba(255, 255, 255, 0.08);
     color: #cbd5e1;
     transition: all 0.25s ease;
+    display: flex;
+    align-items: center;
+    gap: 8px;
 }
 
 .menu-tab button:hover {
@@ -314,7 +317,7 @@ body {
     font-weight: 700;
 }
 
-/* TOMBOL EKSPOR */
+/* TOMBOL EKSPOR (Hanya untuk Admin) */
 .export-container {
     max-width: 1200px;
     margin: 0 auto 20px;
@@ -350,7 +353,7 @@ body {
     opacity: 0.95;
 }
 
-/* POPUP */
+/* POPUP MODERN (Gaya Glassmorphism & Tombol OK Kontras) */
 #popup, #logoutPopup {
     display: none;
     position: fixed;
@@ -372,6 +375,7 @@ body {
     min-width: 320px;
     text-align: center;
     border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
 }
 
 #logoutBox h3, #popup h3 {
@@ -395,10 +399,22 @@ body {
     color: white;
     font-weight: 600;
     font-size: 14px;
+    transition: all 0.2s ease;
 }
 
 #btnBatal { background: #475569; }
 #btnLogoutConfirm { background: #ef4444; }
+
+/* Tombol OK di popup: latar belakang gelap/biru agar kontras dengan teks putih */
+#popup button {
+    background: linear-gradient(135deg, #3b82f6, #06b6d4);
+    box-shadow: 0 4px 15px rgba(59, 130, 246, 0.4);
+}
+
+#popup button:hover, #btnBatal:hover, #btnLogoutConfirm:hover {
+    opacity: 0.9;
+    transform: translateY(-1px);
+}
 
 .spinner {
     width: 18px;
@@ -429,6 +445,7 @@ body {
 </head>
 <body>
 
+<!-- KOTAK LOGIN MODERN -->
 <div id="loginBox">
     <h2>🔐 Login Dashboard</h2>
     <input id="loginNama" type="text" placeholder="Masukkan Nama">
@@ -436,6 +453,7 @@ body {
     <button id="btnLogin" onclick="login()">LOGIN</button>
 </div>
 
+<!-- DASHBOARD UTAMA -->
 <div id="dashboard" style="display:none;">
     <div class="header">
         <h1>UFO DASHBOARD</h1>
@@ -447,7 +465,7 @@ body {
     </div>
 
     <div style="max-width:1200px; margin:0 auto 15px; text-align:right;">
-        <button onclick="logout()" style="padding:9px 16px; border:none; border-radius:12px; cursor:pointer; color:white; background:#ef4444; font-weight:600; font-size:13px;">
+        <button onclick="logout()" style="padding:9px 16px; border:none; border-radius:12px; cursor:pointer; color:white; background:#ef4444; font-weight:600; font-size:13px; box-shadow:0 4px 12px rgba(239,68,68,0.3);">
             🚪 Logout
         </button>
     </div>
@@ -458,6 +476,7 @@ body {
 
     <div id="summary"></div>
 
+    <!-- MENU TAB DENGAN IKON MODERN & TATA LETAK RAPI -->
     <div class="menu-tab">
         <button id="btnAbsen" onclick="cari()">📋 Absensi</button>
         <button id="btnJual" onclick="cariPenjualan()">💰 Penjualan</button>
@@ -469,6 +488,7 @@ body {
         <button id="btnNotice" onclick="cariNotice()">📌 Notice</button>
     </div>
 
+    <!-- AREA EKSPOR (Hanya Tampil untuk Admin) -->
     <div class="export-container" id="exportArea">
         <button class="btn-export btn-excel" onclick="prosesEkspor('excel')">📥 Unduh Excel</button>
         <button class="btn-export btn-pdf" onclick="prosesEkspor('pdf')">📄 Unduh PDF</button>
@@ -512,7 +532,7 @@ async function login() {
   if (!data.success) {
       btn.disabled = false;
       btn.innerHTML = "LOGIN";
-      alert(data.message || "Nama atau PIN salah");
+      showPopup(data.message || "Nama atau PIN salah");
       return;
   }
 
@@ -601,7 +621,9 @@ async function cari() {
           <p>Belum Finger Pulang : <b>${belumPulang}</b></p>
           <p>Datang Terlambat : <b>${terlambat}</b></p>
       </div>`;
-      document.getElementById("exportArea").style.display = "flex";
+      if (currentRole === "ADMIN") {
+          document.getElementById("exportArea").style.display = "flex";
+      }
   } else {
       document.getElementById("summary").innerHTML = "";
   }
@@ -683,7 +705,9 @@ async function cariPenjualan(){
     </div>`;
   }
 
-  if(data.detail && data.detail.length > 0) document.getElementById("exportArea").style.display = "flex";
+  if(data.detail && data.detail.length > 0 && currentRole === "ADMIN") {
+      document.getElementById("exportArea").style.display = "flex";
+  }
   document.getElementById("hasil").className = "grid";
   document.getElementById("hasil").innerHTML = html;
 }
@@ -742,7 +766,9 @@ async function cariUC(){
     </div>`;
   });
 
-  if(data.detail && data.detail.length > 0) document.getElementById("exportArea").style.display = "flex";
+  if(data.detail && data.detail.length > 0 && currentRole === "ADMIN") {
+      document.getElementById("exportArea").style.display = "flex";
+  }
   document.getElementById("hasil").innerHTML = html;
 }
 
@@ -794,7 +820,9 @@ async function cariPerolehan() {
   });
   html += `</div>`;
 
-  if(data.list && data.list.length > 0) document.getElementById("exportArea").style.display = "flex";
+  if(data.list && data.list.length > 0 && currentRole === "ADMIN") {
+      document.getElementById("exportArea").style.display = "flex";
+  }
   document.getElementById("hasil").className = "";
   document.getElementById("hasil").innerHTML = html;
 }
@@ -1032,6 +1060,7 @@ function prosesEkspor(format) {
 }
 </script>
 
+<!-- POPUP INFORMASI -->
 <div id="popup">
   <div>
     <h3>Informasi</h3>
@@ -1040,6 +1069,7 @@ function prosesEkspor(format) {
   </div>
 </div>
 
+<!-- POPUP LOGOUT -->
 <div id="logoutPopup">
   <div id="logoutBox">
     <h3>🚪 Logout</h3>
