@@ -570,7 +570,6 @@ async function login() {
   document.getElementById("loginBox").style.display = "none";
   document.getElementById("dashboard").style.display = "block";
 
-  // Pop-up "Selamat Datang" dimunculkan duluan agar tampil instan tanpa menunggu data selesai dimuat
   showPopup("Selamat Datang " + currentUser);
 
   if (currentRole === "USER") {
@@ -616,17 +615,21 @@ async function muatSemuaDataLatarBelakang(namaTarget) {
 }
 
 async function loadNama(){
-  const res = await fetch(WEBAPP_URL + "?action=nama");
-  const data = await res.json();
-  let html = "";
-  data.forEach((nama, idx) => { 
-    html += `<option value="${nama}" ${idx === 0 ? 'selected' : ''}>${nama}</option>`; 
-  });
-  document.getElementById("nama").innerHTML = html;
+  try {
+    const res = await fetch(WEBAPP_URL + "?action=nama");
+    const data = await res.json();
+    let html = "";
+    data.forEach((nama, idx) => { 
+      html += `<option value="${nama}" ${idx === 0 ? 'selected' : ''}>${nama}</option>`; 
+    });
+    document.getElementById("nama").innerHTML = html;
 
-  if(data.length > 0) {
-    await muatSemuaDataLatarBelakang(data[0]);
-    pindahMenu("Absensi");
+    if(data.length > 0) {
+      await muatSemuaDataLatarBelakang(data[0]);
+      pindahMenu("Absensi");
+    }
+  } catch(e) {
+    console.error("Gagal memuat nama promotor", e);
   }
 }
 
@@ -815,6 +818,7 @@ function renderUC(data) {
   });
 
   if(data.detail && data.detail.length > 0 && currentRole === "ADMIN") document.getElementById("exportArea").style.display = "flex";
+  document.getElementById("hasil").className = "grid";
   document.getElementById("hasil").innerHTML = html;
 }
 
@@ -926,7 +930,7 @@ function renderPromo(result) {
   const list = result.data || [];
   document.getElementById("summary").innerHTML = `
   <div class="summary-card">
-      <h2>📢 Promo Toko</h2>
+      <h2>🏷️ Promo Toko</h2>
   </div>`;
 
   let html = "";
@@ -936,9 +940,9 @@ function renderPromo(result) {
       list.forEach(p => {
           html += `
           <div class="card success">
-              <div class="tanggal" style="text-align:left; font-size:14px; color:#60a5fa;">🔥 ${p.judul}</div>
-              <div style="font-size:11.5px; color:#cbd5e1; margin:6px 0;"><b>Periode:</b> ${p.periode}</div>
-              <div style="font-size:13px; line-height:1.5; color:#e2e8f0; border-top:1px solid rgba(255,255,255,0.06); padding-top:8px;">${p.detail}</div>
+              <div class="tanggal" style="text-align:left; font-size:14px; color:#60a5fa;">🔥 ${p.judul || p.Judul || ""}</div>
+              <div style="font-size:11.5px; color:#cbd5e1; margin:6px 0;"><b>Periode:</b> ${p.periode || p.Periode || ""}</div>
+              <div style="font-size:13px; line-height:1.5; color:#e2e8f0; border-top:1px solid rgba(255,255,255,0.06); padding-top:8px;">${p.detail || p.Detail || ""}</div>
           </div>`;
       });
   }
@@ -952,7 +956,7 @@ function renderRules(result) {
   const list = result.data || [];
   document.getElementById("summary").innerHTML = `
   <div class="summary-card">
-      <h2>🧹 Aturan Display</h2>
+      <h2>✨ Aturan Display</h2>
   </div>`;
 
   let html = "";
@@ -962,8 +966,8 @@ function renderRules(result) {
       list.forEach(a => {
           html += `
           <div class="card card-rules">
-              <div class="tanggal" style="text-align:left; font-size:14px; color:#facc15;">📌 ${a.poin}</div>
-              <div style="font-size:13px; line-height:1.5; color:#e2e8f0; margin-top:8px; border-top:1px solid rgba(255,255,255,0.06); padding-top:8px;">${a.desc}</div>
+              <div class="tanggal" style="text-align:left; font-size:14px; color:#facc15;">📌 ${a.poin || a.Poin || ""}</div>
+              <div style="font-size:13px; line-height:1.5; color:#e2e8f0; margin-top:8px; border-top:1px solid rgba(255,255,255,0.06); padding-top:8px;">${a.desc || a.Desc || a.Deskripsi || ""}</div>
           </div>`;
       });
   }
@@ -977,7 +981,7 @@ function renderNotice(result) {
   const list = result.data || [];
   document.getElementById("summary").innerHTML = `
     <div class="summary-card">
-      <h2>📌 Notice</h2>
+      <h2>🔔 Notice</h2>
     </div>`;
 
   let html = "";
@@ -987,10 +991,10 @@ function renderNotice(result) {
     list.forEach(x => {
       html += `
         <div class="card card-notice">
-          <div class="tanggal" style="text-align:left; font-size:12px; color:#cbd5e1;">📅 ${x.tanggal || "-"}</div>
-          <div style="font-weight:700; font-size:14px; color:#60a5fa; margin:6px 0;">📣 ${x.judul || "Notice"}</div>
-          <div style="font-size:13px; line-height:1.5; color:#e2e8f0; border-top:1px solid rgba(255,255,255,0.06); padding-top:8px; margin-bottom:12px;">${x.pesan || ""}</div>
-          <div style="font-size:11px; color:#94a3b8; text-align:right;">Oleh: <b>${x.dari || "Supervisor"}</b></div>
+          <div class="tanggal" style="text-align:left; font-size:12px; color:#cbd5e1;">📅 ${x.tanggal || x.Tanggal || "-"}</div>
+          <div style="font-weight:700; font-size:14px; color:#60a5fa; margin:6px 0;">📣 ${x.judul || x.Judul || "Notice"}</div>
+          <div style="font-size:13px; line-height:1.5; color:#e2e8f0; border-top:1px solid rgba(255,255,255,0.06); padding-top:8px; margin-bottom:12px;">${x.pesan || x.Pesan || ""}</div>
+          <div style="font-size:11px; color:#94a3b8; text-align:right;">Oleh: <b>${x.dari || x.Dari || "Supervisor"}</b></div>
         </div>`;
     });
   }
