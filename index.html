@@ -455,7 +455,7 @@ async function cariPerolehan() {
     document.getElementById("hasil").innerHTML = html;
 }
 
-/* ⚖️ 5. REKAP DENDA TARGET UC (<16) & KETERLAMBATAN (LANGSUNG NOMINAL HASIL & RAPI) */
+/* ⚖️ 5. REKAP DENDA TARGET UC (<16) & KETERLAMBATAN */
 async function tampilDendaUC() {
     activeTab = "DendaUC";
     resetTabButtons("btnDenda");
@@ -480,9 +480,22 @@ async function tampilDendaUC() {
     let html = `<div class="summary-card">`;
     (resPerolehan.list || []).forEach((x, i) => {
         const totalUC = Number(x.uc || 0);
-        const kurangUC = totalUC < TARGET_MIN_UC ? (TARGET_MIN_UC - totalUC) : 0;
+        const isIkutUC = (x.ikutUC || "YA") !== "TIDAK";
+        
+        // Perhitungan Denda hanya jika ikut target UC
+        const kurangUC = (isIkutUC && totalUC < TARGET_MIN_UC) ? (TARGET_MIN_UC - totalUC) : 0;
         const nominalDenda = kurangUC * DENDA_PER_UNIT;
         const totalTerlambat = lateMap[x.nama.toUpperCase()] || 0;
+
+        // Tampilan status UC
+        let statusUCText = "";
+        if (!isIkutUC) {
+            statusUCText = `<span style="color:#94a3b8; font-weight:700;">⚪ Non-Target UC</span>`;
+        } else if (nominalDenda > 0) {
+            statusUCText = `<span style="color:#f87171; font-weight:800;">Denda: Rp ${nominalDenda.toLocaleString("id-ID")}</span>`;
+        } else {
+            statusUCText = `<span style="color:#4ade80; font-weight:800;">✅ Bebas Denda</span>`;
+        }
 
         html += `
         <div class="row-perolehan-export" style="padding:10px 0; border-bottom:1px solid rgba(255,255,255,.08);">
@@ -490,12 +503,12 @@ async function tampilDendaUC() {
                 <div>
                     <div class="nama-p" style="font-size:14px; font-weight:700; color:#fff;">${i+1}. ${x.nama}</div>
                     <div style="font-size:12px; margin-top:2px; color:#94a3b8;">
-                        UC: <b>${totalUC}/16</b> | Late: <b style="color:${totalTerlambat > 0 ? '#f87171' : '#4ade80'};">${totalTerlambat}x</b>
+                        UC: <b>${totalUC}${isIkutUC ? '/16' : ''}</b> | Late: <b style="color:${totalTerlambat > 0 ? '#f87171' : '#4ade80'};">${totalTerlambat}x</b>
                     </div>
                 </div>
                 <div style="text-align:right;">
-                    <div style="font-weight:800; font-size:13px; color:${nominalDenda > 0 ? '#f87171' : '#4ade80'};">
-                        ${nominalDenda > 0 ? 'Denda: Rp ' + nominalDenda.toLocaleString("id-ID") : '✅ Bebas Denda'}
+                    <div style="font-size:13px;">
+                        ${statusUCText}
                     </div>
                 </div>
             </div>
