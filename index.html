@@ -460,7 +460,6 @@ body {
 
     <div class="input-group">
         <label>USERNAME</label>
-        <!-- Ditambahkan oninput agar huruf otomatis menjadi BESAR (Uppercase) -->
         <input id="loginNama" type="text" placeholder="Masukkan Username" oninput="this.value = this.value.toUpperCase()">
     </div>
 
@@ -490,20 +489,20 @@ body {
     </div>
 
     <div class="search-box">
-        <select id="nama"></select>
+        <select id="nama" onchange="muatDataAktif()"></select>
     </div>
 
     <div id="summary"></div>
 
     <div class="menu-tab">
-        <button id="btnAbsen" onclick="cari()">📅 Absensi</button>
-        <button id="btnJual" onclick="cariPenjualan()">💼 Penjualan</button>
-        <button id="btnUC" onclick="cariUC()">⭐ UC</button>
-        <button id="btnPerolehan" onclick="cariPerolehan()">📈 Perolehan</button> 
-        <button id="btnDenda" onclick="tampilDendaUC()">⚡ Denda & Late</button>
-        <button id="btnPromo" onclick="tampilPromo()">🏷️ Promo Toko</button>
-        <button id="btnRules" onclick="tampilRules()">✨ Aturan Display</button>
-        <button id="btnNotice" onclick="cariNotice()">🔔 Notice</button>
+        <button id="btnAbsen" onclick="pindahMenu('Absensi')">📅 Absensi</button>
+        <button id="btnJual" onclick="pindahMenu('Penjualan')">💼 Penjualan</button>
+        <button id="btnUC" onclick="pindahMenu('UC')">⭐ UC</button>
+        <button id="btnPerolehan" onclick="pindahMenu('Perolehan')">📈 Perolehan</button> 
+        <button id="btnDenda" onclick="pindahMenu('DendaUC')">⚡ Denda & Late</button>
+        <button id="btnPromo" onclick="pindahMenu('Promo')">🏷️ Promo Toko</button>
+        <button id="btnRules" onclick="pindahMenu('Rules')">✨ Aturan Display</button>
+        <button id="btnNotice" onclick="pindahMenu('Notice')">🔔 Notice</button>
     </div>
 
     <!-- AREA EKSPOR (HANYA MUNCUL UNTUK ADMIN) -->
@@ -521,6 +520,18 @@ let currentUser = "";
 let currentRole = "";
 let activeTab = "Absensi"; 
 
+// Tempat penyimpanan cache data agar instan
+let cacheData = {
+  absensi: null,
+  penjualan: null,
+  uc: null,
+  perolehan: null,
+  denda: null,
+  promo: null,
+  rules: null,
+  notice: null
+};
+
 function resetActiveButtons() {
   const tabs = ["btnAbsen", "btnJual", "btnUC", "btnPerolehan", "btnDenda", "btnPromo", "btnRules", "btnNotice"];
   tabs.forEach(id => {
@@ -534,7 +545,6 @@ async function login() {
   btn.disabled = true;
   btn.innerHTML = `<span class="spinner" style="margin-right:8px;"></span>MEMPROSES...`;
   
-  // Dipaksa huruf besar (.toUpperCase()) saat dikirim ke server
   const nama = document.getElementById("loginNama").value.trim().toUpperCase();
   const pin = document.getElementById("loginPin").value.trim();
 
@@ -555,7 +565,6 @@ async function login() {
       return;
   }
 
-  // Nama profil dipastikan menggunakan huruf besar
   currentUser = nama.toUpperCase();
   currentRole = data.role;
   document.getElementById("loginInfo").innerHTML = "⭕ <b>" + currentUser + "</b>" + (currentRole === "ADMIN" ? " (ADMIN)" : "");
@@ -571,11 +580,89 @@ async function login() {
   }
 
   showPopup("Selamat Datang " + currentUser);
+  
+  // Ambil semua data sekaligus di latar belakang saat login berhasil agar instan
+  await muatSemuaDataLatarBelakang();
+
   if (currentRole === "USER") {
-    cari();
+    pindahMenu("Absensi");
+  } else {
+    pindahMenu("Absensi");
   }
+
   localStorage.setItem("loginNama", currentUser);
   localStorage.setItem("loginRole", currentRole);   
+}
+
+async function muatSemuaDataLatarBelakang() {
+  let namaTarget = (currentRole === "USER") ? currentUser : (document.getElementById("nama").value.trim() || currentUser);
+  
+  // Mengambil seluruh data dari server secara paralel di latar belakang
+  try {
+    const [resAbsen, resJual, resUC, resPerolehan, resDenda1, resDenda2, resPromo, resRules, resNotice] = await Promise.all([
+      fetch(WEBAPP_URL + "?nama=" + encodeURIComponent(namaTarget)).then(r => r.json()),
+      fetch(WEBAPP_URL + "?action=penjualan&nama=" + encodeURIComponent(namaTarget)).then(r => r.json()),
+      fetch(WEBAPP_URL + "?action=uc&nama=" + encodeURIComponent(namaTarget)).then(r => r.json()),
+      fetch(WEBAPP_URL + "?action=perolehan").then(r => r.json()),
+      fetch(WEBAPP_URL + "?action=perolehan").then(r => r.json()),
+      fetch(WEBAPP_URL + "?action=rekap_terlambat").then(r => r.json()),
+      fetch(WEBAPP_URL + "?action=promo").then(r => r.json()),
+      fetch(WEBAPP_URL + "?action=rules").then(r => r.json()),
+      fetch(WEBAPP_URL + "?action=notice").then(r => r.json())
+    ]);
+
+    cacheData.absensi = resAbsen;
+    cacheData.penjualan = resJual;
+    cacheData.uc = resUC;
+    cacheData.perolehan = resPerolehan;
+    cacheData.denda = { perolehan: resDenda1, late: resDenda2 };
+    cacheData.promo = resPromo;
+    cacheData.rules = resRules;
+    cacheData.notice = resNotice;
+  } catch(e) {
+    console.error("Gagal sinkronisasi data cache", e);
+  }
+}
+
+async function muatDataAktif() {
+  // Jika admin mengganti dropdown nama promotor, muat ulang cache untuk nama tersebut
+  showPopup("Memperbarui data...");
+  await muatSemuaDataLatarBelakang();
+  tutupPopup();
+  pindahMenu(activeTab);
+}
+
+// Fungsi perpindahan menu secara instan dari memori lokal (Tanpa Delay/Loading)
+function pindahMenu(namaMenu) {
+  activeTab = namaMenu;
+  document.getElementById("exportArea").style.display = "none";
+  resetActiveButtons();
+
+  if (namaMenu === "Absensi") {
+    document.getElementById("btnAbsen").classList.add("active");
+    renderAbsensi(cacheData.absensi);
+  } else if (namaMenu === "Penjualan") {
+    document.getElementById("btnJual").classList.add("active");
+    renderPenjualan(cacheData.penjualan);
+  } else if (namaMenu === "UC") {
+    document.getElementById("btnUC").classList.add("active");
+    renderUC(cacheData.uc);
+  } else if (namaMenu === "Perolehan") {
+    document.getElementById("btnPerolehan").classList.add("active");
+    renderPerolehan(cacheData.perolehan);
+  } else if (namaMenu === "DendaUC") {
+    document.getElementById("btnDenda").classList.add("active");
+    renderDendaUC(cacheData.denda);
+  } else if (namaMenu === "Promo") {
+    document.getElementById("btnPromo").classList.add("active");
+    renderPromo(cacheData.promo);
+  } else if (namaMenu === "Rules") {
+    document.getElementById("btnRules").classList.add("active");
+    renderRules(cacheData.rules);
+  } else if (namaMenu === "Notice") {
+    document.getElementById("btnNotice").classList.add("active");
+    renderNotice(cacheData.notice);
+  }
 }
 
 function logout() {
@@ -612,20 +699,10 @@ function tampil(v){
     return (v && v.trim() !== "") ? `<span class="ok">${v}</span>` : `<span class="kosong">-</span>`;
 }
 
-async function cari() {
-  activeTab = "Absensi";
-  document.getElementById("exportArea").style.display = "none";
-  resetActiveButtons();
-  document.getElementById("btnAbsen").classList.add("active");
+// --- RENDER TAMPILAN INSTAN (0 DELAY) ---
 
-  let nama = (currentRole === "USER") ? currentUser : document.getElementById("nama").value.trim();
-  if (!nama) {
-    showPopup("Pilih nama terlebih dahulu");
-    return;
-  }
-
-  const res = await fetch(WEBAPP_URL + "?nama=" + encodeURIComponent(nama));
-  const result = await res.json();
+function renderAbsensi(result) {
+  if(!result) return;
   const data = result.data || [];
   const terlambat = result.terlambat || 0;
   data.sort((a,b) => Number(a.tanggal) - Number(b.tanggal));
@@ -672,21 +749,8 @@ async function cari() {
   document.getElementById("hasil").innerHTML = html;
 }
 
-async function cariPenjualan(){
-  activeTab = "Penjualan";
-  document.getElementById("exportArea").style.display = "none";
-  resetActiveButtons();
-  document.getElementById("btnJual").classList.add("active");
-
-  let nama = (currentRole === "USER") ? currentUser : document.getElementById("nama").value.trim();
-  if (!nama) {
-   showPopup("Username dan Password harus diisi.");
-   return;
-  }
-
-  const res = await fetch(WEBAPP_URL + "?action=penjualan&nama=" + encodeURIComponent(nama));
-  const data = await res.json();
-
+function renderPenjualan(data) {
+  if(!data) return;
   document.getElementById("summary").innerHTML = `
   <div class="summary-card">
     <h2>💰 ${data.nama}</h2>
@@ -728,42 +792,8 @@ async function cariPenjualan(){
   document.getElementById("hasil").innerHTML = html;
 }
 
-function showPopup(pesan) {
-  document.getElementById("popupText").innerText = pesan;
-  document.getElementById("popup").style.display = "flex";
-}
-
-function tutupPopup() {
-  document.getElementById("popup").style.display = "none";
-}
-
-document.getElementById("nama").addEventListener("keypress", function(e){
-    if(e.key === "Enter") cari();
-});
-
-async function loadNama(){
-  const res = await fetch(WEBAPP_URL + "?action=nama");
-  const data = await res.json();
-  let html = `<option value="" selected disabled>👤 Pilih Nama Promotor</option>`;
-  data.forEach(nama => { html += `<option value="${nama}">${nama}</option>`; });
-  document.getElementById("nama").innerHTML = html;
-}
-loadNama();
-
-async function cariUC(){
-  activeTab = "UC";
-  document.getElementById("exportArea").style.display = "none";
-  resetActiveButtons();
-  document.getElementById("btnUC").classList.add("active");
-
-  let nama = (currentRole === "USER") ? currentUser : document.getElementById("nama").value.trim();
-  if(!nama){
-    showPopup("Pilih nama terlebih dahulu");
-    return;
-  }
-
-  const res = await fetch(WEBAPP_URL + "?action=uc&nama=" + encodeURIComponent(nama));
-  const data = await res.json();
+function renderUC(data) {
+  if(!data) return;
   document.getElementById("hasil").className = "grid";
   document.getElementById("summary").innerHTML = `
   <div class="summary-card">
@@ -786,15 +816,8 @@ async function cariUC(){
   document.getElementById("hasil").innerHTML = html;
 }
 
-async function cariPerolehan() {
-  activeTab = "Perolehan";
-  document.getElementById("exportArea").style.display = "none";
-  resetActiveButtons();
-  document.getElementById("btnPerolehan").classList.add("active");
-
-  const res = await fetch(WEBAPP_URL + "?action=perolehan");
-  const data = await res.json();
-
+function renderPerolehan(data) {
+  if(!data) return;
   const user = data.list.find(x => (x.nama || "").toUpperCase() === (currentUser || "").toUpperCase());
   const posisi = user ? data.list.findIndex(x => (x.nama || "").toUpperCase() === (currentUser || "").toUpperCase()) + 1 : 0;
   
@@ -839,20 +862,14 @@ async function cariPerolehan() {
   document.getElementById("hasil").innerHTML = html;
 }
 
-async function tampilDendaUC() {
-  activeTab = "DendaUC";
-  document.getElementById("exportArea").style.display = "none";
-  resetActiveButtons();
-  document.getElementById("btnDenda").classList.add("active");
+function renderDendaUC(dendaObj) {
+  if(!dendaObj) return;
+  const resPerolehan = dendaObj.perolehan;
+  const resLate = dendaObj.late;
 
   const TARGET_MIN_UC = 16;
   const DENDA_UC_PER_UNIT = 5000;
   const DENDA_LATE_PER_KALI = 10000;
-
-  const [resPerolehan, resLate] = await Promise.all([
-      fetch(WEBAPP_URL + "?action=perolehan").then(r => r.json()),
-      fetch(WEBAPP_URL + "?action=rekap_terlambat").then(r => r.json())
-  ]);
 
   const lateMap = {};
   (resLate.list || []).forEach(x => { lateMap[x.nama.toUpperCase()] = x.terlambat; });
@@ -899,16 +916,9 @@ async function tampilDendaUC() {
   document.getElementById("hasil").innerHTML = html;
 }
 
-async function tampilPromo() {
-  activeTab = "Promo";
-  document.getElementById("exportArea").style.display = "none";
-  resetActiveButtons();
-  document.getElementById("btnPromo").classList.add("active");
-
-  const res = await fetch(WEBAPP_URL + "?action=promo");
-  const result = await res.json();
+function renderPromo(result) {
+  if(!result) return;
   const list = result.data || [];
-
   document.getElementById("summary").innerHTML = `
   <div class="summary-card">
       <h2>📢 Promo Toko</h2>
@@ -932,16 +942,9 @@ async function tampilPromo() {
   document.getElementById("hasil").innerHTML = html;
 }
 
-async function tampilRules() {
-  activeTab = "Rules";
-  document.getElementById("exportArea").style.display = "none";
-  resetActiveButtons();
-  document.getElementById("btnRules").classList.add("active");
-
-  const res = await fetch(WEBAPP_URL + "?action=rules");
-  const result = await res.json();
+function renderRules(result) {
+  if(!result) return;
   const list = result.data || [];
-
   document.getElementById("summary").innerHTML = `
   <div class="summary-card">
       <h2>🧹 Aturan Display</h2>
@@ -964,16 +967,9 @@ async function tampilRules() {
   document.getElementById("hasil").innerHTML = html;
 }
 
-async function cariNotice() {
-  activeTab = "Notice";
-  document.getElementById("exportArea").style.display = "none";
-  resetActiveButtons();
-  document.getElementById("btnNotice").classList.add("active");
-
-  const res = await fetch(WEBAPP_URL + "?action=notice");
-  const result = await res.json();
+function renderNotice(result) {
+  if(!result) return;
   const list = result.data || [];
-
   document.getElementById("summary").innerHTML = `
     <div class="summary-card">
       <h2>📌 Notice</h2>
@@ -997,6 +993,15 @@ async function cariNotice() {
   document.getElementById("hasil").className = "grid";
   document.getElementById("hasil").innerHTML = html;
 }
+
+async function loadNama(){
+  const res = await fetch(WEBAPP_URL + "?action=nama");
+  const data = await res.json();
+  let html = `<option value="" selected disabled>👤 Pilih Nama Promotor</option>`;
+  data.forEach(nama => { html += `<option value="${nama}">${nama}</option>`; });
+  document.getElementById("nama").innerHTML = html;
+}
+loadNama();
 
 function prosesEkspor(format) {
     let namaKaryawan = (currentRole === "USER") ? currentUser : (document.getElementById("nama").value.trim() || "Semua_Promotor");
@@ -1069,6 +1074,15 @@ function prosesEkspor(format) {
         elemenPrint.querySelectorAll("span, div").forEach(el => { el.style.color = "#000"; });
         html2pdf().set({ margin: 10, filename: `${namaFile}.pdf`, html2canvas: { scale: 2 }, jsPDF: { format: 'a4' } }).from(elemenPrint).save();
     }
+}
+
+function showPopup(pesan) {
+  document.getElementById("popupText").innerText = pesan;
+  document.getElementById("popup").style.display = "flex";
+}
+
+function tutupPopup() {
+  document.getElementById("popup").style.display = "none";
 }
 </script>
 
