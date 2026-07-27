@@ -520,7 +520,6 @@ let currentUser = "";
 let currentRole = "";
 let activeTab = "Absensi"; 
 
-// Caching lokal untuk data promotor aktif dan data umum
 let cacheData = {
   absensi: null,
   penjualan: null,
@@ -579,7 +578,7 @@ async function login() {
   } else {
     document.querySelector(".search-box").style.display = "block";
     document.getElementById("btnPerolehan").style.display = "inline-block";
-    await loadNama(); // Memuat dropdown nama dan otomatis mengambil data promotor pertama
+    await loadNama();
   }
 
   showPopup("Selamat Datang " + currentUser);
@@ -636,7 +635,6 @@ async function gantiNamaAdmin() {
   pindahMenu(activeTab);
 }
 
-// Perpindahan menu instan dari memori lokal (0 detik delay)
 function pindahMenu(namaMenu) {
   activeTab = namaMenu;
   document.getElementById("exportArea").style.display = "none";
@@ -702,8 +700,6 @@ function logoutConfirm() {
 function tampil(v){
     return (v && v.trim() !== "") ? `<span class="ok">${v}</span>` : `<span class="kosong">-</span>`;
 }
-
-// --- RENDER TAMPILAN INSTAN (0 DELAY) ---
 
 function renderAbsensi(result) {
   if(!result) return;
@@ -840,13 +836,17 @@ function renderPerolehan(data) {
      <p>💰 Total Omzet Toko : <span style="font-weight:bold;color:#34d399">Rp ${totalOmzet.toLocaleString("id-ID")}</span></p>
      <p>💎 Total UC : <b>${totalUC}</b></p>` :
     `<p>👤 ${currentUser}</p>
-     <p>💰 Total Omzet : <span style="font-weight:bold; color:${Number(user ? user.omzet : 0) >= 100000000 ? '#34d399' : '#f59e0b'};">Rp ${Number(user ? user.omzet : 0).toLocaleString("id-ID")}</span></p>
+     <p>💰 Total Omzet : <span style="font-weight:bold; color:${Number(user ? user.omzet : 0) >= 100000000 ? '#34d399' : Number(user ? user.omzet : 0) >= 80000000 ? '#f59e0b' : '#ef4444'};">Rp ${Number(user ? user.omzet : 0).toLocaleString("id-ID")}</span></p>
      <p>🏅 Posisi : <b>${posisi} dari ${data.list.length} Promotor</b></p>`
   }
   </div>`;
 
   let html = `<div class="summary-card">`;
   data.list.forEach((x, i) => {
+    // Warna omzet disesuaikan: >= 100jt (Hijau), >= 80jt (Kuning/Orange), di bawah 80jt (Merah)
+    const omzetVal = Number(x.omzet || 0);
+    const warnaOmzet = omzetVal >= 100000000 ? '#34d399' : omzetVal >= 80000000 ? '#f59e0b' : '#ef4444';
+
     html += `
       <div class="row-perolehan-export" style="display:flex; align-items:center; justify-content:space-between; padding:12px 0; border-bottom:1px solid rgba(255,255,255,0.06);">
         <div style="display:flex; align-items:center; gap:12px; flex:1; min-width:0;">
@@ -854,7 +854,7 @@ function renderPerolehan(data) {
           <div class="nama-p" style="font-weight:600; font-size:13.5px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${x.nama}</div>
         </div>
         <div style="margin-left:15px; text-align:right; white-space:nowrap;">
-          <div class="omzet-p" style="font-weight:700; font-size:13.5px; color:${Number(x.omzet || 0) >= 100000000 ? '#34d399' : '#f59e0b'};">Rp ${Number(x.omzet || 0).toLocaleString("id-ID")}</div>
+          <div class="omzet-p" style="font-weight:700; font-size:13.5px; color:${warnaOmzet};">Rp ${omzetVal.toLocaleString("id-ID")}</div>
           <div class="uc-p" style="font-size:12px; font-weight:600; color:#38bdf8; margin-top:2px;">⭐ UC : ${x.uc || 0}</div>
         </div>
       </div>`;
@@ -1037,10 +1037,10 @@ function prosesEkspor(format) {
             rowsArr.push(["LAPORAN UC: " + namaKaryawan.toUpperCase()], []);
             rowsArr.push(["Tanggal", "Produk", "Qty"]);
             targetElement.querySelectorAll(".card").forEach(card => {
-                let tglText = card.querySelector(".tanggal").innerText.replace(/📅/g, '').trim();
+                let tglTest = card.querySelector(".tanggal").innerText.replace(/📅/g, '').trim();
                 let namaProduk = card.querySelector("div[style*='font-size:12px']")?.innerText.trim() || "-";
                 let qty = card.querySelector(".row span:last-child")?.innerText || "0";
-                rowsArr.push([tglText, namaProduk, qty]);
+                rowsArr.push([tglTest, namaProduk, qty]);
             });
         } else if (activeTab === "Perolehan" || activeTab === "DendaUC") {
             rowsArr.push([activeTab === "Perolehan" ? "PEROLEHAN" : "REKAP DENDA"], []);
