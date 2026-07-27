@@ -489,7 +489,7 @@ body {
     </div>
 
     <div class="search-box">
-        <select id="nama" onchange="muatDataAktif()"></select>
+        <select id="nama" onchange="gantiNamaAdmin()"></select>
     </div>
 
     <div id="summary"></div>
@@ -520,7 +520,7 @@ let currentUser = "";
 let currentRole = "";
 let activeTab = "Absensi"; 
 
-// Tempat penyimpanan cache data agar instan
+// Caching lokal untuk data promotor aktif dan data umum
 let cacheData = {
   absensi: null,
   penjualan: null,
@@ -574,30 +574,20 @@ async function login() {
   if (currentRole === "USER") {
     document.querySelector(".search-box").style.display = "none";
     document.getElementById("btnPerolehan").style.display = "none";
+    await muatSemuaDataLatarBelakang(currentUser);
+    pindahMenu("Absensi");
   } else {
     document.querySelector(".search-box").style.display = "block";
     document.getElementById("btnPerolehan").style.display = "inline-block";
+    await loadNama(); // Memuat dropdown nama dan otomatis mengambil data promotor pertama
   }
 
   showPopup("Selamat Datang " + currentUser);
-  
-  // Ambil semua data sekaligus di latar belakang saat login berhasil agar instan
-  await muatSemuaDataLatarBelakang();
-
-  if (currentRole === "USER") {
-    pindahMenu("Absensi");
-  } else {
-    pindahMenu("Absensi");
-  }
-
   localStorage.setItem("loginNama", currentUser);
   localStorage.setItem("loginRole", currentRole);   
 }
 
-async function muatSemuaDataLatarBelakang() {
-  let namaTarget = (currentRole === "USER") ? currentUser : (document.getElementById("nama").value.trim() || currentUser);
-  
-  // Mengambil seluruh data dari server secara paralel di latar belakang
+async function muatSemuaDataLatarBelakang(namaTarget) {
   try {
     const [resAbsen, resJual, resUC, resPerolehan, resDenda1, resDenda2, resPromo, resRules, resNotice] = await Promise.all([
       fetch(WEBAPP_URL + "?nama=" + encodeURIComponent(namaTarget)).then(r => r.json()),
@@ -624,15 +614,29 @@ async function muatSemuaDataLatarBelakang() {
   }
 }
 
-async function muatDataAktif() {
-  // Jika admin mengganti dropdown nama promotor, muat ulang cache untuk nama tersebut
-  showPopup("Memperbarui data...");
-  await muatSemuaDataLatarBelakang();
-  tutupPopup();
+async function loadNama(){
+  const res = await fetch(WEBAPP_URL + "?action=nama");
+  const data = await res.json();
+  let html = "";
+  data.forEach((nama, idx) => { 
+    html += `<option value="${nama}" ${idx === 0 ? 'selected' : ''}>${nama}</option>`; 
+  });
+  document.getElementById("nama").innerHTML = html;
+
+  if(data.length > 0) {
+    await muatSemuaDataLatarBelakang(data[0]);
+    pindahMenu("Absensi");
+  }
+}
+
+async function gantiNamaAdmin() {
+  let namaTerpilih = document.getElementById("nama").value.trim();
+  if(!namaTerpilih) return;
+  await muatSemuaDataLatarBelakang(namaTerpilih);
   pindahMenu(activeTab);
 }
 
-// Fungsi perpindahan menu secara instan dari memori lokal (Tanpa Delay/Loading)
+// Perpindahan menu instan dari memori lokal (0 detik delay)
 function pindahMenu(namaMenu) {
   activeTab = namaMenu;
   document.getElementById("exportArea").style.display = "none";
@@ -993,15 +997,6 @@ function renderNotice(result) {
   document.getElementById("hasil").className = "grid";
   document.getElementById("hasil").innerHTML = html;
 }
-
-async function loadNama(){
-  const res = await fetch(WEBAPP_URL + "?action=nama");
-  const data = await res.json();
-  let html = `<option value="" selected disabled>👤 Pilih Nama Promotor</option>`;
-  data.forEach(nama => { html += `<option value="${nama}">${nama}</option>`; });
-  document.getElementById("nama").innerHTML = html;
-}
-loadNama();
 
 function prosesEkspor(format) {
     let namaKaryawan = (currentRole === "USER") ? currentUser : (document.getElementById("nama").value.trim() || "Semua_Promotor");
