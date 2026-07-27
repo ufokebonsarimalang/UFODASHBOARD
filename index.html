@@ -24,18 +24,18 @@ body {
     margin: 0;
     padding: 30px 20px;
     min-height: 100vh;
-    background: radial-gradient(circle at top, rgba(59, 130, 246, 0.15) 0%, transparent 50%), linear-gradient(135deg, #090d16 0%, #0f172a 100%);
+    background: radial-gradient(circle at top, rgba(99, 102, 241, 0.12) 0%, transparent 60%), linear-gradient(135deg, #070913 0%, #0f172a 100%);
     color: #f8fafc;
 }
 
-/* KOTAK LOGIN SESUAI CONTOH (MODERN & BERSIH) */
+/* KOTAK LOGIN */
 #loginBox {
     max-width: 420px;
     margin: 40px auto;
     padding: 40px 30px;
     background: #ffffff;
     border-radius: 28px;
-    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.35);
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.4);
     color: #1e293b;
 }
 
@@ -136,7 +136,7 @@ body {
 }
 
 .header h1 {
-    font-size: 40px;
+    font-size: 42px;
     font-weight: 800;
     margin: 0;
     letter-spacing: -1.5px;
@@ -164,7 +164,7 @@ body {
     height: 52px;
     padding: 0 20px;
     border-radius: 16px;
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.12);
     background: rgba(255, 255, 255, 0.05);
     backdrop-filter: blur(16px);
     color: white;
@@ -184,7 +184,7 @@ body {
 #nama:focus { border-color: #3b82f6; box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.15); }
 #nama option { background: #0f172a; color: white; }
 
-/* MENU TAB NAVIGASI RAPI DENGAN IKON MODERN */
+/* MENU TAB NAVIGASI MODERN */
 .menu-tab {
     display: flex;
     justify-content: center;
@@ -225,14 +225,14 @@ body {
     box-shadow: 0 6px 18px -4px rgba(59, 130, 246, 0.4);
 }
 
-/* SUMMARY & KARTU DATA */
+/* SUMMARY & KARTU DATA MODERN */
 #summary {
     max-width: 1200px;
     margin: 0 auto 20px;
 }
 
 .summary-card {
-    background: rgba(255, 255, 255, 0.04);
+    background: rgba(255, 255, 255, 0.03);
     backdrop-filter: blur(20px);
     border: 1px solid rgba(255, 255, 255, 0.08);
     border-radius: 22px;
@@ -263,7 +263,7 @@ body {
 }
 
 .card {
-    background: rgba(255, 255, 255, 0.04);
+    background: rgba(255, 255, 255, 0.03);
     backdrop-filter: blur(20px);
     border: 1px solid rgba(255, 255, 255, 0.08);
     border-radius: 22px;
@@ -334,7 +334,26 @@ body {
 .btn-pdf { background: linear-gradient(135deg, #dc2626, #ef4444); }
 .btn-export:hover { transform: translateY(-2px); opacity: 0.95; }
 
-/* POPUP MODERN (TEMA GELAP ELEGAN) */
+/* TOMBOL LOGOUT UTAMA (SESUAI GAYA DEPAN) */
+.btn-logout-main {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 14px;
+    cursor: pointer;
+    color: white;
+    background: #5b21b6;
+    font-weight: 700;
+    font-size: 13px;
+    box-shadow: 0 8px 20px -4px rgba(91, 33, 182, 0.4);
+    transition: all 0.25s ease;
+}
+
+.btn-logout-main:hover {
+    transform: translateY(-2px);
+    background: #4c1d95;
+}
+
+/* POPUP MODERN */
 #popup, #logoutPopup {
     display: none;
     position: fixed;
@@ -371,7 +390,6 @@ body {
     line-height: 1.5;
 }
 
-/* TOMBOL OK MODERN (TIDAK PUTIH) */
 .btn-popup-ok {
     border: none;
     padding: 11px 28px;
@@ -389,16 +407,18 @@ body {
 
 #btnBatal, #btnLogoutConfirm {
     border: none;
-    padding: 10px 20px;
+    padding: 11px 22px;
     border-radius: 12px;
     cursor: pointer;
     color: white;
     font-weight: 600;
     font-size: 13.5px;
     margin: 4px;
+    transition: all 0.2s ease;
 }
 #btnBatal { background: #475569; }
-#btnLogoutConfirm { background: #ef4444; }
+#btnLogoutConfirm { background: #5b21b6; }
+#btnBatal:hover, #btnLogoutConfirm:hover { opacity: 0.9; transform: translateY(-1px); }
 
 .spinner {
     width: 18px; height: 18px;
@@ -423,7 +443,7 @@ body {
 </head>
 <body>
 
-<!-- KOTAK LOGIN MENGGUNAKAN logo.png -->
+<!-- KOTAK LOGIN -->
 <div id="loginBox">
     <div class="login-logo-container">
         <img src="logo.png" alt="UFO Logo" onerror="this.style.display='none'">
@@ -458,7 +478,7 @@ body {
     </div>
 
     <div style="max-width:1200px; margin:0 auto 12px; text-align:right;">
-        <button onclick="logout()" style="padding:8px 16px; border:none; border-radius:12px; cursor:pointer; color:white; background:#ef4444; font-weight:600; font-size:12.5px; box-shadow:0 4px 12px rgba(239,68,68,0.3);">
+        <button class="btn-logout-main" onclick="logout()">
             🚪 Logout
         </button>
     </div>
@@ -1044,7 +1064,7 @@ function prosesEkspor(format) {
 }
 </script>
 
-<!-- POPUP INFORMASI / SALAH LOGIN (MODERN) -->
+<!-- POPUP INFORMASI -->
 <div id="popup">
   <div class="modern-popup-box">
     <h3>Informasi</h3>
