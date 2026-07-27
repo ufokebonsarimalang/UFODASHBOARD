@@ -570,6 +570,9 @@ async function login() {
   document.getElementById("loginBox").style.display = "none";
   document.getElementById("dashboard").style.display = "block";
 
+  // Pop-up "Selamat Datang" dimunculkan duluan agar tampil instan tanpa menunggu data selesai dimuat
+  showPopup("Selamat Datang " + currentUser);
+
   if (currentRole === "USER") {
     document.querySelector(".search-box").style.display = "none";
     document.getElementById("btnPerolehan").style.display = "none";
@@ -581,7 +584,6 @@ async function login() {
     await loadNama();
   }
 
-  showPopup("Selamat Datang " + currentUser);
   localStorage.setItem("loginNama", currentUser);
   localStorage.setItem("loginRole", currentRole);   
 }
@@ -843,7 +845,6 @@ function renderPerolehan(data) {
 
   let html = `<div class="summary-card">`;
   data.list.forEach((x, i) => {
-    // Warna omzet disesuaikan: >= 100jt (Hijau), >= 80jt (Kuning/Orange), di bawah 80jt (Merah)
     const omzetVal = Number(x.omzet || 0);
     const warnaOmzet = omzetVal >= 100000000 ? '#34d399' : omzetVal >= 80000000 ? '#f59e0b' : '#ef4444';
 
@@ -908,7 +909,7 @@ function renderDendaUC(dendaObj) {
               ${totalDenda > 0 
                   ? `<div style="font-weight:700; font-size:13.5px; color:#ef4444;">Rp ${totalDenda.toLocaleString("id-ID")}</div>
                      <div style="font-size:10px; color:#fca5a5; margin-top:2px;">(UC: ${dendaUC/1000}k + Late: ${dendaLate/1000}k)</div>`
-                  : `<div style="font-weight:700; font-size:12.5px; color:#34d399;">Aman</div>`
+                  : `<div style="font-weight:700; font-size:12.5px; color:#34d399;">✅ Aman</div>`
               }
           </div>
       </div>`;
@@ -1037,10 +1038,10 @@ function prosesEkspor(format) {
             rowsArr.push(["LAPORAN UC: " + namaKaryawan.toUpperCase()], []);
             rowsArr.push(["Tanggal", "Produk", "Qty"]);
             targetElement.querySelectorAll(".card").forEach(card => {
-                let tglTest = card.querySelector(".tanggal").innerText.replace(/📅/g, '').trim();
+                let tglText = card.querySelector(".tanggal").innerText.replace(/📅/g, '').trim();
                 let namaProduk = card.querySelector("div[style*='font-size:12px']")?.innerText.trim() || "-";
                 let qty = card.querySelector(".row span:last-child")?.innerText || "0";
-                rowsArr.push([tglTest, namaProduk, qty]);
+                rowsArr.push([tglText, namaProduk, qty]);
             });
         } else if (activeTab === "Perolehan" || activeTab === "DendaUC") {
             rowsArr.push([activeTab === "Perolehan" ? "PEROLEHAN" : "REKAP DENDA"], []);
