@@ -870,7 +870,6 @@ function renderPerolehan(data) {
   document.getElementById("hasil").className = "";
   document.getElementById("hasil").innerHTML = html;
 }
-
 function renderDendaUC(dendaObj) {
   if(!dendaObj) return;
   const resPerolehan = dendaObj.perolehan;
@@ -903,15 +902,15 @@ function renderDendaUC(dendaObj) {
       const totalDenda = dendaUC + dendaLate;
 
       html += `
-      <div class="row-perolehan-export" style="display:flex; justify-content:space-between; align-items:center; padding:14px 0; border-bottom:1px solid rgba(255,255,255,0.08); gap:15px;">
-          <div style="flex-shrink: 0;">
-              <div class="nama-p" style="font-size:14px; font-weight:700; color:#fff;">${i+1}. ${x.nama}</div>
+      <div class="row-perolehan-export" style="display:flex; justify-content:space-between; align-items:center; padding:12px 0; border-bottom:1px solid rgba(255,255,255,0.08); gap:10px; overflow:hidden;">
+          <div style="min-width:0; flex-shrink:1; padding-right:5px;">
+              <div class="nama-p" style="font-size:13.5px; font-weight:700; color:#fff; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${i+1}. ${x.nama}</div>
           </div>
-          <div style="text-align:right; white-space:nowrap;">
+          <div style="text-align:right; flex-shrink:0; white-space:nowrap;">
               ${totalDenda > 0 
-                  ? `<div style="font-weight:800; font-size:15px; color:#ff3333; text-shadow: 0 0 10px rgba(255, 51, 51, 0.4);">Rp ${totalDenda.toLocaleString("id-ID")}</div>
-                     <div style="font-size:11.5px; color:#fca5a5; margin-top:3px; font-weight:500;">Kurang UC: ${kurangUC} (${(dendaUC/1000).toFixed(0)}k) | Late: ${totalTerlambat}x (${(dendaLate/1000).toFixed(0)}k)</div>`
-                  : `<div style="font-weight:700; font-size:13px; color:#34d399;">✅ Aman (Lunas/Capai Target)</div>`
+                  ? `<div style="font-weight:800; font-size:14px; color:#ff3333; text-shadow: 0 0 8px rgba(255, 51, 51, 0.4);">Rp ${totalDenda.toLocaleString("id-ID")}</div>
+                     <div style="font-size:10.5px; color:#fca5a5; margin-top:2px; font-weight:500;">Kurang UC: ${kurangUC} (${(dendaUC/1000).toFixed(0)}k) | Late: ${totalTerlambat}x (${(dendaLate/1000).toFixed(0)}k)</div>`
+                  : `<div style="font-weight:700; font-size:12px; color:#34d399;">✅ Aman (Lunas/Capai Target)</div>`
               }
           </div>
       </div>`;
