@@ -455,7 +455,7 @@ async function cariPerolehan() {
     document.getElementById("hasil").innerHTML = html;
 }
 
-/* ⚖️ 5. REKAP DENDA TARGET UC (<16) & KETERLAMBATAN (DENDA Rp 5.000 / UNIT) */
+/* ⚖️ 5. REKAP DENDA TARGET UC (<16) & KETERLAMBATAN (LANGSUNG NOMINAL HASIL & RAPI) */
 async function tampilDendaUC() {
     activeTab = "DendaUC";
     resetTabButtons("btnDenda");
@@ -473,8 +473,8 @@ async function tampilDendaUC() {
 
     document.getElementById("summary").innerHTML = `
     <div class="summary-card">
-        <h2>⚖️ Rekap Kedisiplinan & Target UC</h2>
-        <p>Aturan Toko: Target minimal UC adalah <b>16 Unit</b>. Kekurangan unit dikenakan denda <b>Rp 5.000 / unit</b>.</p>
+        <h2>⚖️ Rekap Denda UC & Keterlambatan</h2>
+        <p>Target UC: <b>16 Unit</b> | Denda Kekurangan: <b>Rp 5.000 / Unit</b></p>
     </div>`;
 
     let html = `<div class="summary-card">`;
@@ -485,18 +485,17 @@ async function tampilDendaUC() {
         const totalTerlambat = lateMap[x.nama.toUpperCase()] || 0;
 
         html += `
-        <div class="row-perolehan-export" style="padding:14px 0; border-bottom:1px solid rgba(255,255,255,.08);">
+        <div class="row-perolehan-export" style="padding:10px 0; border-bottom:1px solid rgba(255,255,255,.08);">
             <div style="display:flex; justify-content:space-between; align-items:center;">
                 <div>
-                    <div class="nama-p" style="font-size:15px; font-weight:700; color:#fff;">${i+1}. ${x.nama}</div>
-                    <div style="font-size:12px; margin-top:4px; color:#94a3b8;">
-                        Total Late : <b style="color:${totalTerlambat > 0 ? '#f87171' : '#4ade80'};">${totalTerlambat} Kali</b>
+                    <div class="nama-p" style="font-size:14px; font-weight:700; color:#fff;">${i+1}. ${x.nama}</div>
+                    <div style="font-size:12px; margin-top:2px; color:#94a3b8;">
+                        UC: <b>${totalUC}/16</b> | Late: <b style="color:${totalTerlambat > 0 ? '#f87171' : '#4ade80'};">${totalTerlambat}x</b>
                     </div>
                 </div>
                 <div style="text-align:right;">
-                    <div style="font-size:12px; color:#cbd5e1;">Pencapaian UC: <b>${totalUC} / 16</b></div>
-                    <div style="font-weight:800; font-size:13px; margin-top:3px; color:${nominalDenda > 0 ? '#f87171' : '#4ade80'};">
-                        ${nominalDenda > 0 ? '⚠️ Denda UC: Rp ' + nominalDenda.toLocaleString("id-ID") + ' (' + kurangUC + ' x Rp 5.000)' : '✅ Target Terpenuhi'}
+                    <div style="font-weight:800; font-size:13px; color:${nominalDenda > 0 ? '#f87171' : '#4ade80'};">
+                        ${nominalDenda > 0 ? 'Denda: Rp ' + nominalDenda.toLocaleString("id-ID") : '✅ Bebas Denda'}
                     </div>
                 </div>
             </div>
@@ -613,10 +612,10 @@ function prosesEkspor(format) {
             const rowsData = targetElement.querySelectorAll(".row-perolehan-export");
             rowsData.forEach((row, idx) => {
                 let nama = row.querySelector(".nama-p")?.innerText.trim() || "-";
-                let late = row.querySelector("b")?.innerText.trim() || "0";
-                let textRight = row.querySelectorAll("div[style*='text-align:right'] div");
-                let uc = textRight[0]?.innerText.replace("Pencapaian UC:", "").trim() || "0";
-                let denda = textRight[1]?.innerText.trim() || "-";
+                let textSub = row.querySelectorAll("div[style*='font-size:12px'] b");
+                let uc = textSub[0]?.innerText.trim() || "0";
+                let late = textSub[1]?.innerText.trim() || "0";
+                let denda = row.querySelector("div[style*='font-weight:800']")?.innerText.trim() || "-";
                 rowsArr.push([idx + 1, nama, late, uc, denda]);
             });
         } else if (activeTab === "Perolehan") {
