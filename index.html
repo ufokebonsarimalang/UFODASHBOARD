@@ -509,7 +509,7 @@ async function tampilDendaUC() {
     document.getElementById("hasil").innerHTML = html;
 }
 
-/* 📢 6. INFO PROMO (READ FROM SHEET "PROMO") */
+/* 📢 6. INFO PROMO (AMBIL LANGSUNG DARI SHEET "PROMO") */
 async function tampilPromo() {
     activeTab = "Promo";
     resetTabButtons("btnPromo");
@@ -535,7 +535,7 @@ async function tampilPromo() {
 
         let html = "";
         if (promoList.length === 0) {
-            html = `<div class="card">Belum ada promo di Sheet PROMO. Buat sheet bernama "PROMO" dengan kolom: JUDUL, PERIODE, DETAIL.</div>`;
+            html = `<div class="card">Belum ada promo di Sheet PROMO.</div>`;
         } else {
             promoList.forEach(p => {
                 html += `
@@ -554,35 +554,48 @@ async function tampilPromo() {
     }
 }
 
-/* 🧹 7. ATURAN & KEBERSIHAN DISPLAY BOOTH */
-function tampilRules() {
+/* 🧹 7. ATURAN & KEBERSIHAN DISPLAY BOOTH (AMBIL LANGSUNG DARI SHEET "SOP_TOKO") */
+async function tampilRules() {
     activeTab = "Rules";
     resetTabButtons("btnRules");
 
     document.getElementById("summary").innerHTML = `
     <div class="summary-card">
         <h2>🧹 Aturan Toko & Kebersihan Display Booth</h2>
-        <p>Wajib dipatuhi oleh seluruh promotor demi kenyamanan customer di toko UFO Kebonsari.</p>
+        <p>Memuat aturan operasional dari Google Sheets...</p>
     </div>`;
 
-    const aturan = [
-        { poin: "Kebersihan Unit Display", desc: "Sapu area booth & lap dust free produk display setiap pagi sebelum toko buka (Maksimal Pkl 08.30)." },
-        { poin: "Price Tag & Kerapian Kabel", desc: "Pastikan price tag sesuai dengan promo terbaru, pop promo rapi, dan kabel power tidak berantakan." },
-        { poin: "Atribut Resmi Promotor", desc: "Wajib memakai seragam resmi brand/seragam toko, celana kain hitam, sepatu tertutup, & nametag." },
-        { poin: "Kedisiplinan Standby Area", desc: "Dilarang mengosongkan booth display tanpa izin/serah terima dengan partner shift setim." }
-    ];
+    document.getElementById("hasil").innerHTML = `<div class="card">🔄 Mengambil data aturan toko...</div>`;
 
-    let html = "";
-    aturan.forEach(a => {
-        html += `
-        <div class="card warning">
-            <div class="tanggal" style="text-align:left; font-size:15px; color:#facc15;">📌 ${a.poin}</div>
-            <div style="font-size:13px; line-height:1.5; color:#e2e8f0; margin-top:8px;">${a.desc}</div>
+    try {
+        const res = await fetch(WEBAPP_URL + "?action=rules");
+        const result = await res.json();
+        const aturanList = result.data || [];
+
+        document.getElementById("summary").innerHTML = `
+        <div class="summary-card">
+            <h2>🧹 Aturan Toko & Kebersihan Display Booth</h2>
+            <p>Wajib dipatuhi oleh seluruh promotor demi kenyamanan customer di toko UFO Kebonsari.</p>
         </div>`;
-    });
 
-    document.getElementById("hasil").className = "grid";
-    document.getElementById("hasil").innerHTML = html;
+        let html = "";
+        if (aturanList.length === 0) {
+            html = `<div class="card">Belum ada aturan di Sheet SOP_TOKO.</div>`;
+        } else {
+            aturanList.forEach(a => {
+                html += `
+                <div class="card warning">
+                    <div class="tanggal" style="text-align:left; font-size:15px; color:#facc15;">📌 ${a.poin}</div>
+                    <div style="font-size:13px; line-height:1.5; color:#e2e8f0; margin-top:8px;">${a.desc}</div>
+                </div>`;
+            });
+        }
+
+        document.getElementById("hasil").className = "grid";
+        document.getElementById("hasil").innerHTML = html;
+    } catch(e) {
+        document.getElementById("hasil").innerHTML = `<div class="card">Gagal memuat data aturan toko.</div>`;
+    }
 }
 
 /* 🚀 FUNGSI EKSPOR EXCEL & PDF SMART SYSTEM */
