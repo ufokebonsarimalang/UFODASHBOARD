@@ -762,7 +762,7 @@ function logoutConfirm() {
     const btn = document.getElementById("btnLogin");
     btn.disabled = false;
     btn.innerHTML = "MASUK";
-}   
+}    
 
 function tampil(v){
     return (v && v.trim() !== "") ? `<span class="ok">${v}</span>` : `<span class="kosong">-</span>`;
@@ -1001,10 +1001,10 @@ function renderDendaUC(dendaObj) {
                 </div>
                 <div style="text-align:right; flex-shrink:0; white-space:nowrap;">
                     ${totalDenda > 0 
-                        ? `<div style="font-weight:800; font-size:13.5px; color:#ff3333; text-shadow: 0 0 8px rgba(255, 51, 51, 0.4);">Rp ${totalDenda.toLocaleString("id-ID")}</div>
-                           <div style="font-size:10px; color:#fde047; margin-top:2px; font-weight:600;">${infoDetail}</div>`
-                        : `<div style="font-weight:700; font-size:12px; color:#34d399;">Aman</div>
-                           <div style="font-size:10px; color:#94a3b8; margin-top:2px;">${infoDetail}</div>`
+                        ? `<div class="omzet-p" style="font-weight:800; font-size:13.5px; color:#ff3333; text-shadow: 0 0 8px rgba(255, 51, 51, 0.4);">Rp ${totalDenda.toLocaleString("id-ID")}</div>
+                           <div class="uc-p" style="font-size:10px; color:#fde047; margin-top:2px; font-weight:600;">${infoDetail}</div>`
+                        : `<div class="omzet-p" style="font-weight:700; font-size:12px; color:#34d399;">Aman</div>
+                           <div class="uc-p" style="font-size:10px; color:#94a3b8; margin-top:2px;">${infoDetail}</div>`
                     }
                 </div>
             </div>`;
@@ -1105,7 +1105,8 @@ function prosesEkspor(format) {
             rowsArr.push(["LAPORAN ABSENSI PROMOTOR: " + namaKaryawan.toUpperCase()], []);
             rowsArr.push(["Tanggal", "Status", "Masuk", "Istirahat 1", "Kembali 1", "Istirahat 2", "Kembali 2", "Pulang"]);
             targetElement.querySelectorAll(".card").forEach(card => {
-                let tglText = card.querySelector(".tanggal").innerText.replace(/📅/g, '').split("\n")[0].trim();
+                let tglText = card.querySelector(".tanggal").innerText.replace(/📅/g, '').split("
+")[0].trim();
                 let status = card.querySelector(".tanggal").innerText.includes("Lengkap") ? "Lengkap" : "Belum Lengkap";
                 if(card.querySelector(".tanggal").innerText.includes("TERLAMBAT")) status += " (Terlambat)";
                 let rowsData = card.querySelectorAll(".row");
@@ -1121,7 +1122,8 @@ function prosesEkspor(format) {
                 itemProduks.forEach(item => {
                     let tempDiv = document.createElement("div");
                     tempDiv.innerHTML = item;
-                    let namaProduk = tempDiv.innerText.split("Qty")[0].trim().replace(/\n/g, ' ');
+                    let namaProduk = tempDiv.innerText.split("Qty")[0].trim().replace(/
+/g, ' ');
                     let qty = tempDiv.querySelectorAll(".row")[0]?.querySelectorAll("span")[1]?.innerText || "0";
                     let omzet = tempDiv.querySelectorAll(".row")[1]?.querySelectorAll("span")[1]?.innerText || "0";
                     rowsArr.push([tglText, namaProduk, qty, omzet]);
@@ -1139,13 +1141,13 @@ function prosesEkspor(format) {
                 rowsArr.push([tglText, namaProduk, qty]);
             });
         } else if (activeTab === "Perolehan" || activeTab === "DendaUC") {
-            rowsArr.push([activeTab === "Perolehan" ? "PEROLEHAN" : "REKAP DENDA"], []);
-            rowsArr.push(["No", "Nama Promotor", "Keterangan", "Nilai"]);
+            rowsArr.push([activeTab === "Perolehan" ? "PEROLEHAN PROMOTOR" : "REKAP DENDA & LATE"], []);
+            rowsArr.push(["No", "Nama Promotor", "Omzet", "UC / Keterangan"]);
             targetElement.querySelectorAll(".row-perolehan-export").forEach((row, idx) => {
                 let nama = row.querySelector(".nama-p")?.innerText.trim() || "-";
-                let sub = row.querySelector("div[style*='font-size:12px'], .uc-p")?.innerText || "";
-                let val = row.querySelector(".omzet-p, div[style*='font-weight:700']")?.innerText.trim() || "0";
-                rowsArr.push([idx + 1, nama, sub, val]);
+                let omzet = row.querySelector(".omzet-p")?.innerText.trim() || "0";
+                let uc = row.querySelector(".uc-p")?.innerText.trim() || "0";
+                rowsArr.push([idx + 1, nama, omzet, uc]);
             });
         }
         const ws = XLSX.utils.aoa_to_sheet(rowsArr);
