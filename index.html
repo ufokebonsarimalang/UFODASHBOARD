@@ -1105,8 +1105,7 @@ function prosesEkspor(format) {
             rowsArr.push(["LAPORAN ABSENSI PROMOTOR: " + namaKaryawan.toUpperCase()], []);
             rowsArr.push(["Tanggal", "Status", "Masuk", "Istirahat 1", "Kembali 1", "Istirahat 2", "Kembali 2", "Pulang"]);
             targetElement.querySelectorAll(".card").forEach(card => {
-                let tglText = card.querySelector(".tanggal").innerText.replace(/📅/g, '').split("
-")[0].trim();
+                let tglText = card.querySelector(".tanggal").innerText.replace(/📅/g, '').split("\n")[0].trim();
                 let status = card.querySelector(".tanggal").innerText.includes("Lengkap") ? "Lengkap" : "Belum Lengkap";
                 if(card.querySelector(".tanggal").innerText.includes("TERLAMBAT")) status += " (Terlambat)";
                 let rowsData = card.querySelectorAll(".row");
@@ -1122,8 +1121,7 @@ function prosesEkspor(format) {
                 itemProduks.forEach(item => {
                     let tempDiv = document.createElement("div");
                     tempDiv.innerHTML = item;
-                    let namaProduk = tempDiv.innerText.split("Qty")[0].trim().replace(/
-/g, ' ');
+                    let namaProduk = tempDiv.innerText.split("Qty")[0].trim().replace(/\n/g, ' ');
                     let qty = tempDiv.querySelectorAll(".row")[0]?.querySelectorAll("span")[1]?.innerText || "0";
                     let omzet = tempDiv.querySelectorAll(".row")[1]?.querySelectorAll("span")[1]?.innerText || "0";
                     rowsArr.push([tglText, namaProduk, qty, omzet]);
