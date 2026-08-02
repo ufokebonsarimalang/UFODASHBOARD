@@ -1,1202 +1,1593 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>UFO Kebonsari - Dashboard Promotor</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Sistem Absensi Karyawan - UFO Kebonsari</title>
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#2563eb">
+    
+    <!-- Google Fonts: Plus Jakarta Sans -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
-<!-- Google Font: Outfit -->
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #2563eb;
+            --primary-hover: #1d4ed8;
+            --primary-light: #eff6ff;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --background: #f8fafc;
+            --card-bg: #ffffff;
+            --text-main: #0f172a;
+            --text-muted: #64748b;
+            --border-color: #e2e8f0;
+            --radius-lg: 20px;
+            --radius-md: 14px;
+            --shadow-sm: 0 2px 4px rgba(0,0,0,0.02);
+            --shadow-md: 0 10px 30px -5px rgba(37, 99, 235, 0.08);
+            --shadow-card: 0 1px 3px rgba(0,0,0,0.05), 0 10px 15px -3px rgba(0,0,0,0.03);
+        }
 
-<!-- Library Ekspor Excel & PDF -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+        * {
+            box-sizing: border-box;
+            font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif !important;
+            margin: 0;
+            padding: 0;
+        }
 
-<style>
-* {
-    box-sizing: border-box;
-    font-family: 'Outfit', sans-serif !important;
-}
+        body { 
+            background: var(--background); 
+            color: var(--text-main);
+            padding: 16px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
 
-body {
-    margin: 0;
-    padding: 30px 20px;
-    min-height: 100vh;
-    background: radial-gradient(circle at top, rgba(99, 102, 241, 0.15) 0%, transparent 60%), linear-gradient(135deg, #070913 0%, #0f172a 100%);
-    color: #f8fafc;
-}
+        .box { 
+            width: 100%;
+            max-width: 410px; 
+            background: var(--card-bg); 
+            padding: 28px 20px; 
+            border-radius: var(--radius-lg); 
+            box-shadow: var(--shadow-md);
+            border: 1px solid var(--border-color);
+            text-align: center;
+            position: relative;
+        }
 
-/* KOTAK LOGIN */
-#loginBox {
-    max-width: 420px;
-    margin: 50px auto;
-    padding: 40px 30px;
-    background: #ffffff;
-    border-radius: 28px;
-    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.4);
-    color: #1e293b;
-    animation: fadeIn 0.4s ease;
-}
+        .box-admin { 
+            max-width: 1000px !important; 
+            padding: 28px 24px;
+        }
 
-.login-logo-container {
-    text-align: center;
-    margin-bottom: 20px;
-}
+        /* Header UI */
+        .logo-container {
+            width: 80px;
+            height: 80px;
+            margin: 0 auto 14px auto;
+            border-radius: 50%;
+            padding: 4px;
+            background: #ffffff;
+            box-shadow: 0 4px 14px rgba(0,0,0,0.08);
+            border: 2px solid var(--primary-light);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
 
-.login-logo-container img {
-    width: 90px;
-    height: 90px;
-    border-radius: 50%;
-    object-fit: cover;
-    border: 3px solid #f1f5f9;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-}
+        .logo-toko {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 50%;
+        }
 
-.login-title-area {
-    text-align: center;
-    margin-bottom: 30px;
-}
+        h2 {
+            font-size: 20px;
+            font-weight: 800;
+            color: var(--text-main);
+            letter-spacing: -0.3px;
+        }
 
-.login-title-area h2 {
-    margin: 0;
-    font-size: 22px;
-    font-weight: 800;
-    color: #0f172a;
-    letter-spacing: -0.5px;
-}
+        .sub-title {
+            color: var(--text-muted);
+            font-size: 13px;
+            margin-top: 2px;
+            margin-bottom: 20px;
+            font-weight: 500;
+        }
 
-.login-title-area p {
-    margin: 6px 0 0;
-    font-size: 13.5px;
-    color: #64748b;
-    font-weight: 500;
-}
+        /* Time Section */
+        .time-wrapper {
+            background: linear-gradient(135deg, #eff6ff 0%, #f8fafc 100%);
+            border: 1px solid #dbeafe;
+            border-radius: var(--radius-md);
+            padding: 14px;
+            margin-bottom: 16px;
+        }
 
-.input-group {
-    margin-bottom: 20px;
-}
+        .jam-digital {
+            font-size: 36px;
+            font-weight: 800;
+            color: var(--primary);
+            font-variant-numeric: tabular-nums;
+            letter-spacing: -0.5px;
+            line-height: 1;
+        }
 
-.input-group label {
-    display: block;
-    font-size: 12px;
-    font-weight: 700;
-    color: #334155;
-    margin-bottom: 8px;
-    letter-spacing: 0.5px;
-}
+        .tanggal-digital {
+            font-size: 12px;
+            color: var(--text-muted);
+            margin-top: 6px;
+            font-weight: 600;
+            text-transform: capitalize;
+        }
 
-.input-group input {
-    width: 100%;
-    padding: 15px 18px;
-    border-radius: 14px;
-    border: 1px solid #cbd5e1;
-    background: #f8fafc;
-    color: #0f172a;
-    font-size: 14.5px;
-    outline: none;
-    transition: all 0.25s ease;
-}
+        /* Information & Stats Cards */
+        #periode-karyawan-text {
+            background: #ffffff !important;
+            border: 1px solid var(--border-color) !important;
+            border-left: 4px solid var(--primary) !important;
+            border-radius: var(--radius-md) !important;
+            padding: 12px !important;
+            margin-bottom: 14px !important;
+            box-shadow: var(--shadow-sm) !important;
+            text-align: center;
+        }
 
-.input-group input:focus {
-    border-color: #6366f1;
-    background: #ffffff;
-    box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.12);
-}
+        .stat-box {
+            background: #ffffff !important;
+            border: 1px solid var(--border-color) !important;
+            border-radius: var(--radius-md) !important;
+            padding: 16px !important;
+            margin-bottom: 16px !important;
+            box-shadow: var(--shadow-sm) !important;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
 
-.input-group input::placeholder {
-    color: #94a3b8;
-}
+        .stat-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 13px;
+            color: var(--text-muted);
+            font-weight: 500;
+        }
 
-#btnLogin {
-    width: 100%;
-    padding: 16px;
-    border: none;
-    border-radius: 14px;
-    cursor: pointer;
-    font-weight: 700;
-    font-size: 15px;
-    color: white;
-    background: #5b21b6;
-    box-shadow: 0 10px 20px -5px rgba(91, 33, 182, 0.4);
-    transition: all 0.25s ease;
-    letter-spacing: 0.5px;
-}
+        .stat-item span:last-child {
+            font-weight: 700;
+            color: var(--text-main);
+        }
 
-#btnLogin:hover {
-    transform: translateY(-2px);
-    background: #4c1d95;
-    box-shadow: 0 14px 24px -5px rgba(91, 33, 182, 0.5);
-}
+        /* GPS Status Log */
+        #status-log {
+            font-size: 12px !important;
+            color: var(--text-main) !important;
+            background: #f8fafc !important;
+            border: 1px dashed #cbd5e1 !important;
+            padding: 12px !important;
+            border-radius: var(--radius-md) !important;
+            margin-bottom: 12px !important;
+            font-weight: 600 !important;
+            text-align: center !important;
+            line-height: 1.5 !important;
+        }
 
-/* HEADER DASHBOARD */
-.header {
-    text-align: center;
-    margin-bottom: 25px;
-    animation: fadeIn 0.4s ease;
-}
+        /* Modern Form Inputs */
+        .input-group {
+            text-align: left;
+            margin-bottom: 16px;
+        }
 
-.header h1 {
-    font-size: 38px;
-    font-weight: 800;
-    margin: 0;
-    letter-spacing: -1.5px;
-    background: linear-gradient(90deg, #ffffff, #60a5fa);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-}
+        .input-group label {
+            display: block;
+            font-size: 11px;
+            font-weight: 700;
+            margin-bottom: 6px;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
 
-.header p {
-    color: #94a3b8;
-    font-size: 14px;
-    margin-top: 6px;
-}
+        input, select { 
+            width: 100%; 
+            padding: 12px 16px; 
+            border-radius: var(--radius-md); 
+            border: 1px solid var(--border-color);
+            background: #f8fafc;
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--text-main);
+            transition: all 0.2s ease;
+        }
 
-/* KOTAK PENCARIAN / DROPDOWN NAMA */
-.search-box {
-    max-width: 600px;
-    margin: 0 auto 20px;
-    display: flex;
-    gap: 12px;
-}
+        input:focus, select:focus {
+            outline: none;
+            border-color: var(--primary);
+            background: #ffffff;
+            box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.1);
+        }
 
-#nama {
-    width: 100%;
-    height: 52px;
-    padding: 0 20px;
-    border-radius: 16px;
-    border: 1px solid rgba(59, 130, 246, 0.3);
-    background: rgba(15, 23, 42, 0.8);
-    backdrop-filter: blur(16px);
-    color: white;
-    font-size: 14.5px;
-    font-weight: 600;
-    outline: none;
-    cursor: pointer;
-    appearance: none;
-    -webkit-appearance: none;
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='18' height='18' fill='%2360a5fa' viewBox='0 0 16 16'%3E%3Cpath d='M1.5 5.5l6 6 6-6'/%3E%3C/svg%3E");
-    background-repeat: no-repeat;
-    background-position: right 20px center;
-    box-shadow: 0 0 15px rgba(59, 130, 246, 0.1);
-    transition: all 0.3s ease;
-}
+        /* DESAIN BOX ABSENSI DENGAN WARNA WARNI KHUSUS */
+        .btn-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-bottom: 20px;
+        }
 
-#nama:hover { border-color: #60a5fa; box-shadow: 0 0 20px rgba(96, 165, 250, 0.25); }
-#nama:focus { border-color: #3b82f6; box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.25), 0 0 25px rgba(59, 130, 246, 0.3); }
-#nama option { background: #0f172a; color: white; }
+        .absen-card-group {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+        }
 
-/* MENU TAB NAVIGASI */
-.menu-tab {
-    display: flex;
-    justify-content: center;
-    gap: 8px;
-    margin-bottom: 25px;
-    flex-wrap: wrap;
-    max-width: 1100px;
-    margin-left: auto;
-    margin-right: auto;
-}
+        .absen-card {
+            border-radius: var(--radius-md);
+            padding: 16px 10px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            box-shadow: var(--shadow-sm);
+            width: 100%;
+        }
 
-.menu-tab button {
-    padding: 11px 16px;
-    border: none;
-    border-radius: 14px;
-    cursor: pointer;
-    font-weight: 600;
-    font-size: 13px;
-    background: rgba(15, 23, 42, 0.7);
-    border: 1px solid rgba(59, 130, 246, 0.25);
-    color: #cbd5e1;
-    transition: all 0.2s ease;
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    box-shadow: 0 0 12px rgba(59, 130, 246, 0.08);
-}
+        .absen-card:active {
+            transform: scale(0.97);
+        }
 
-.menu-tab button:hover {
-    background: rgba(59, 130, 246, 0.12);
-    color: white;
-    border-color: rgba(96, 165, 250, 0.6);
-    box-shadow: 0 0 20px rgba(59, 130, 246, 0.3);
-    transform: translateY(-2px);
-}
+        .absen-icon {
+            width: 42px;
+            height: 42px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
 
-.menu-tab button.active {
-    background: linear-gradient(135deg, #3b82f6, #06b6d4);
-    color: white;
-    border-color: #93c5fd;
-    box-shadow: 0 0 25px rgba(59, 130, 246, 0.5);
-}
+        .absen-icon svg {
+            width: 22px;
+            height: 22px;
+            stroke-width: 2.2;
+            fill: none;
+            stroke: currentColor;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+        }
 
-/* SUMMARY & KARTU DATA */
-#summary {
-    max-width: 1200px;
-    margin: 0 auto 20px;
-}
+        /* PEWARNAAN TEKS JAM SESUAI TEMA BOX MASING-MASING */
+        .card-in {
+            background: #2563eb !important;
+            border: 1px solid #1d4ed8 !important;
+        }
+        .card-in .absen-icon { background: rgba(255, 255, 255, 0.2); color: #ffffff; }
+        .card-in .absen-title { color: #ffffff !important; }
+        .card-in .info-jam-absen { color: #dbeafe !important; font-weight: 800 !important; } /* WARNA JAM IN BIRU ES */
 
-.summary-card {
-    background: rgba(15, 23, 42, 0.8);
-    backdrop-filter: blur(20px);
-    border: 1px solid rgba(59, 130, 246, 0.25);
-    border-radius: 22px;
-    padding: 22px;
-    color: white;
-    box-shadow: 0 0 25px rgba(59, 130, 246, 0.12);
-}
+        .card-out {
+            background: #facc15 !important;
+            border: 1px solid #eab308 !important;
+        }
+        .card-out .absen-icon { background: rgba(0, 0, 0, 0.1); color: #854d0e; }
+        .card-out .absen-title { color: #854d0e !important; }
+        .card-out .info-jam-absen { color: #713f12 !important; font-weight: 800 !important; } /* WARNA JAM OUT COKELAT GELAP */
 
-.summary-card h2 {
-    margin-top: 0;
-    font-size: 19px;
-    font-weight: 700;
-    margin-bottom: 12px;
-}
+        .card-off-wrapper {
+            width: 100%;
+        }
 
-.summary-card p {
-    margin: 6px 0;
-    color: #cbd5e1;
-    font-size: 13.5px;
-}
+        .card-off {
+            flex-direction: row;
+            justify-content: center;
+            gap: 10px;
+            padding: 12px;
+            background: #ef4444 !important;
+            border: 1px solid #dc2626 !important;
+        }
+        .card-off .absen-icon { background: rgba(255, 255, 255, 0.2); color: #ffffff; }
+        .card-off .absen-title { color: #ffffff !important; }
+        .card-off .info-jam-absen { color: #fecdd3 !important; font-weight: 800 !important; } /* WARNA JAM OFF MERAH MUDA */
 
-.grid {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 16px;
-    max-width: 1200px;
-    margin: 0 auto;
-}
+        .absen-title {
+            font-size: 13px;
+            font-weight: 700;
+        }
 
-.card {
-    background: rgba(15, 23, 42, 0.75);
-    backdrop-filter: blur(20px);
-    border: 1px solid rgba(59, 130, 246, 0.22);
-    border-radius: 22px;
-    padding: 18px;
-    transition: all 0.25s ease;
-    box-shadow: 0 0 20px rgba(59, 130, 246, 0.08);
-}
+        .info-jam-absen {
+            font-size: 11px;
+            font-weight: 600;
+            color: var(--text-muted);
+            min-height: 14px;
+            display: block;
+            text-align: center;
+        }
 
-.card:hover {
-    transform: translateY(-3px);
-    border-color: rgba(96, 165, 250, 0.6);
-    box-shadow: 0 0 25px rgba(59, 130, 246, 0.3);
-}
+        /* General Buttons */
+        button { 
+            width: 100%; 
+            padding: 14px; 
+            border-radius: var(--radius-md); 
+            font-size: 13px; 
+            font-weight: 700; 
+            cursor: pointer; 
+            border: none;
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
+            gap: 8px;
+            box-shadow: var(--shadow-sm);
+        }
 
-.card.success { border-left: 5px solid #10b981; border-color: rgba(16, 185, 129, 0.35); }
-.card.warning { border-left: 5px solid #ef4444; border-color: rgba(239, 68, 68, 0.35); }
-.card.late { border: 2px solid #facc15; background: rgba(250, 204, 21, 0.04); box-shadow: 0 0 25px rgba(250, 204, 21, 0.2); }
-.card-notice { border-left: 5px solid #3b82f6; background: rgba(59, 130, 246, 0.04); box-shadow: 0 0 25px rgba(59, 130, 246, 0.2); }
-.card-rules { border-left: 5px solid #facc15; background: rgba(250, 204, 21, 0.04); box-shadow: 0 0 25px rgba(250, 204, 21, 0.2); }
+        button:active {
+            transform: scale(0.97);
+        }
 
-.tanggal {
-    text-align: center;
-    font-weight: 700;
-    margin-bottom: 14px;
-    color: white;
-    font-size: 13.5px;
-}
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+            box-shadow: 0 4px 14px rgba(37, 99, 235, 0.3);
+        }
 
-.row {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 8px 0;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
-    color: #cbd5e1;
-    font-size: 13px;
-}
+        .btn-primary:hover {
+            background: var(--primary-hover);
+        }
 
-.row:last-child { border-bottom: none; }
-.ok { font-weight: 600; color: white; }
-.kosong { color: #f87171; font-weight: 700; }
-.status-ok { color: #34d399; font-weight: 700; }
-.status-warning { color: #f87171; font-weight: 700; }
+        .btn-absen-kirim { 
+            background: var(--primary); 
+            color: white;
+            font-size: 14px;
+            margin-top: 14px;
+            box-shadow: 0 4px 14px rgba(37, 99, 235, 0.3);
+        }
 
-/* TOMBOL EKSPOR KHUSUS ADMIN */
-.export-container {
-    max-width: 1200px;
-    margin: 0 auto 15px;
-    display: none;
-    justify-content: flex-end;
-    gap: 10px;
-}
+        .btn-logout { 
+            background: #ef4444 !important; 
+            color: #ffffff !important; 
+            border: 1px solid #dc2626 !important;
+            font-size: 12px; 
+            padding: 10px; 
+            margin-top: 10px;
+            box-shadow: 0 4px 12px rgba(239, 68, 68, 0.2) !important;
+        }
 
-.btn-export {
-    padding: 10px 16px;
-    border: none;
-    border-radius: 12px;
-    font-weight: 700;
-    font-size: 12.5px;
-    cursor: pointer;
-    color: white;
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    transition: all 0.25s ease;
-}
+        .btn-logout:hover {
+            background: #dc2626 !important;
+        }
 
-.btn-excel { background: linear-gradient(135deg, #059669, #10b981); box-shadow: 0 0 15px rgba(16, 185, 129, 0.3); }
-.btn-pdf { background: linear-gradient(135deg, #dc2626, #ef4444); box-shadow: 0 0 15px rgba(239, 68, 68, 0.3); }
-.btn-export:hover { transform: translateY(-2px); opacity: 0.95; }
+        .btn-kembali {
+            background: #f1f5f9;
+            color: var(--text-muted);
+            border: 1px solid var(--border-color);
+            font-size: 12px;
+            padding: 12px;
+            margin-top: 8px;
+            box-shadow: none;
+        }
 
-/* TOMBOL KELUAR (LOGOUT) */
-.btn-logout-main {
-    padding: 9px 18px;
-    border: none;
-    border-radius: 12px;
-    cursor: pointer;
-    color: white;
-    background: rgba(239, 68, 68, 0.15);
-    border: 1px solid rgba(239, 68, 68, 0.3);
-    font-weight: 600;
-    font-size: 13px;
-    transition: all 0.25s ease;
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-}
+        /* Camera View */
+        #kamera { 
+            width: 100%; 
+            aspect-ratio: 3 / 4;
+            object-fit: cover;
+            border-radius: var(--radius-md); 
+            background: #0f172a; 
+            border: 2px solid var(--border-color);
+            max-height: 380px;
+        }
 
-.btn-logout-main:hover {
-    background: rgba(239, 68, 68, 0.25);
-    border-color: rgba(239, 68, 68, 0.6);
-    transform: translateY(-1px);
-}
+        /* Table & Admin View */
+        .table-container {
+            width: 100%;
+            overflow-x: auto;
+            border-radius: var(--radius-md);
+            border: 1px solid var(--border-color);
+            margin-top: 15px;
+            background: white;
+            box-shadow: var(--shadow-sm);
+        }
 
-/* POPUP MODERN */
-#popup, #logoutPopup {
-    display: none;
-    position: fixed;
-    top: 0; left: 0;
-    width: 100%; height: 100%;
-    background: rgba(0, 0, 0, 0.65);
-    backdrop-filter: blur(8px);
-    z-index: 99999;
-    justify-content: center;
-    align-items: center;
-}
+        table { width: 100%; border-collapse: collapse; text-align: left; }
+        th, td { padding: 14px 16px; font-size: 13px; }
+        th { background: #f8fafc; color: var(--text-muted); font-weight: 700; text-transform: uppercase; font-size: 11px; letter-spacing: 0.5px; border-bottom: 1px solid var(--border-color); }
+        td { border-bottom: 1px solid var(--border-color); vertical-align: middle; }
+        tr:last-child td { border-bottom: none; }
+        
+        .badge {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 700;
+        }
+        .badge-in { background: #dcfce7; color: #15803d; }
+        .badge-out { background: #fef3c7; color: #b45309; }
+        .badge-off { background: #ffe4e6; color: #be123c; }
 
-.modern-popup-box {
-    background: #1e293b;
-    padding: 30px 25px;
-    border-radius: 22px;
-    min-width: 310px;
-    text-align: center;
-    border: 1px solid rgba(59, 130, 246, 0.4);
-    box-shadow: 0 0 30px rgba(59, 130, 246, 0.25);
-    animation: fadeIn 0.3s ease;
-}
+        .btn-lihat {
+            display: inline-block;
+            background: var(--primary-light);
+            color: var(--primary);
+            padding: 6px 12px;
+            border-radius: 8px;
+            font-size: 11px;
+            font-weight: 700;
+            text-decoration: none;
+        }
 
-.modern-popup-box h3 {
-    margin-top: 0;
-    color: white;
-    font-size: 19px;
-    font-weight: 700;
-}
+        .spinner {
+            border: 2px solid rgba(255,255,255,0.3);
+            border-radius: 50%;
+            border-top: 2px solid #fff;
+            width: 16px;
+            height: 16px;
+            animation: spin 0.8s linear infinite;
+            display: none;
+        }
 
-.modern-popup-box p, #popupText {
-    color: #cbd5e1;
-    margin: 14px 0 22px;
-    font-size: 14px;
-    line-height: 1.5;
-}
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
 
-.btn-popup-ok {
-    border: none;
-    padding: 11px 28px;
-    border-radius: 12px;
-    cursor: pointer;
-    color: white;
-    font-weight: 600;
-    font-size: 13.5px;
-    background: linear-gradient(135deg, #3b82f6, #06b6d4);
-    box-shadow: 0 4px 15px rgba(59, 130, 246, 0.4);
-    transition: all 0.2s ease;
-}
+        /* Modal Overlay */
+        .modal-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(15, 23, 42, 0.6); 
+            backdrop-filter: blur(4px);
+            display: flex; justify-content: center;
+            align-items: center; z-index: 1000;
+            padding: 16px;
+        }
+        .modal-box {
+            background: white; padding: 24px; border-radius: var(--radius-lg);
+            width: 100%; max-width: 320px; text-align: center;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+        }
 
-.btn-popup-ok:hover { opacity: 0.9; transform: translateY(-1px); }
-
-#btnBatal, #btnLogoutConfirm {
-    border: none;
-    padding: 11px 22px;
-    border-radius: 12px;
-    cursor: pointer;
-    color: white;
-    font-weight: 600;
-    font-size: 13.5px;
-    margin: 4px;
-    transition: all 0.2s ease;
-}
-#btnBatal { background: #475569; }
-#btnLogoutConfirm { background: #ef4444; }
-#btnBatal:hover, #btnLogoutConfirm:hover { opacity: 0.9; transform: translateY(-1px); }
-
-.spinner {
-    width: 18px; height: 18px;
-    display: inline-block;
-    border: 3px solid rgba(255,255,255,.3);
-    border-top: 3px solid #fff;
-    border-radius: 50%;
-    animation: spin .8s linear infinite;
-    vertical-align: middle;
-}
-
-@keyframes spin { to { transform: rotate(360deg); } }
-@keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
-
-@media(max-width: 1024px) { .grid { grid-template-columns: repeat(2, 1fr); } }
-@media(max-width: 768px) {
-    body { padding: 15px; }
-    .header h1 { font-size: 26px; }
-    .grid { grid-template-columns: 1fr; }
-    .search-box { flex-direction: column; }
-}
-</style>
+        .btn-disabled {
+            background-color: #f1f5f9 !important;
+            color: #94a3b8 !important;
+            border: 1px solid #e2e8f0 !important;
+            box-shadow: none !important;
+            cursor: not-allowed !important;
+            opacity: 0.6;
+            pointer-events: none;
+        }
+        
+        .btn-disabled .absen-icon {
+            background-color: #e2e8f0 !important;
+            color: #94a3b8 !important;
+        }
+        .btn-disabled .absen-title {
+            color: #94a3b8 !important;
+        }
+        .btn-disabled .info-jam-absen {
+            color: #94a3b8 !important;
+        }
+    </style>
 </head>
 <body>
 
-<!-- KOTAK LOGIN -->
-<div id="loginBox">
-    <div class="login-logo-container">
-        <img src="logo.png" alt="UFO Logo" onerror="this.style.display='none'">
+<!-- VIEW LOGIN -->
+<div id="view-login" class="box">
+    <div class="logo-container">
+        <img src="logo.png" class="logo-toko" alt="Logo UFO">
     </div>
-    <div class="login-title-area">
-        <h2>UFO KEBONSARI MALANG</h2>
-        <p>Sistem Dashboard Promotor</p>
-    </div>
-
+    <h2>UFO KEBONSARI</h2>
+    <div class="sub-title">Sistem Absensi Digital Karyawan</div>
+     
     <div class="input-group">
-        <label>USERNAME</label>
-        <input id="loginNama" type="text" placeholder="Masukkan Username" oninput="this.value = this.value.toUpperCase()">
+        <label for="user">Username</label>
+        <input type="text" id="user" placeholder="Masukkan username">
     </div>
-
+     
     <div class="input-group">
-        <label>PASSWORD</label>
-        <input id="loginPin" type="password" placeholder="Masukkan Password" onkeypress="if(event.key === 'Enter') login()">
+        <label for="pass">Password</label>
+        <input type="password" id="pass" placeholder="••••••••">
     </div>
-
-    <button id="btnLogin" onclick="login()">MASUK</button>
+     
+    <button class="btn-primary" id="btn-login" onclick="prosesLogin()">
+        <span>MASUK KE SISTEM</span>
+        <div class="spinner" id="login-spinner"></div>
+    </button>
 </div>
 
-<!-- DASHBOARD UTAMA -->
-<div id="dashboard" style="display:none;">
-    <div class="header">
-        <h1>UFO KEBONSARI</h1>
-        <p>Dashboard Monitoring Promotor & Toko</p>
+<!-- VIEW DASHBOARD -->
+<div id="view-dashboard" class="box" style="display:none;">
+    <div class="logo-container">
+        <img src="logo.png" class="logo-toko" alt="Logo UFO">
+    </div>
+    <h2>Halo, <span id="nama-user" style="color: var(--primary);"></span>!</h2>
+    <div class="sub-title">Selamat Bekerja & Tetap Semangat</div>
+
+    <div class="time-wrapper">
+        <div class="jam-digital" id="live-jam">00:00:00</div>
+        <div class="tanggal-digital" id="live-tanggal">Mencari Tanggal...</div>
     </div>
 
-    <!-- INDIKATOR LOADING ANIMASI -->
-    <div id="globalLoading" style="display:none; text-align:center; margin:15px 0; color:#60a5fa; font-weight:600; font-size:14px;">
-        <span class="spinner" style="margin-right:8px; width:20px; height:20px; border-width:3px;"></span>
-        Sedang menyiapkan data, mohon tunggu sebentar...
+    <!-- Elemen Periode Karyawan -->
+    <div id="periode-karyawan-text" style="display: none;"></div>
+
+    <div class="stat-box">
+        <div class="stat-item">
+            <span>Total Kehadiran</span>
+            <span id="total-masuk">0 hari</span>
+        </div>
+        <div class="stat-item">
+            <span>Total OFF (Libur)</span>
+            <span id="total-off" style="color: var(--danger) !important;">0 hari</span>
+        </div>
+        <div class="stat-item">
+            <span>Total PS</span>
+            <span id="total-ps" style="color: var(--warning) !important;">0 hari</span>
+        </div>
+        <div class="stat-item">
+            <span>Total Terlambat</span>
+            <span id="total-terlambat" style="color: var(--danger) !important;">0 Hari</span>
+        </div>
     </div>
 
-    <div style="max-width:1200px; margin:0 auto 14px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px;">
-        <div id="loginInfo" style="padding:7px 16px; border-radius:99px; background:rgba(15, 23, 42, 0.8); border:1px solid rgba(59, 130, 246, 0.3); color:#e2e8f0; font-size:13px; font-weight:600; box-shadow: 0 0 15px rgba(59, 130, 246, 0.15);"></div>
-        <button class="btn-logout-main" onclick="logout()">
-            🚪 Keluar
-        </button>
+    <div id="status-log">⏳ Memuat data absensi dari server...</div>
+
+    <button id="btn-refresh-gps" onclick="retrackGPS()" style="margin-bottom: 16px; padding: 8px 14px; font-size: 11px; background: #f1f5f9; color: var(--text-muted); width: auto; display: inline-flex; border-radius: 20px; border: 1px solid var(--border-color); box-shadow: none;">
+        🔄 Refresh Lokasi GPS
+    </button>
+ 
+    <!-- KARTU ABSENSI DENGAN WARNA WARNI BOX -->
+    <div class="btn-grid">
+        <div class="absen-card-group">
+            <!-- CHECK IN (BIRU CERAH) -->
+            <button class="absen-card card-in" id="btn-checkin" onclick="pilihAksi('Check In')">
+                <div class="absen-icon">
+                    <svg viewBox="0 0 24 24"><path d="M15 15l-3 3m0 0l-3-3m3 3V10M4 17v1a3 3 0 003 3h10a3 3 0 003-3v-1M4 7v-1a3 3 0 013-3h10a3 3 0 013 3v1"/></svg>
+                </div>
+                <span class="absen-title">Check In</span>
+                <span id="time-checkin" class="info-jam-absen">--:--</span>
+            </button>
+
+            <!-- CHECK OUT (KUNING CERAH) -->
+            <button class="absen-card card-out" id="btn-checkout" onclick="pilihAksi('Check Out')">
+                <div class="absen-icon">
+                    <svg viewBox="0 0 24 24"><path d="M9 11l3-3m0 0l3 3m-3-3v8M4 17v1a3 3 0 003 3h10a3 3 0 003-3v-1M4 7v-1a3 3 0 013-3h10a3 3 0 013 3v1"/></svg>
+                </div>
+                <span class="absen-title">Check Out</span>
+                <span id="time-checkout" class="info-jam-absen">--:--</span>
+            </button>
+        </div>
+
+        <!-- TOMBOL OFF/LIBUR (MERAH CERAH) -->
+        <div class="card-off-wrapper">
+            <button class="absen-card card-off" id="btn-off" onclick="prosesAbsenOff()">
+                <div class="absen-icon" style="width: 28px; height: 28px;">
+                    <svg viewBox="0 0 24 24"><path d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                </div>
+                <span class="absen-title">Ambil Hari OFF</span>
+                <span id="time-off" class="info-jam-absen"></span>
+            </button>
+        </div>
     </div>
 
-    <div class="search-box">
-        <select id="nama" onchange="gantiNamaAdmin()"></select>
-    </div>
-
-    <div id="summary"></div>
-
-    <div class="menu-tab">
-        <button id="btnAbsen" onclick="pindahMenu('Absensi')">📅 Absensi</button>
-        <button id="btnJual" onclick="pindahMenu('Penjualan')">💼 Penjualan</button>
-        <button id="btnUC" onclick="pindahMenu('UC')">⭐ UC</button>
-        <button id="btnPerolehan" onclick="pindahMenu('Perolehan')">📈 Perolehan</button> 
-        <button id="btnDenda" onclick="pindahMenu('DendaUC')">⚡ Denda & Late</button>
-        <button id="btnPromo" onclick="pindahMenu('Promo')">🏷️ Promo Toko</button>
-        <button id="btnRules" onclick="pindahMenu('Rules')">✨ SOP Promotor</button>
-        <button id="btnNotice" onclick="pindahMenu('Notice')">🔔 Notice</button>
-    </div>
-
-    <!-- AREA EKSPOR (HANYA MUNCUL UNTUK ADMIN) -->
-    <div class="export-container" id="exportArea">
-        <button class="btn-export btn-excel" onclick="prosesEkspor('excel')">📥 Unduh Excel</button>
-        <button class="btn-export btn-pdf" onclick="prosesEkspor('pdf')">📄 Unduh PDF</button>
-    </div>
-
-    <div id="hasil" class="grid"></div>
+    <!-- TOMBOL KELUAR DARI SISTEM -->
+    <button class="btn-logout" onclick="logout()">KELUAR DARI SISTEM</button>
 </div>
+
+<!-- VIEW KAMERA -->
+<div id="view-kamera" class="box" style="display:none;">
+    <div class="logo-container">
+        <img src="logo.png" class="logo-toko" alt="Logo UFO">
+    </div>
+    <h2 id="judul-kamera">Verifikasi Wajah</h2>
+    <div class="sub-title">Pastikan wajah Anda berada di dalam bingkai</div>
+     
+    <video id="kamera" autoplay playsinline></video>
+     
+    <button class="btn-kembali" id="btnGantiKamera" onclick="gantiKamera()" style="margin-top: 12px;">
+        🔄 Putar Kamera (Depan/Belakang)
+    </button>
+     
+    <button class="btn-absen-kirim" id="btnAbsen" onclick="prosesAbsen()">
+        <span>Kirim Absensi Sekarang</span>
+        <div class="spinner" id="absen-spinner"></div>
+    </button>
+    <button class="btn-kembali" onclick="kembaliKeDashboard()">Batal / Kembali</button>
+</div>
+
+<!-- VIEW ADMIN -->
+<div id="view-admin" class="box box-admin" style="display:none;">
+    <div class="admin-header" style="display: flex; flex-direction: column; gap: 15px; border-bottom: 1px solid var(--border-color); padding-bottom: 20px; margin-bottom: 20px; text-align: left;">
+        <div style="width: 100%;">
+            <h2 style="text-align: left; font-size: 20px; color: var(--primary);">UFO KEBONSARI MALANG</h2>
+            <div style="color: var(--text-muted); font-size: 13px; margin-top: 2px;">Panel Rekapitulasi Absensi Karyawan</div>
+        </div>
+        <div style="display: flex; gap: 10px; width: 100%;">
+            <button onclick="downloadCSV()" style="width: auto; background: #10b981; color: white; padding: 10px 16px; font-size: 12px; border-radius: 8px;">
+                📥 Unduh Laporan (CSV)
+            </button>
+            <button class="btn-logout" onclick="logout()" style="margin: 0; width: auto; padding: 10px 16px;">
+                KELUAR DARI SISTEM
+            </button>
+        </div>
+    </div>
+
+    <div style="background: #f8fafc; padding: 16px; border-radius: var(--radius-md); margin-bottom: 20px; border: 1px solid var(--border-color); text-align: left;">
+        <label style="font-weight: 700; display: block; margin-bottom: 8px; font-size: 11px; color: var(--text-muted); text-transform: uppercase;">
+            🔍 Filter Karyawan:
+        </label>
+        <select id="filter-nama-admin" onchange="filterLaporanAdmin()" style="width: 100%; max-width: 320px;">
+            <option value="SEMUA">-- Tampilkan Semua Karyawan --</option>
+        </select>
+        
+        <div id="periode-admin-text" style="display: none; margin-top: 12px; font-size: 12px; color: var(--primary); font-weight: 700; background: var(--primary-light); padding: 6px 12px; border-radius: 6px; display: inline-block;">
+            Periode: -
+        </div>
+        
+        <div id="stat-karyawan-admin" style="display: none; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-top: 15px;">
+            <div style="background: white; padding: 12px; border-radius: 10px; border: 1px solid var(--border-color); text-align: center;">
+                <div style="font-size: 11px; font-weight: 600; color: var(--text-muted);">Hadir</div>
+                <strong id="admin-stat-masuk" style="font-size: 20px; font-weight: 800; color: #10b981;">0</strong>
+            </div>
+            <div style="background: white; padding: 12px; border-radius: 10px; border: 1px solid var(--border-color); text-align: center;">
+                <div style="font-size: 11px; font-weight: 600; color: var(--text-muted);">Terlambat</div>
+                <strong id="admin-stat-terlambat" style="font-size: 20px; font-weight: 800; color: #ef4444;">0</strong>
+            </div>
+            <div style="background: white; padding: 12px; border-radius: 10px; border: 1px solid var(--border-color); text-align: center;">
+                <div style="font-size: 11px; font-weight: 600; color: var(--text-muted);">OFF</div>
+                <strong id="admin-stat-off" style="font-size: 20px; font-weight: 800; color: #dc2626;">0</strong>
+            </div>
+            <div style="background: white; padding: 12px; border-radius: 10px; border: 1px solid var(--border-color); text-align: center;">
+                <div style="font-size: 11px; font-weight: 600; color: var(--text-muted);">PS</div>
+                <strong id="admin-stat-ps" style="font-size: 20px; font-weight: 800; color: #f59e0b;">0</strong>
+            </div>
+        </div>
+    </div>
+     
+    <div class="table-container">
+        <table>
+            <thead>
+                <tr>
+                    <th>Waktu</th>
+                    <th>Nama</th>
+                    <th style="text-align: center;">Status</th>
+                    <th>Koordinat (GPS)</th>
+                    <th style="text-align: center;">Foto Selfie</th>
+                </tr>
+            </thead>
+            <tbody id="isi-tabel">
+                <tr>
+                    <td colspan="5" style="text-align: center; color: var(--text-muted); padding: 30px; font-style: italic;">Sedang memuat data laporan...</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- MODAL NOTIFIKASI -->
+<div id="modal-notif" class="modal-overlay" style="display:none;">
+    <div class="modal-box" id="modal-box">
+        <h3 id="modal-title" style="margin-top:0; font-size: 18px; color: var(--primary);">INFO</h3>
+        <div id="modal-pesan" style="font-size: 14px; color: var(--text-main); margin: 12px 0;">Pesan di sini</div>
+        <button class="btn-primary" onclick="tutupModal()">TUTUP</button>
+    </div>
+</div> 
 
 <script>
-const WEBAPP_URL = "https://script.google.com/macros/s/AKfycbwKbscxs_avurQJzcDDy2YB-laTL9kbzDNHcOuOV8TYGzQxiKtveG83AfvyvgoeB4pDpg/exec";
-let currentUser = "";
-let currentRole = "";
-let activeTab = "Absensi"; 
+const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyzWGgEbgvoYjjrIUddHxb-QXKy0QyoHXrozQJ2951XSKK4F13-d2VvW25MEs0cfKqpnA/exec";
 
-let cacheData = {
-    absensi: null,
-    penjualan: null,
-    uc: null,
-    perolehan: null,
-    denda: null,
-    promo: null,
-    rules: null,
-    notice: null
-};
+const TOKO_LAT = -8.020496288923635;
+const TOKO_LNG = 112.61885029434528;
+const RADIUS_MAKSIMAL = 100;
 
-// Cek Sesi Otomatis Saat Halaman Dimuat
-document.addEventListener("DOMContentLoaded", () => {
-    const savedName = localStorage.getItem("loginNama");
-    const savedRole = localStorage.getItem("loginRole");
-    if (savedName && savedRole) {
-        currentUser = savedName;
-        currentRole = savedRole;
-        document.getElementById("loginInfo").innerHTML = "⭕ <b>" + currentUser + "</b>" + (currentRole === "ADMIN" ? " (ADMIN)" : "");
-        document.getElementById("loginBox").style.display = "none";
-        document.getElementById("dashboard").style.display = "block";
+let streamKamera = null;
+let lat = 0, lng = 0, namaLogin = "", tipeAbsen = "";
+let totalHadir = 0, totalOff = 0, totalPs = 0, totalTerlambat = 0;
+let isGpsValid = false;
+let modeKamera = "user";
+let gpsWatcher = null;
+let serverTimeOffset = 0; 
+let dataLaporanGlobal = [];
 
-        if (currentRole === "USER") {
-            document.querySelector(".search-box").style.display = "none";
-            document.getElementById("btnPerolehan").style.display = "none";
-            muatSemuaDataLatarBelakang(currentUser).then(() => pindahMenu("Absensi"));
+function initPeriodeKaryawan() {
+    const labelPeriodeKaryawan = document.getElementById('periode-karyawan-text');
+    if (labelPeriodeKaryawan) {
+        labelPeriodeKaryawan.style.display = 'block';
+        let sekarang = new Date();
+        const namaBulanFull = ["Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"];
+        let blnMulai, thnMulai, blnSelesai, thnSelesai;
+        
+        if (sekarang.getDate() >= 26) {
+            blnMulai = namaBulanFull[sekarang.getMonth()];
+            thnMulai = sekarang.getFullYear();
+            let targetBulanDepan = new Date(sekarang.getFullYear(), sekarang.getMonth() + 1, 1);
+            blnSelesai = namaBulanFull[targetBulanDepan.getMonth()];
+            thnSelesai = targetBulanDepan.getFullYear();
         } else {
-            document.querySelector(".search-box").style.display = "block";
-            document.getElementById("btnPerolehan").style.display = "inline-block";
-            loadNama().then(() => pindahMenu("Absensi"));
+            let targetBulanLalu = new Date(sekarang.getFullYear(), sekarang.getMonth() - 1, 1);
+            blnMulai = namaBulanFull[targetBulanLalu.getMonth()];
+            thnMulai = targetBulanLalu.getFullYear();
+            blnSelesai = namaBulanFull[sekarang.getMonth()];
+            thnSelesai = sekarang.getFullYear();
         }
+        
+        labelPeriodeKaryawan.innerHTML = `
+            <span style="color: #64748b; font-size: 10px; text-transform: uppercase; letter-spacing: 0.5px; display: block; margin-bottom: 2px;">Periode Absensi</span>
+            <strong style="color: var(--primary); font-size: 13px; font-weight: 800; display: block;">26 ${blnMulai} ${thnMulai} - 25 ${blnSelesai} ${thnSelesai}</strong>
+        `;
     }
-});
+}
 
-function resetActiveButtons() {
-    const tabs = ["btnAbsen", "btnJual", "btnUC", "btnPerolehan", "btnDenda", "btnPromo", "btnRules", "btnNotice"];
-    tabs.forEach(id => {
-        const el = document.getElementById(id);
-        if(el) el.classList.remove("active");
+function kunciTombolKerja(statusKunci) {
+    const btnIn = document.getElementById('btn-checkin');
+    const btnOut = document.getElementById('btn-checkout');
+    const btnOff = document.getElementById('btn-off');
+
+    if(statusKunci) {
+        if(btnIn) { btnIn.classList.add('btn-disabled'); btnIn.disabled = true; }
+        if(btnOut) { btnOut.classList.add('btn-disabled'); btnOut.disabled = true; }
+        if(btnOff) { btnOff.classList.add('btn-disabled'); btnOff.disabled = true; }
+    } else {
+        if(btnIn) { btnIn.classList.remove('btn-disabled'); btnIn.disabled = false; }
+        if(btnOut) { btnOut.classList.remove('btn-disabled'); btnOut.disabled = false; }
+        if(btnOff) { btnOff.classList.remove('btn-disabled'); btnOff.disabled = false; }
+    }
+}
+
+function sinkronisasiWaktuServer() {
+    fetch(SCRIPT_URL, {
+        method: 'POST',
+        redirect: 'follow',
+        body: JSON.stringify({ aksi: "get_server_time" })
+    })
+    .then(res => res.json())
+    .then(data => {
+        if (data.time) {
+            const serverDate = new Date(data.time.replace(" ", "T") + "+07:00");
+            const localDate = new Date();
+            serverTimeOffset = serverDate.getTime() - localDate.getTime();
+        }
+    })
+    .catch(err => {
+        console.log("Gagal sinkronisasi waktu server:", err);
     });
 }
 
-async function login() {
-    const btn = document.getElementById("btnLogin");
-    btn.disabled = true;
-    btn.innerHTML = `<span class="spinner" style="margin-right:8px;"></span>MEMPROSES...`;
-    
-    const nama = document.getElementById("loginNama").value.trim().toUpperCase();
-    const pin = document.getElementById("loginPin").value.trim();
-
-    if (!nama || !pin) {
-        showPopup("Username dan Password harus diisi.");
-        btn.disabled = false;
-        btn.innerHTML = "MASUK";
-        return;
+function updateWaktu() {
+    const sekarang = new Date(Date.now() + serverTimeOffset);
+    const opsiTanggal = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+     
+    const elTanggal = document.getElementById('live-tanggal');
+    const elJam = document.getElementById('live-jam');
+     
+    if(elTanggal) elTanggal.innerText = sekarang.toLocaleDateString('id-ID', opsiTanggal);
+     
+    if(elJam) {
+        let jam = sekarang.getHours().toString().padStart(2, '0');
+        let menit = sekarang.getMinutes().toString().padStart(2, '0');
+        let detik = sekarang.getSeconds().toString().padStart(2, '0');
+        elJam.innerText = `${jam}:${menit}:${detik}`;
     }
+}
+setInterval(updateWaktu, 1000);
 
-    try {
-        const res = await fetch(WEBAPP_URL + "?action=login&nama=" + encodeURIComponent(nama) + "&pin=" + encodeURIComponent(pin));
-        const data = await res.json();
+function hitungJarak(lat1, lon1, lat2, lon2) {
+    var R = 6371000;
+    var dLat = (lat2 - lat1) * Math.PI / 180;
+    var dLon = (lon2 - lon1) * Math.PI / 180;
+    var a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+            Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
+            Math.sin(dLon / 2) * Math.sin(dLon / 2);
+    var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+    return R * c;
+}
 
-        if (!data.success) {
-            btn.disabled = false;
-            btn.innerHTML = "MASUK";
-            showPopup(data.message || "Username atau Password salah");
+function tampilkanStatistik() {
+    document.getElementById('total-masuk').innerText = totalHadir + " hari";
+    document.getElementById('total-off').innerText = totalOff + " hari";
+    document.getElementById('total-ps').innerText = totalPs + " hari";
+    
+    const elTerlambat = document.getElementById('total-terlambat');
+    if (elTerlambat) elTerlambat.innerText = totalTerlambat + " hari";
+}
+
+function tampilkanPesan(pesan, status) {
+    document.getElementById('modal-title').innerText = status === 'sukses' ? 'Berhasil' : 'Info';
+    document.getElementById('modal-pesan').innerHTML = `<p>${pesan}</p>`;
+    
+    const tombolBawaan = document.querySelector('#modal-box > button:last-child');
+    if (tombolBawaan) tombolBawaan.style.display = 'block';
+    
+    document.getElementById('modal-notif').style.display = 'flex';
+}
+
+function tutupModal() {
+    document.getElementById('modal-notif').style.display = 'none';
+}
+
+function prosesLogin() {
+    const username = document.getElementById('user').value.trim();
+    const password = document.getElementById('pass').value.trim();
+    
+    const btn = document.getElementById('btn-login'); 
+    const spinner = document.getElementById('login-spinner');
+
+    if(btn) btn.disabled = true;
+    if(spinner) spinner.style.display = 'inline-block';
+         
+    fetch(SCRIPT_URL, {
+        method: 'POST',
+        redirect: 'follow',
+        body: JSON.stringify({ aksi: "login", username: username, password: password })
+    })
+    .then(res => res.json())
+    .then(data => {
+        if(btn) btn.disabled = false;
+        if(spinner) spinner.style.display = 'none';
+             
+        if(data.status === "sukses") {
+            namaLogin = data.nama;
+
+            localStorage.setItem('sesi_username', username);
+            localStorage.setItem('sesi_password', password);
+
+            document.getElementById('view-login').style.display = 'none';
+                
+            if(data.role === "admin") {
+                document.getElementById('view-admin').style.display = 'block';
+                muatDataAdmin();
+            } else {
+                initPeriodeKaryawan();
+                document.getElementById('view-dashboard').style.display = 'block';
+                document.getElementById('nama-user').innerText = namaLogin;
+                
+                // KUNCI TOMBOL SEJAK AWAL AGAR TIDAK NYALA DULUAN
+                kunciTombolKerja(true);
+
+                document.getElementById('status-log').innerHTML = "⏳ Memuat data absensi dari server...";
+
+                sinkronisasiFullServer();
+                sinkronisasiWaktuServer();
+                startGPS();
+            }
+        } else {
+            tampilkanPesan("Username atau Password salah! Periksa kembali data Anda.", "info");
+        }
+    })
+    .catch(err => {
+        if(btn) btn.disabled = false;
+        if(spinner) spinner.style.display = 'none';
+        tampilkanPesan("Gagal terhubung ke server. Pastikan koneksi internet aktif.", "info");
+        console.error(err);
+    });
+}
+
+function sinkronisasiFullServer() {
+    fetch(SCRIPT_URL, { 
+        method: 'POST', 
+        redirect: 'follow', 
+        body: JSON.stringify({ aksi: "get_laporan" }) 
+    })
+    .then(res => res.json())
+    .then(data => {
+        if (!data || data.length <= 1) {
+            cekValidasiHarian();
             return;
         }
 
-        currentUser = nama.toUpperCase();
-        currentRole = data.role;
-        localStorage.setItem("loginNama", currentUser);
-        localStorage.setItem("loginRole", currentRole);
+        let sekarang = new Date();
+        let targetBulan = sekarang.getMonth();
+        let targetTahun = sekarang.getFullYear();
 
-        document.getElementById("loginInfo").innerHTML = "⭕ <b>" + currentUser + "</b>" + (currentRole === "ADMIN" ? " (ADMIN)" : "");
-        document.getElementById("loginBox").style.display = "none";
-        document.getElementById("dashboard").style.display = "block";
-
-        showPopup("Selamat Datang " + currentUser);
-
-        if (currentRole === "USER") {
-            document.querySelector(".search-box").style.display = "none";
-            document.getElementById("btnPerolehan").style.display = "none";
-            await muatSemuaDataLatarBelakang(currentUser);
-            pindahMenu("Absensi");
-        } else {
-            document.querySelector(".search-box").style.display = "block";
-            document.getElementById("btnPerolehan").style.display = "inline-block";
-            await loadNama();
+        if (sekarang.getDate() >= 26) {
+            targetBulan += 1;
+            if (targetBulan > 11) { targetBulan = 0; targetTahun += 1; }
         }
-    } catch(err) {
-        showPopup("Gagal terhubung ke server: " + err.message);
-        btn.disabled = false;
-        btn.innerHTML = "MASUK";
-    }
-}
 
-async function muatSemuaDataLatarBelakang(namaTarget) {
-    const loadEl = document.getElementById("globalLoading");
-    if(loadEl) loadEl.style.display = "block";
-
-    try {
-        const [resAbsen, resJual, resUC, resPerolehan, resDendaLate, resPromo, resRules, resNotice] = await Promise.all([
-            fetch(WEBAPP_URL + "?nama=" + encodeURIComponent(namaTarget)).then(r => r.json()),
-            fetch(WEBAPP_URL + "?action=penjualan&nama=" + encodeURIComponent(namaTarget)).then(r => r.json()),
-            fetch(WEBAPP_URL + "?action=uc&nama=" + encodeURIComponent(namaTarget)).then(r => r.json()),
-            fetch(WEBAPP_URL + "?action=perolehan").then(r => r.json()),
-            fetch(WEBAPP_URL + "?action=rekap_terlambat").then(r => r.json()),
-            fetch(WEBAPP_URL + "?action=promo").then(r => r.json()),
-            fetch(WEBAPP_URL + "?action=rules").then(r => r.json()),
-            fetch(WEBAPP_URL + "?action=notice").then(r => r.json())
-        ]);
-
-        cacheData.absensi = resAbsen;
-        cacheData.penjualan = resJual;
-        cacheData.uc = resUC;
-        cacheData.perolehan = resPerolehan;
-        cacheData.denda = { perolehan: resPerolehan, late: resDendaLate };
-        cacheData.promo = resPromo;
-        cacheData.rules = resRules;
-        cacheData.notice = resNotice;
-    } catch(e) {
-        console.error("Gagal sinkronisasi data cache", e);
-    } finally {
-        if(loadEl) loadEl.style.display = "none";
-    }
-}
-
-async function loadNama(){
-    try {
-        const res = await fetch(WEBAPP_URL + "?action=nama");
-        const data = await res.json();
+        let hitungHadir = 0, hitungOff = 0, hitungPs = 0, hitungTerlambat = 0;
+        let logPerTanggal = {};
         
-        let html = `<option value="" disabled selected hidden>Pilih Nama Promotor</option>`;
-        if(Array.isArray(data)) {
-            data.forEach((nama) => { 
-                html += `<option value="${nama}">${nama}</option>`; 
+        let tglSekarangFormatted = Utilities_formatTanggalHariIni();
+        let statusHariIni = [];
+        let detailWaktuHariIni = {};
+
+        for (let i = 1; i < data.length; i++) {
+            let row = data[i];
+            let kolomWaktu = String(row[0] || "").trim();
+            let kolomNama = String(row[1] || "").trim();
+            let kolomStatus = String(row[2] || "").trim();
+
+            if (kolomNama === namaLogin && kolomWaktu && kolomWaktu.includes(" ")) {
+                let parts = kolomWaktu.split(" ");
+                let dateParts = parts[0].split("-");
+                let timeParts = parts[1].split(":");
+
+                if (parts[0] === tglSekarangFormatted) {
+                    if (!statusHariIni.includes(kolomStatus)) statusHariIni.push(kolomStatus);
+                    if (parts[1]) detailWaktuHariIni[kolomStatus] = parts[1];
+                }
+
+                try {
+                    let tglAbsen = new Date(parseInt(dateParts[2]), parseInt(dateParts[1]) - 1, parseInt(dateParts[0]), parseInt(timeParts[0]), parseInt(timeParts[1]), parseInt(timeParts[2] || 0));
+                    
+                    let pBulan = tglAbsen.getMonth();
+                    let pTahun = tglAbsen.getFullYear();
+
+                    if (tglAbsen.getDate() >= 26) {
+                        pBulan += 1;
+                        if (pBulan > 11) { pBulan = 0; pTahun += 1; }
+                    }
+
+                    if (pBulan === targetBulan && pTahun === targetTahun) {
+                        let strTgl = dateParts[0] + "-" + dateParts[1] + "-" + dateParts[2];
+                        if (!logPerTanggal[strTgl]) {
+                            logPerTanggal[strTgl] = { status: [], jamCheckIn: [], menitCheckIn: [], jamCheckOut: [] };
+                        }
+                        logPerTanggal[strTgl].status.push(kolomStatus);
+                        if (kolomStatus === "Check In") {
+                            logPerTanggal[strTgl].jamCheckIn.push(tglAbsen.getHours());
+                            logPerTanggal[strTgl].menitCheckIn.push(tglAbsen.getMinutes());
+                        }
+                        if (kolomStatus === "Check Out") {
+                            logPerTanggal[strTgl].jamCheckOut.push(tglAbsen.getHours());
+                        }
+                    }
+                } catch(e) { console.error(e); }
+            }
+        }
+
+        for (let tgl in logPerTanggal) {
+            let item = logPerTanggal[tgl];
+            if (item.status.includes("OFF")) hitungOff++;
+            if (item.status.includes("Check In")) {
+                if (item.jamCheckIn[0] > 8 || (item.jamCheckIn[0] === 8 && item.menitCheckIn[0] > 10)) {
+                    hitungTerlambat++;
+                }
+            }
+            if (item.status.includes("Check In") && item.status.includes("Check Out")) {
+                hitungHadir++;
+                let lastOut = item.jamCheckOut[item.jamCheckOut.length - 1];
+                if (lastOut === 17 || lastOut === 18) hitungPs++;
+            }
+        }
+
+        totalHadir = hitungHadir;
+        totalOff = hitungOff;
+        totalPs = hitungPs;
+        totalTerlambat = hitungTerlambat;
+        tampilkanStatistik();
+
+        const tglSekarang = new Date().toDateString();
+        localStorage.setItem(`absen_${namaLogin}`, JSON.stringify({ tanggal: tglSekarang, status: statusHariIni }));
+        localStorage.setItem(`detailWaktu_${namaLogin}`, JSON.stringify(detailWaktuHariIni));
+
+        cekValidasiHarian();
+    })
+    .catch(err => {
+        console.error("Gagal sinkronisasi data dari server:", err);
+        cekValidasiHarian();
+    });
+}
+
+function Utilities_formatTanggalHariIni() {
+    let d = new Date();
+    let tgl = d.getDate().toString().padStart(2, '0');
+    let bln = (d.getMonth() + 1).toString().padStart(2, '0');
+    let thn = d.getFullYear();
+    return `${tgl}-${bln}-${thn}`;
+}
+
+function muatDataAdmin() {
+    const tabelBody = document.getElementById('isi-tabel');
+    if(!tabelBody) return;
+    
+    tabelBody.innerHTML = "<tr><td colspan='5' style='text-align: center; padding: 30px;'>Memuat data laporan...</td></tr>";
+         
+    fetch(SCRIPT_URL, { method: 'POST', redirect: 'follow', body: JSON.stringify({ aksi: "get_laporan" }) })
+    .then(res => res.json())
+    .then(data => {
+        dataLaporanGlobal = data; 
+        
+        const dropdown = document.getElementById('filter-nama-admin');
+        if(dropdown) {
+            dropdown.innerHTML = '<option value="SEMUA">-- Tampilkan Semua Karyawan --</option>';
+            let daftarNama = [];
+            for(let i = 1; i < data.length; i++) {
+                let nama = data[i][1];
+                if(nama && !daftarNama.includes(nama)) {
+                    daftarNama.push(nama);
+                }
+            }
+            daftarNama.sort().forEach(nama => {
+                dropdown.innerHTML += `<option value="${nama}">${nama}</option>`;
             });
         }
-        document.getElementById("nama").innerHTML = html;
 
-        // Ambil data pendukung admin secara paralel
-        const [resPerolehan, resLate, resPromo, resRules, resNotice] = await Promise.all([
-            fetch(WEBAPP_URL + "?action=perolehan").then(r => r.json()),
-            fetch(WEBAPP_URL + "?action=rekap_terlambat").then(r => r.json()),
-            fetch(WEBAPP_URL + "?action=promo").then(r => r.json()),
-            fetch(WEBAPP_URL + "?action=rules").then(r => r.json()),
-            fetch(WEBAPP_URL + "?action=notice").then(r => r.json())
-        ]);
+        renderTabelAdmin("SEMUA");
+    })
+    .catch(err => {
+        tabelBody.innerHTML = "<tr><td colspan='5' style='text-align: center; padding: 30px; color: var(--danger);'>Gagal memuat data. Periksa koneksi internet Anda.</td></tr>";
+        console.error(err);
+    });
+}
 
-        cacheData.perolehan = resPerolehan;
-        cacheData.denda = { perolehan: resPerolehan, late: resLate };
-        cacheData.promo = resPromo;
-        cacheData.rules = resRules;
-        cacheData.notice = resNotice;
+function filterLaporanAdmin() {
+    const namaDipilih = document.getElementById('filter-nama-admin').value;
+    renderTabelAdmin(namaDipilih);
+}
 
-        // Jika dropdown pertama kali load dan admin ingin langsung melihat data pertama
-        if (data.length > 0) {
-            document.getElementById("nama").value = data[0];
-            await gantiNamaAdmin();
+function renderTabelAdmin(namaTarget) {
+    const tabelBody = document.getElementById('isi-tabel');
+    if (!tabelBody) return;
+    
+    tabelBody.innerHTML = "";
+    
+    if (!dataLaporanGlobal || dataLaporanGlobal.length <= 1) {
+        tabelBody.innerHTML = "<tr><td colspan='5' style='text-align: center; padding: 30px;'>Belum ada data absensi.</td></tr>";
+        return;
+    }
+
+    let sekarang = new Date();
+    let targetBulan = sekarang.getMonth();
+    let targetTahun = sekarang.getFullYear();
+    
+    if (sekarang.getDate() >= 26) {
+        targetBulan += 1;
+        if (targetBulan > 11) { targetBulan = 0; targetTahun += 1; }
+    }
+
+    const labelPeriode = document.getElementById('periode-admin-text');
+    if (labelPeriode) {
+        labelPeriode.style.display = 'inline-block';
+        const namaBulan = ["Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"];
+        let blnMulai, thnMulai, blnSelesai, thnSelesai;
+        
+        if (sekarang.getDate() >= 26) {
+            blnMulai = namaBulan[sekarang.getMonth()];
+            thnMulai = sekarang.getFullYear();
+            let targetBulanDepan = new Date(sekarang.getFullYear(), sekarang.getMonth() + 1, 1);
+            blnSelesai = namaBulan[targetBulanDepan.getMonth()];
+            thnSelesai = targetBulanDepan.getFullYear();
+        } else {
+            let targetBulanLalu = new Date(sekarang.getFullYear(), sekarang.getMonth() - 1, 1);
+            blnMulai = namaBulan[targetBulanLalu.getMonth()];
+            thnMulai = targetBulanLalu.getFullYear();
+            blnSelesai = namaBulan[sekarang.getMonth()];
+            thnSelesai = sekarang.getFullYear();
         }
-    } catch(e) {
-        console.error("Gagal memuat nama promotor", e);
+        labelPeriode.innerText = `Periode: 26 ${blnMulai} ${thnMulai} - 25 ${blnSelesai} ${thnSelesai}`;
+    }
+
+    let totalMasuk = 0, totalOff = 0, totalPs = 0, totalTerlambatAdmin = 0;
+    let logPerTanggal = {};
+
+    for (let i = 1; i < dataLaporanGlobal.length; i++) {
+        let row = dataLaporanGlobal[i];
+        if (!row || row.length < 3) continue;
+
+        let kolomWaktu = String(row[0] || "").trim();
+        let kolomNama = String(row[1] || "").trim();
+        let kolomStatus = String(row[2] || "").trim();
+
+        if (namaTarget === "SEMUA" || kolomNama === namaTarget) {
+            let tr = document.createElement('tr');
+            let statusBadgeClass = 'badge-off';
+            if (kolomStatus === 'Check In') statusBadgeClass = 'badge-in';
+            if (kolomStatus === 'Check Out') statusBadgeClass = 'badge-out';
+            
+            let koordinat = (row[3] && row[4]) ? `${parseFloat(row[3]).toFixed(5)}, ${parseFloat(row[4]).toFixed(5)}` : '-';
+
+            tr.innerHTML = `
+                <td style="padding: 12px; font-weight: 500; font-size: 13px; white-space: nowrap;">${kolomWaktu || '-'}</td>
+                <td style="padding: 12px; font-weight: bold; font-size: 13px;">${kolomNama || '-'}</td>
+                <td style="padding: 12px; text-align: center;"><span class="badge ${statusBadgeClass}">${kolomStatus || '-'}</span></td>
+                <td style="padding: 12px; font-family: monospace; font-size: 12px; color: var(--text-muted);">${koordinat}</td>
+                <td style="padding: 12px; text-align: center;">
+                    ${row[5] && row[5] !== '-' ? `<a href="${row[5]}" target="_blank" class="btn-lihat">Lihat Foto</a>` : '<span style="color: #cbd5e1; font-size: 12px;">Tanpa Foto</span>'}
+                </td>
+            `;
+            tabelBody.appendChild(tr);
+        }
+
+        if (namaTarget !== "SEMUA" && kolomNama === namaTarget) {
+            try {
+                if (kolomWaktu && kolomWaktu.includes(" ")) {
+                    let parts = kolomWaktu.split(" ");
+                    let dateParts = parts[0].split("-");
+                    let timeParts = parts[1].split(":");
+                    
+                    let day = parseInt(dateParts[0], 10);
+                    let month = parseInt(dateParts[1], 10) - 1;
+                    let year = parseInt(dateParts[2], 10);
+
+                    let tglAbsen = new Date(year, month, day, parseInt(timeParts[0], 10), parseInt(timeParts[1], 10));
+                    
+                    let pBulan = tglAbsen.getMonth();
+                    let pTahun = tglAbsen.getFullYear();
+                    
+                    if (tglAbsen.getDate() >= 26) {
+                        pBulan += 1;
+                        if (pBulan > 11) { pBulan = 0; pTahun += 1; }
+                    }
+
+                    if (pBulan === targetBulan && pTahun === targetTahun) {
+                        let stringTanggal = parts[0];
+                        if (!logPerTanggal[stringTanggal]) {
+                            logPerTanggal[stringTanggal] = { status: [], jamCheckIn: [], menitCheckIn: [], jamCheckOut: [] };
+                        }
+                        logPerTanggal[stringTanggal].status.push(kolomStatus);
+                        if (kolomStatus === "Check In") {
+                            logPerTanggal[stringTanggal].jamCheckIn.push(tglAbsen.getHours());
+                            logPerTanggal[stringTanggal].menitCheckIn.push(tglAbsen.getMinutes());
+                        }
+                        if (kolomStatus === "Check Out") {
+                            logPerTanggal[stringTanggal].jamCheckOut.push(tglAbsen.getHours());
+                        }
+                    }
+                }
+            } catch (e) {
+                console.error("Format tanggal bermasalah", e);
+            }
+        }
+    }
+
+    const boxStat = document.getElementById('stat-karyawan-admin');
+
+    if (namaTarget === "SEMUA") {
+        if (boxStat) boxStat.style.display = 'none';
+    } else {
+        if (boxStat) boxStat.style.display = 'grid';
+
+        for (let tgl in logPerTanggal) {
+            let hariIni = logPerTanggal[tgl];
+            if (hariIni.status.includes("OFF")) totalOff++;
+            if (hariIni.status.includes("Check In")) {
+                if (hariIni.jamCheckIn[0] > 8 || (hariIni.jamCheckIn[0] === 8 && hariIni.menitCheckIn[0] > 10)) {
+                    totalTerlambatAdmin++;
+                }
+            }
+            if (hariIni.status.includes("Check In") && hariIni.status.includes("Check Out")) {
+                totalMasuk++;
+                let lastOut = hariIni.jamCheckOut[hariIni.jamCheckOut.length - 1];
+                if (lastOut === 17 || lastOut === 18) totalPs++;
+            }
+        }
+        
+        if (document.getElementById('admin-stat-masuk')) document.getElementById('admin-stat-masuk').innerText = totalMasuk;
+        if (document.getElementById('admin-stat-terlambat')) document.getElementById('admin-stat-terlambat').innerText = totalTerlambatAdmin;
+        if (document.getElementById('admin-stat-off')) document.getElementById('admin-stat-off').innerText = totalOff;
+        if (document.getElementById('admin-stat-ps')) document.getElementById('admin-stat-ps').innerText = totalPs;
     }
 }
 
-async function gantiNamaAdmin() {
-    let namaTerpilih = document.getElementById("nama").value.trim();
-    if(!namaTerpilih) return;
-    await muatSemuaDataLatarBelakang(namaTerpilih);
-    pindahMenu(activeTab);
+function retrackGPS() {
+    const btnGps = document.getElementById('btn-refresh-gps');
+    if(btnGps) {
+        btnGps.disabled = true;
+        btnGps.innerText = "🔄 Memperbarui GPS...";
+    }
+
+    if (gpsWatcher) {
+        navigator.geolocation.clearWatch(gpsWatcher);
+        gpsWatcher = null;
+    }
+
+    document.getElementById('status-log').innerText = "Mendeteksi ulang koordinat...";
+    startGPS();
+
+    setTimeout(() => {
+        if(btnGps) {
+            btnGps.disabled = false;
+            btnGps.innerText = "🔄 Refresh Lokasi GPS";
+        }
+    }, 2000);
 }
 
-function pindahMenu(namaMenu) {
-    activeTab = namaMenu;
-    document.getElementById("exportArea").style.display = "none";
-    resetActiveButtons();
+function startGPS() {
+    isGpsValid = false;
 
-    if (namaMenu === "Absensi") {
-        document.getElementById("btnAbsen").classList.add("active");
-        renderAbsensi(cacheData.absensi);
-    } else if (namaMenu === "Penjualan") {
-        document.getElementById("btnJual").classList.add("active");
-        renderPenjualan(cacheData.penjualan);
-    } else if (namaMenu === "UC") {
-        document.getElementById("btnUC").classList.add("active");
-        renderUC(cacheData.uc);
-    } else if (namaMenu === "Perolehan") {
-        document.getElementById("btnPerolehan").classList.add("active");
-        renderPerolehan(cacheData.perolehan);
-    } else if (namaMenu === "DendaUC") {
-        document.getElementById("btnDenda").classList.add("active");
-        renderDendaUC(cacheData.denda);
-    } else if (namaMenu === "Promo") {
-        document.getElementById("btnPromo").classList.add("active");
-        renderPromo(cacheData.promo);
-    } else if (namaMenu === "Rules") {
-        document.getElementById("btnRules").classList.add("active");
-        renderRules(cacheData.rules);
-    } else if (namaMenu === "Notice") {
-        document.getElementById("btnNotice").classList.add("active");
-        renderNotice(cacheData.notice);
+    if (navigator.geolocation) {
+        gpsWatcher = navigator.geolocation.watchPosition(
+            (position) => {
+                lat = position.coords.latitude;
+                lng = position.coords.longitude;
+                 
+                var jarak = hitungJarak(lat, lng, TOKO_LAT, TOKO_LNG);
+                if (jarak <= RADIUS_MAKSIMAL) {
+                    isGpsValid = true;
+                } else {
+                    isGpsValid = false;
+                }
+                
+                cekValidasiHarian();
+            },
+            (error) => {
+                isGpsValid = false;
+                document.getElementById('status-log').innerText = "⚠️ Gagal membaca lokasi GPS. Aktifkan Izin Lokasi di HP!";
+                cekValidasiHarian();
+            },
+            { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
+        );
+    } else {
+        tampilkanPesan("Browser kamu tidak mendukung GPS.", "info");
     }
+}
+
+function cekValidasiHarian() {
+    tampilkanStatistik(); 
+    const tglSekarang = new Date().toDateString();
+    const logAbsenHariIni = JSON.parse(localStorage.getItem(`absen_${namaLogin}`)) || {};
+
+    if (logAbsenHariIni.tanggal && logAbsenHariIni.tanggal !== tglSekarang) {
+        localStorage.setItem(`absen_${namaLogin}`, JSON.stringify({ tanggal: tglSekarang, status: [] }));
+        localStorage.removeItem(`waktuCheckIn_${namaLogin}`); 
+        localStorage.removeItem(`detailWaktu_${namaLogin}`); 
+    }
+
+    const currentLog = JSON.parse(localStorage.getItem(`absen_${namaLogin}`)) || { status: [] };
+    const status = currentLog.status || [];
+    
+    const detailWaktu = JSON.parse(localStorage.getItem(`detailWaktu_${namaLogin}`)) || {};
+    document.getElementById('time-checkin').innerText = detailWaktu['Check In'] ? "IN: " + detailWaktu['Check In'] : "--:--";
+    document.getElementById('time-checkout').innerText = detailWaktu['Check Out'] ? "OUT: " + detailWaktu['Check Out'] : "--:--";
+    document.getElementById('time-off').innerText = detailWaktu['OFF'] ? "Jam: " + detailWaktu['OFF'] : "";
+
+    const btnCheckIn = document.getElementById('btn-checkin');
+    const btnCheckOut = document.getElementById('btn-checkout');
+    const btnOff = document.getElementById('btn-off');
+
+    const sudahCheckIn = status.includes('Check In');
+    const sudahCheckOut = status.includes('Check Out');
+    const sudahOff = status.includes('OFF');
+
+    if (sudahOff || sudahCheckOut) {
+        btnCheckIn.disabled = true; btnCheckIn.classList.add('btn-disabled');
+        btnCheckOut.disabled = true; btnCheckOut.classList.add('btn-disabled');
+        btnOff.disabled = true; btnOff.classList.add('btn-disabled');
+
+        if (sudahOff) {
+            document.getElementById('status-log').innerText = "Status hari ini: OFF (Libur).";
+        } else {
+            document.getElementById('status-log').innerText = "Anda sudah selesai bekerja hari ini. Terima kasih!";
+        }
+        return;
+    }
+
+    if (sudahCheckIn && !sudahCheckOut) {
+        btnCheckIn.disabled = true; btnCheckIn.classList.add('btn-disabled');
+        btnOff.disabled = true; btnOff.classList.add('btn-disabled');
+
+        if (isGpsValid) {
+            btnCheckOut.disabled = false; btnCheckOut.classList.remove('btn-disabled');
+            document.getElementById('status-log').innerHTML = "Status : Sedang bekerja<br>Silahkan Checkout saat pulang";
+        } else {
+            btnCheckOut.disabled = true; btnCheckOut.classList.add('btn-disabled');
+            var jarak = (lat && lng) ? Math.round(hitungJarak(lat, lng, TOKO_LAT, TOKO_LNG)) : 0;
+            document.getElementById('status-log').innerHTML = `🔴 Diluar Area (+${jarak}m dari toko).<br>Masuk area toko untuk Checkout!`;
+        }
+        return;
+    }
+
+    if (!sudahCheckIn && !sudahOff) {
+        btnOff.disabled = false; 
+        btnOff.classList.remove('btn-disabled');
+
+        if (isGpsValid) {
+            btnCheckIn.disabled = false; btnCheckIn.classList.remove('btn-disabled');
+            btnCheckOut.disabled = true; btnCheckOut.classList.add('btn-disabled');
+            document.getElementById('status-log').innerHTML = "🟢 GPS Terverifikasi: Silakan Check In atau OFF";
+        } else {
+            btnCheckIn.disabled = true; btnCheckIn.classList.add('btn-disabled');
+            btnCheckOut.disabled = true; btnCheckOut.classList.add('btn-disabled');
+
+            var jarak = (lat && lng) ? Math.round(hitungJarak(lat, lng, TOKO_LAT, TOKO_LNG)) : 0;
+            if (lat === 0 && lng === 0) {
+                document.getElementById('status-log').innerHTML = "⏳ Menghubungkan GPS...<br>Gunakan tombol OFF jika hari ini libur.";
+            } else {
+                document.getElementById('status-log').innerHTML = `🔴 Diluar Area (+${jarak}m dari toko).<br>Hanya tombol OFF yang aktif.`;
+            }
+        }
+    }
+}
+
+function pilihAksi(tipe) {
+    tipeAbsen = tipe;
+    document.getElementById('view-dashboard').style.display = 'none';
+    document.getElementById('view-kamera').style.display = 'block';
+    document.getElementById('judul-kamera').innerText = "Kamera " + tipe;
+    jalankanKamera();
+}
+
+function jalankanKamera() {
+    if(streamKamera) {
+        streamKamera.getTracks().forEach(track => track.stop());
+    }
+    const elKamera = document.getElementById('kamera');
+    elKamera.style.transform = (modeKamera === "user") ? "scaleX(-1)" : "scaleX(1)";
+
+    navigator.mediaDevices.getUserMedia({ video: { facingMode: modeKamera } })
+    .then(stream => {
+        streamKamera = stream;
+        elKamera.srcObject = stream;
+    })
+    .catch(err => {
+        tampilkanPesan("Gagal membuka kamera.", "info");
+        kembaliKeDashboard();
+    });
+}
+
+function gantiKamera() {
+    modeKamera = (modeKamera === "user") ? "environment" : "user";
+    jalankanKamera();
+}
+
+function kembaliKeDashboard() {
+    if(streamKamera) streamKamera.getTracks().forEach(track => track.stop());
+    document.getElementById('view-kamera').style.display = 'none';
+    document.getElementById('view-dashboard').style.display = 'block';
+    cekValidasiHarian();
+}
+
+function prosesAbsenOff() {
+    document.getElementById('modal-title').innerText = 'Konfirmasi Libur';
+    document.getElementById('modal-pesan').innerHTML = `
+        <p style="margin-bottom: 12px;">Apakah Anda yakin ingin mengambil hari OFF (Libur) hari ini?</p>
+        <div style="display: flex; gap: 10px; margin-top: 15px;">
+            <button onclick="eksekusiAbsenOff()" style="background: var(--danger); color: white; border: none; padding: 12px; border-radius: 10px; flex: 1; font-weight: bold; cursor: pointer;">YA, LIBUR</button>
+            <button onclick="tutupModal()" style="background: #e2e8f0; color: #334155; border: none; padding: 12px; border-radius: 10px; flex: 1; font-weight: bold; cursor: pointer;">BATAL</button>
+        </div>
+    `;
+    document.getElementById('modal-notif').style.display = 'flex';
+}
+
+function eksekusiAbsenOff() {
+    tutupModal(); 
+    const btn = document.getElementById('btn-off');
+    if(btn) btn.disabled = true;
+     
+    fetch(SCRIPT_URL, {
+        method: 'POST',
+        redirect: 'follow',
+        body: JSON.stringify({ 
+            aksi: "absen", 
+            nama: namaLogin, 
+            status: "OFF", 
+            lat: lat || 0, 
+            lng: lng || 0, 
+            foto: "" 
+        })
+    })
+    .then(res => res.json())
+    .then(data => {
+        if(data.pesan.includes("berhasil")) {
+            const logAbsenHariIni = JSON.parse(localStorage.getItem(`absen_${namaLogin}`)) || { status: [] };
+            logAbsenHariIni.status.push('OFF');
+            localStorage.setItem(`absen_${namaLogin}`, JSON.stringify(logAbsenHariIni));
+
+            const serverDate = new Date(Date.now() + serverTimeOffset);
+            const waktuSelesaiFormatted = serverDate.toLocaleTimeString('id-ID');
+            let detailWaktu = JSON.parse(localStorage.getItem(`detailWaktu_${namaLogin}`)) || {};
+            detailWaktu['OFF'] = waktuSelesaiFormatted;
+            localStorage.setItem(`detailWaktu_${namaLogin}`, JSON.stringify(detailWaktu));
+
+            totalOff++;
+            localStorage.setItem(`totalOff_${namaLogin}`, totalOff);
+            tampilkanStatistik();
+            tampilkanPesan("Berhasil mengambil hari OFF dan tercatat di server!", "sukses");
+        } else {
+            tampilkanPesan(data.pesan, 'info');
+        }
+        cekValidasiHarian();
+    })
+    .catch(err => {
+        if(btn) btn.disabled = false;
+        tampilkanPesan("Terjadi kesalahan jaringan saat mengirim data OFF.", "info");
+    });
+}
+
+function prosesAbsen() {
+    if(lat === 0 && lng === 0) { 
+        tampilkanPesan("Lokasi GPS belum terbaca...", "info"); 
+        return;
+    }
+
+    var jarak = hitungJarak(lat, lng, TOKO_LAT, TOKO_LNG);
+    if (jarak > RADIUS_MAKSIMAL) {
+        tampilkanPesan("Anda berada di luar radius toko.", "info");
+        return;
+    }
+     
+    const serverDate = new Date(Date.now() + serverTimeOffset);
+    const jamSekarang = serverDate.getHours();
+    const waktuSekarang = serverDate.toLocaleTimeString('id-ID');
+    const waktuMilidetikSekarang = serverDate.getTime();
+
+    if (tipeAbsen === 'Check Out' && (jamSekarang === 17 || jamSekarang === 18)) {
+        const waktuCheckInLokal = localStorage.getItem(`waktuCheckIn_${namaLogin}`);
+        
+        if (waktuCheckInLokal) {
+            const selisihMilidetik = waktuMilidetikSekarang - parseInt(waktuCheckInLokal);
+            const selisihJam = selisihMilidetik / (1000 * 60 * 60);
+
+            if (selisihJam < 8) {
+                const sisaMenit = Math.ceil((8 - selisihJam) * 60);
+                tampilkanPesan(`Anda belum bisa checkout karena belum 8 jam kerja. Kurang ${sisaMenit} menit lagi.`, "info");
+                return;
+            }
+        }
+    }
+
+    const video = document.getElementById('kamera');
+    const canvas = document.createElement('canvas');
+    canvas.width = video.videoWidth; 
+    canvas.height = video.videoHeight;
+    const ctx = canvas.getContext('2d');
+    
+    ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+    
+    const latText = lat ? lat.toFixed(6) : "0.000000";
+    const lngText = lng ? lng.toFixed(6) : "0.000000";
+    const formatWaktu = serverDate.toLocaleDateString('id-ID') + ' ' + waktuSekarang + ' WIB';
+    const gpsString = `GPS: ${latText}, ${lngText}`;
+    
+    const boxHeight = Math.round(canvas.height * 0.12);
+    ctx.fillStyle = "rgba(0, 0, 0, 0.6)"; 
+    ctx.fillRect(0, canvas.height - boxHeight, canvas.width, boxHeight);
+    
+    ctx.fillStyle = "#ffffff"; 
+    ctx.font = `bold ${Math.round(canvas.height * 0.035)}px Arial`;
+    ctx.fillText(formatWaktu, Math.round(canvas.width * 0.05), canvas.height - Math.round(boxHeight * 0.6));
+    
+    ctx.fillStyle = "#facc15"; 
+    ctx.font = `${Math.round(canvas.height * 0.03)}px Arial`;
+    ctx.fillText(gpsString, Math.round(canvas.width * 0.05), canvas.height - Math.round(boxHeight * 0.25));
+
+    const dataFoto = canvas.toDataURL('image/jpeg', 0.5);
+
+    const btn = document.getElementById('btnAbsen');
+    const spinner = document.getElementById('absen-spinner');
+     
+    if(btn) btn.disabled = true;
+    if(spinner) spinner.style.display = 'inline-block';
+     
+    fetch(SCRIPT_URL, {
+        method: 'POST',
+        redirect: 'follow',
+        body: JSON.stringify({ 
+            aksi: "absen", nama: namaLogin, status: tipeAbsen, lat: lat, lng: lng, foto: dataFoto 
+        })
+    })
+    .then(res => res.json())
+    .then(data => {
+        if(spinner) spinner.style.display = 'none';
+        if(btn) btn.disabled = false;
+         
+        if(data.pesan.includes("berhasil")) {
+            const logAbsenHariIni = JSON.parse(localStorage.getItem(`absen_${namaLogin}`));
+            logAbsenHariIni.status.push(tipeAbsen);
+            localStorage.setItem(`absen_${namaLogin}`, JSON.stringify(logAbsenHariIni));
+
+            let detailWaktu = JSON.parse(localStorage.getItem(`detailWaktu_${namaLogin}`)) || {};
+            detailWaktu[tipeAbsen] = waktuSekarang;
+            localStorage.setItem(`detailWaktu_${namaLogin}`, JSON.stringify(detailWaktu));
+
+            let infoDurasi = "";
+
+            if (tipeAbsen === 'Check In') {
+                localStorage.setItem(`waktuCheckIn_${namaLogin}`, waktuMilidetikSekarang);
+                if (jamSekarang > 8 || (jamSekarang === 8 && serverDate.getMinutes() > 10)) {
+                    totalTerlambat++;
+                    localStorage.setItem(`totalTerlambat_${namaLogin}`, totalTerlambat);
+                }
+            }
+            if (tipeAbsen === 'Check Out') {
+                const waktuCheckInLokal = localStorage.getItem(`waktuCheckIn_${namaLogin}`);
+                if (waktuCheckInLokal) {
+                    const selisihMilidetik = waktuMilidetikSekarang - parseInt(waktuCheckInLokal);
+                    const totalMenit = Math.floor(selisihMilidetik / (1000 * 60));
+                    const jam = Math.floor(totalMenit / 60);
+                    const menit = totalMenit % 60;
+                    infoDurasi = `<br><br>⏱️ <strong>Durasi Kerja Anda Hari Ini:</strong><br>${jam} Jam ${menit} Menit.`;
+                }
+
+                totalHadir++;
+                localStorage.setItem(`totalHadir_${namaLogin}`, totalHadir);
+                 
+                if (jamSekarang === 17 || jamSekarang === 18) {
+                    totalPs++;
+                    localStorage.setItem(`totalPs_${namaLogin}`, totalPs);
+                }
+                localStorage.removeItem(`waktuCheckIn_${namaLogin}`);
+            }
+             
+            tampilkanStatistik();
+            tampilkanPesan("Absen " + tipeAbsen + " berhasil pada pukul " + waktuSekarang + "!" + infoDurasi, 'sukses');
+        } else {
+            tampilkanPesan(data.pesan, 'info');
+        }
+        kembaliKeDashboard();
+    })
+    .catch(err => {
+        if(spinner) spinner.style.display = 'none';
+        if(btn) btn.disabled = false;
+        tampilkanPesan("Terjadi kesalahan jaringan.", "info");
+    });
 }
 
 function logout() {
-    document.getElementById("logoutPopup").style.display = "flex";
+    if (gpsWatcher) {
+        navigator.geolocation.clearWatch(gpsWatcher);
+        gpsWatcher = null;
+    }
+    namaLogin = "";
+    document.getElementById('user').value = "";
+    document.getElementById('pass').value = "";
+    document.getElementById('view-dashboard').style.display = 'none';
+    document.getElementById('view-admin').style.display = 'none';
+    document.getElementById('view-login').style.display = 'block';
+    kunciTombolKerja(false);
 }
 
-function tutupLogout() {
-    document.getElementById("logoutPopup").style.display = "none";
-}
+window.downloadCSV = function() {
+    let barisTabel = document.querySelectorAll("#isi-tabel tr");
+    if (barisTabel.length === 0 || (barisTabel.length === 1 && barisTabel[0].innerText.includes("Memuat"))) {
+        alert("Data absen belum dimuat sempurna dari server. Silakan tunggu beberapa detik.");
+        return;
+    }
 
-function logoutConfirm() {
-    document.getElementById("logoutPopup").style.display = "none";
-    currentUser = "";
-    currentRole = "";
+    let csvContent = "\uFEFF"; 
+    let barisData = [];
 
-    document.getElementById("dashboard").style.display = "none";
-    document.getElementById("loginBox").style.display = "block";
-    document.getElementById("loginNama").value = "";
-    document.getElementById("loginPin").value = "";
-    document.getElementById("summary").innerHTML = "";
-    document.getElementById("hasil").innerHTML = "";
-    document.getElementById("exportArea").style.display = "none";
-
-    localStorage.removeItem("loginNama");
-    localStorage.removeItem("loginRole");
-
-    const btn = document.getElementById("btnLogin");
-    btn.disabled = false;
-    btn.innerHTML = "MASUK";
-}    
-
-function tampil(v){
-    return (v && v.trim() !== "") ? `<span class="ok">${v}</span>` : `<span class="kosong">-</span>`;
-}
-
-function renderAbsensi(result) {
-    if(!result) return;
-    const data = result.data || [];
-    const terlambat = result.terlambat || 0;
-    data.sort((a,b) => Number(a.tanggal) - Number(b.tanggal));
-
-    let belumPulang = 0;
-    data.forEach(x => { if(!x.pulang) belumPulang++; });
-
-    if(data.length){
-        document.getElementById("summary").innerHTML = `
-        <div class="summary-card">
-            <h2>🏆 ${data[0].nama}</h2>
-            <p>Total Hari Absen : <b>${data.length}</b></p>
-            <p>Belum Finger Pulang : <b>${belumPulang}</b></p>
-            <p>Datang Terlambat : <b>${terlambat}</b></p>
-        </div>`;
-        if(currentRole === "ADMIN") document.getElementById("exportArea").style.display = "flex";
+    if (dataLaporanGlobal && dataLaporanGlobal.length > 1) {
+        barisData = dataLaporanGlobal;
     } else {
-        document.getElementById("summary").innerHTML = "";
-    }
-
-    let html = "";
-    data.forEach(x => {
-        const isTerlambat = (x.terlambat || "").toString().toUpperCase() === "YA";
-        const status = x.pulang ? '<span class="status-ok">Lengkap</span>' : '<span class="status-warning">Belum Lengkap</span>';
-        const kelasCard = x.pulang ? "success" : "warning";
-        const kelasTambahan = isTerlambat ? "late" : "";
-
-        html += `
-        <div class="card ${kelasCard} ${kelasTambahan}">
-            <div class="tanggal">📅 ${x.tanggal}<br>${status}
-                ${isTerlambat ? '<div style="color:#facc15;font-weight:700;margin-top:5px;">TERLAMBAT</div>' : ''}
-            </div>
-            <div class="row"><span>Masuk</span>${tampil(x.masuk)}</div>
-            <div class="row"><span>Istirahat 1</span>${tampil(x.istirahat1)}</div>
-            <div class="row"><span>Kembali 1</span>${tampil(x.kembali1)}</div>
-            <div class="row"><span>Istirahat 2</span>${tampil(x.istirahat2)}</div>
-            <div class="row"><span>Kembali 2</span>${tampil(x.kembali2)}</div>
-            <div class="row"><span>Pulang</span>${tampil(x.pulang)}</div>
-        </div>`;
-    });
-
-    if(data.length === 0) html = `<div class="card">Data tidak ditemukan</div>`;
-    document.getElementById("hasil").className = "grid";
-    document.getElementById("hasil").innerHTML = html;
-}
-
-function renderPenjualan(data) {
-    if(!data) return;
-    document.getElementById("summary").innerHTML = `
-    <div class="summary-card">
-        <h2>💰 ${data.nama}</h2>
-        <p>Periode : <b>${data.tanggalPertama} - ${data.tanggalTerakhir}</b></p>
-        <p>Total Unit : <b>${data.totalUnit}</b></p>
-        <p>Total Omzet Toko : <span style="font-weight:bold; color:${Number(data.totalOmzet) >= 100000000 ? '#34d399' : Number(data.totalOmzet) >= 80000000 ? '#f59e0b' : '#ef4444'};">Rp ${Number(data.totalOmzet).toLocaleString("id-ID")}</span></p>
-    </div>`;
-
-    let html = "";
-    const grupTanggal = {};
-    (data.detail || []).forEach(x => {
-        if (!grupTanggal[x.tanggal]) grupTanggal[x.tanggal] = [];
-        grupTanggal[x.tanggal].push(x);
-    });
-
-    for (const tanggal in grupTanggal) {
-        let isiProduk = "";
-        let totalHari = 0;
-        grupTanggal[tanggal].forEach(item => {
-            totalHari += Number(item.omzet);
-            isiProduk += `
-                <div style="margin-bottom:12px; padding-bottom:8px; border-bottom:1px solid rgba(255,255,255,0.06);">
-                    <div style="font-size:12px; font-weight:600; line-height:1.4; margin-bottom:6px; color:#e2e8f0;">${item.produk}</div>
-                    <div class="row"><span>Qty</span><span>${item.qty}</span></div>
-                    <div class="row"><span>Omzet</span><span>Rp ${Number(item.omzet).toLocaleString("id-ID")}</span></div>
-                </div>`;
-        });
-
-        html += `
-        <div class="card success">
-            <div class="tanggal">📅 ${tanggal}</div>
-            ${isiProduk}
-            <div class="row" style="font-weight:700; font-size:13px;"><span>Total Hari Ini</span><span>Rp ${totalHari.toLocaleString("id-ID")}</span></div>
-        </div>`;
-    }
-
-    if(data.detail && data.detail.length > 0 && currentRole === "ADMIN") document.getElementById("exportArea").style.display = "flex";
-    document.getElementById("hasil").className = "grid";
-    document.getElementById("hasil").innerHTML = html;
-}
-
-function renderUC(data) {
-    if(!data) return;
-    document.getElementById("summary").innerHTML = `
-    <div class="summary-card">
-        <h2>💎 ${data.nama}</h2>
-        <p>Periode : <b>${data.tanggalPertama} - ${data.tanggalTerakhir}</b></p>
-        <p>Total UC : <b>${data.totalUC}</b></p>
-    </div>`;
-
-    let html = "";
-    (data.detail || []).forEach(x => {
-        html += `
-        <div class="card success">
-            <div class="tanggal">📅 ${x.tanggal}</div>
-            <div style="font-size:12px; font-weight:600; line-height:1.4; margin:12px 0; color:#e2e8f0;">${x.produk}</div>
-            <div class="row"><span>Qty</span><span>${x.qty}</span></div>
-        </div>`;
-    });
-
-    if(data.detail && data.detail.length > 0 && currentRole === "ADMIN") document.getElementById("exportArea").style.display = "flex";
-    document.getElementById("hasil").className = "grid";
-    document.getElementById("hasil").innerHTML = html;
-}
-
-function renderPerolehan(data) {
-    if(!data || !data.list) return;
-    const user = data.list.find(x => (x.nama || "").toUpperCase() === (currentUser || "").toUpperCase());
-    const posisi = user ? data.list.findIndex(x => (x.nama || "").toUpperCase() === (currentUser || "").toUpperCase()) + 1 : 0;
-    
-    let totalOmzet = 0;
-    let totalUC = 0;
-    data.list.forEach(x => {
-        totalOmzet += Number(x.omzet || 0);
-        totalUC += Number(x.uc || 0);
-    });
-
-    document.getElementById("summary").innerHTML = `
-    <div class="summary-card">
-    <h2>📊 Perolehan</h2>
-    ${currentRole === "ADMIN" ? 
-        `<p>👥 Jumlah Promotor : <b>${data.list.length}</b></p>
-         <p>💰 Total Omzet Toko : <span style="font-weight:bold;color:#34d399">Rp ${totalOmzet.toLocaleString("id-ID")}</span></p>
-         <p>💎 Total UC : <b>${totalUC}</b></p>` :
-        `<p>👤 ${currentUser}</p>
-         <p>💰 Total Omzet : <span style="font-weight:bold; color:${Number(user ? user.omzet : 0) >= 100000000 ? '#34d399' : Number(user ? user.omzet : 0) >= 80000000 ? '#f59e0b' : '#ef4444'};">Rp ${Number(user ? user.omzet : 0).toLocaleString("id-ID")}</span></p>
-         <p>🏅 Posisi : <b>${posisi} dari ${data.list.length} Promotor</b></p>`
-    }
-    </div>`;
-
-    let html = `<div class="summary-card">`;
-    data.list.forEach((x, i) => {
-        const omzetVal = Number(x.omzet || 0);
-        const warnaOmzet = omzetVal >= 100000000 ? '#34d399' : omzetVal >= 80000000 ? '#f59e0b' : '#ef4444';
-
-        html += `
-            <div class="row-perolehan-export" style="display:flex; align-items:center; justify-content:space-between; padding:12px 0; border-bottom:1px solid rgba(255,255,255,0.06); gap:10px;">
-                <div style="display:flex; align-items:center; gap:12px; min-width:0; flex:1;">
-                    <div style="width:30px; height:30px; border-radius:50%; background:rgba(59,130,246,0.2); display:flex; align-items:center; justify-content:center; font-weight:700; font-size:13px; flex-shrink:0;">${i + 1}</div>
-                    <div class="nama-p" style="font-weight:600; font-size:13.5px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${x.nama}</div>
-                </div>
-                <div style="text-align:right; white-space:nowrap; flex-shrink:0;">
-                    <div class="omzet-p" style="font-weight:700; font-size:13.5px; color:${warnaOmzet};">Rp ${omzetVal.toLocaleString("id-ID")}</div>
-                    <div class="uc-p" style="font-size:12px; font-weight:600; color:#38bdf8; margin-top:2px;">⭐ UC : ${x.uc || 0}</div>
-                </div>
-            </div>`;
-    });
-    html += `</div>`;
-
-    if(data.list && data.list.length > 0 && currentRole === "ADMIN") document.getElementById("exportArea").style.display = "flex";
-    document.getElementById("hasil").className = "";
-    document.getElementById("hasil").innerHTML = html;
-}
-
-/* FUNGSI DENDA & LATE DINAMIS (DENGAN TARGET UC PER PROMOTOR) */
-function renderDendaUC(dendaObj) {
-    if(!dendaObj) return;
-    const resPerolehan = dendaObj.perolehan;
-    const resLate = dendaObj.late;
-
-    const DENDA_UC_PER_UNIT = 5000;
-    const DENDA_LATE_PER_KALI = 10000;
-
-    const lateMap = {};
-    if(resLate && resLate.list) {
-        resLate.list.forEach(x => { lateMap[x.nama.toUpperCase()] = x.terlambat; });
-    }
-
-    // HEADER / SUMMARY
-    document.getElementById("summary").innerHTML = `
-    <div class="summary-card">
-        <h2 style="margin-bottom:14px;">⚖️ Rekap Denda & Keterlambatan</h2>
-        <div style="display:flex; flex-wrap:wrap; gap:12px; margin-top:10px;">
-            <div style="flex:1; min-width:200px; background:rgba(255,255,255,0.05); padding:10px 14px; border-radius:12px; border:1px solid rgba(255,255,255,0.08);">
-                <div style="font-size:11px; color:#94a3b8; font-weight:600; text-transform:uppercase;">Aturan Target UC</div>
-                <div style="font-size:13px; color:#38bdf8; font-weight:700; margin-top:2px;">Disesuaikan Per Promotor</div>
-                <div style="font-size:11px; color:#f43f5e; margin-top:2px;">Denda: Rp 5.000 / Unit Kurang</div>
-            </div>
-            <div style="flex:1; min-width:200px; background:rgba(255,255,255,0.05); padding:10px 14px; border-radius:12px; border:1px solid rgba(255,255,255,0.08);">
-                <div style="font-size:11px; color:#94a3b8; font-weight:600; text-transform:uppercase;">Aturan Keterlambatan</div>
-                <div style="font-size:13px; color:#facc15; font-weight:700; margin-top:2px;">Kena Denda Per Late</div>
-                <div style="font-size:11px; color:#f87171; margin-top:2px;">Denda: Rp 10.000 / Kali Late</div>
-            </div>
-        </div>
-    </div>`;
-
-    let html = `<div class="summary-card">`;
-    if(resPerolehan && resPerolehan.list) {
-        resPerolehan.list.forEach((x, i) => {
-            const totalUC = Number(x.uc || 0);
-            
-            // 1. Cek status ikut target UC
-            const isIkutUC = (x.ikutUC || "YA").toString().toUpperCase() !== "TIDAK";
-            
-            // 2. Tentukan target UC individual (default 16 jika kosong)
-            const targetMinUC = isIkutUC ? Number(x.targetUC || 16) : 0;
-            
-            // 3. Hitung kekurangan UC & denda UC
-            const kurangUC = (isIkutUC && totalUC < targetMinUC) ? (targetMinUC - totalUC) : 0;
-            const dendaUC = kurangUC * DENDA_UC_PER_UNIT;
-            
-            // 4. Hitung denda keterlambatan (Late)
-            const totalTerlambat = lateMap[x.nama.toUpperCase()] || 0;
-            const dendaLate = totalTerlambat * DENDA_LATE_PER_KALI;
-            const totalDenda = dendaUC + dendaLate;
-
-            // Rincian informasi sebelah kanan
-            let infoDetail = "";
-            if (isIkutUC) {
-                infoDetail = `Target: ${targetMinUC} | Kurang UC: ${kurangUC} | Late: ${totalTerlambat}x`;
-            } else {
-                infoDetail = `Non-Target UC | Late: ${totalTerlambat}x`;
+        barisData.push(["Waktu", "Nama Karyawan", "Status", "Koordinat (GPS)"]);
+        barisTabel.forEach(tr => {
+            let td = tr.querySelectorAll("td");
+            if (td.length >= 4) {
+                barisData.push([
+                    td[0].innerText.trim(),
+                    td[1].innerText.trim(),
+                    td[2].innerText.trim(),
+                    td[3].innerText.trim()
+                ]);
             }
-
-            html += `
-            <div class="row-perolehan-export" style="display:flex; justify-content:space-between; align-items:center; padding:12px 0; border-bottom:1px solid rgba(255,255,255,0.08); gap:12px;">
-                <div style="min-width:0; flex:1; padding-right:8px;">
-                    <div class="nama-p" style="font-size:11px; font-weight:700; color:#fff; white-space:nowrap; overflow:hidden; text-overflow:clip;">
-                        ${i+1}. ${x.nama}
-                    </div>
-                </div>
-                <div style="text-align:right; flex-shrink:0; white-space:nowrap;">
-                    ${totalDenda > 0 
-                        ? `<div class="omzet-p" style="font-weight:800; font-size:13.5px; color:#ff3333; text-shadow: 0 0 8px rgba(255, 51, 51, 0.4);">Rp ${totalDenda.toLocaleString("id-ID")}</div>
-                           <div class="uc-p" style="font-size:10px; color:#fde047; margin-top:2px; font-weight:600;">${infoDetail}</div>`
-                        : `<div class="omzet-p" style="font-weight:700; font-size:12px; color:#34d399;">Aman</div>
-                           <div class="uc-p" style="font-size:10px; color:#94a3b8; margin-top:2px;">${infoDetail}</div>`
-                    }
-                </div>
-            </div>`;
-        });
-    }
-    html += `</div>`;
-
-    if(currentRole === "ADMIN") document.getElementById("exportArea").style.display = "flex";
-    document.getElementById("hasil").className = "";
-    document.getElementById("hasil").innerHTML = html;
-}
-function renderRules(result) {
-    if(!result) return;
-    const list = result.data || [];
-    document.getElementById("summary").innerHTML = `
-    <div class="summary-card">
-        <h2>✨ Aturan Display</h2>
-    </div>`;
-
-    let html = "";
-    if (list.length === 0) {
-        html = `<div class="card">Data tidak ditemukan</div>`;
-    } else {
-        list.forEach(a => {
-            html += `
-            <div class="card card-rules">
-                <div class="tanggal" style="text-align:left; font-size:14px; color:#facc15;">📌 ${a.poin || a.Poin || ""}</div>
-                <div style="font-size:13px; line-height:1.5; color:#e2e8f0; margin-top:8px; border-top:1px solid rgba(255,255,255,0.06); padding-top:8px;">${a.desc || a.Desc || a.Deskripsi || ""}</div>
-            </div>`;
         });
     }
 
-    document.getElementById("hasil").className = "grid";
-    document.getElementById("hasil").innerHTML = html;
-}
-
-function renderNotice(result) {
-    if(!result) return;
-    const list = result.data || [];
-    document.getElementById("summary").innerHTML = `
-        <div class="summary-card">
-            <h2>🔔 Notice</h2>
-        </div>`;
-
-    let html = "";
-    if (list.length === 0) {
-        html = `<div class="card card-notice">Data tidak ditemukan</div>`;
-    } else {
-        list.forEach(x => {
-            html += `
-                <div class="card card-notice">
-                    <div class="tanggal" style="text-align:left; font-size:12px; color:#cbd5e1;">📅 ${x.tanggal || x.Tanggal || "-"}</div>
-                    <div style="font-weight:700; font-size:14px; color:#60a5fa; margin:6px 0;">📣 ${x.judul || x.Judul || "Notice"}</div>
-                    <div style="font-size:13px; line-height:1.5; color:#e2e8f0; border-top:1px solid rgba(255,255,255,0.06); padding-top:8px; margin-bottom:12px;">${x.pesan || x.Pesan || ""}</div>
-                    <div style="font-size:11px; color:#94a3b8; text-align:right;">Oleh: <b>${x.dari || x.Dari || "Supervisor"}</b></div>
-                </div>`;
+    barisData.forEach(function(rowArray) {
+        let row = rowArray.map(val => {
+            let cleanVal = String(val).replace(/"/g, '""');
+            return `"${cleanVal}"`;
         });
-    }
+        csvContent += row.join(",") + "\r\n";
+    });
 
-    document.getElementById("hasil").className = "grid";
-    document.getElementById("hasil").innerHTML = html;
-}
-
-function renderPromo(result) {
-    if(!result) return;
-    const list = result.data || [];
-    document.getElementById("summary").innerHTML = `
-    <div class="summary-card">
-        <h2>🏷️ Promo Toko</h2>
-    </div>`;
-
-    let html = "";
-    if (list.length === 0) {
-        html = `<div class="card">Data tidak ditemukan</div>`;
-    } else {
-        list.forEach(p => {
-            html += `
-            <div class="card success">
-                <div class="tanggal" style="text-align:left; font-size:14px; color:#60a5fa;">🔥 ${p.judul || p.Judul || ""}</div>
-                <div style="font-size:11.5px; color:#cbd5e1; margin:6px 0;"><b>Periode:</b> ${p.periode || p.Periode || ""}</div>
-                <div style="font-size:13px; line-height:1.5; color:#e2e8f0; border-top:1px solid rgba(255,255,255,0.06); padding-top:8px;">${p.detail || p.Detail || ""}</div>
-            </div>`;
-        });
-    }
-
-    document.getElementById("hasil").className = "grid";
-    document.getElementById("hasil").innerHTML = html;
-}
-
-function prosesEkspor(format) {
-    let namaKaryawan = (currentRole === "USER") ? currentUser : (document.getElementById("nama").value.trim() || "Semua_Promotor");
-    const namaFile = `Laporan_${activeTab}_${namaKaryawan.replace(/\s+/g, '_')}`;
-    const targetElement = document.getElementById("hasil");
-
-    if (format === 'excel') {
-        let rowsArr = [];
-        if (activeTab === "Absensi") {
-            rowsArr.push(["LAPORAN ABSENSI PROMOTOR: " + namaKaryawan.toUpperCase()], []);
-            rowsArr.push(["Tanggal", "Status", "Masuk", "Istirahat 1", "Kembali 1", "Istirahat 2", "Kembali 2", "Pulang"]);
-            targetElement.querySelectorAll(".card").forEach(card => {
-                let tglText = card.querySelector(".tanggal").innerText.replace(/📅/g, '').split("\n")[0].trim();
-                let status = card.querySelector(".tanggal").innerText.includes("Lengkap") ? "Lengkap" : "Belum Lengkap";
-                if(card.querySelector(".tanggal").innerText.includes("TERLAMBAT")) status += " (Terlambat)";
-                let rowsData = card.querySelectorAll(".row");
-                rowsArr.push([tglText, status, rowsData[0]?.querySelector(".ok, .kosong")?.innerText || "-", rowsData[1]?.querySelector(".ok, .kosong")?.innerText || "-", rowsData[2]?.querySelector(".ok, .kosong")?.innerText || "-", rowsData[3]?.querySelector(".ok, .kosong")?.innerText || "-", rowsData[4]?.querySelector(".ok, .kosong")?.innerText || "-", rowsData[5]?.querySelector(".ok, .kosong")?.innerText || "-"]);
-            });
-        } else if (activeTab === "Penjualan") {
-            rowsArr.push(["LAPORAN PENJUALAN PROMOTOR: " + namaKaryawan.toUpperCase()], []);
-            rowsArr.push(["Tanggal", "Nama Produk / Deskripsi", "Qty", "Omzet"]);
-            targetElement.querySelectorAll(".card").forEach(card => {
-                let tglText = card.querySelector(".tanggal").innerText.replace(/📅/g, '').trim();
-                let itemProduks = card.innerHTML.split(/<div style="[^"]*margin-bottom:12px;[^"]*">/i);
-                itemProduks.shift();
-                itemProduks.forEach(item => {
-                    let tempDiv = document.createElement("div");
-                    tempDiv.innerHTML = item;
-                    let namaProduk = tempDiv.innerText.split("Qty")[0].trim().replace(/\n/g, ' ');
-                    let qty = tempDiv.querySelectorAll(".row")[0]?.querySelectorAll("span")[1]?.innerText || "0";
-                    let omzet = tempDiv.querySelectorAll(".row")[1]?.querySelectorAll("span")[1]?.innerText || "0";
-                    rowsArr.push([tglText, namaProduk, qty, omzet]);
-                });
-                let totalHari = card.querySelectorAll(".row")[card.querySelectorAll(".row").length - 1]?.querySelectorAll("span")[1]?.innerText || "0";
-                rowsArr.push(["", "TOTAL HARI INI", "", totalHari], []);
-            });
-        } else if (activeTab === "UC") {
-            rowsArr.push(["LAPORAN UC: " + namaKaryawan.toUpperCase()], []);
-            rowsArr.push(["Tanggal", "Produk", "Qty"]);
-            targetElement.querySelectorAll(".card").forEach(card => {
-                let tglText = card.querySelector(".tanggal").innerText.replace(/📅/g, '').trim();
-                let namaProduk = card.querySelector("div[style*='font-size:12px']")?.innerText.trim() || "-";
-                let qty = card.querySelector(".row span:last-child")?.innerText || "0";
-                rowsArr.push([tglText, namaProduk, qty]);
-            });
-        } else if (activeTab === "Perolehan" || activeTab === "DendaUC") {
-            rowsArr.push([activeTab === "Perolehan" ? "PEROLEHAN PROMOTOR" : "REKAP DENDA & LATE"], []);
-            rowsArr.push(["No", "Nama Promotor", "Omzet", "UC / Keterangan"]);
-            targetElement.querySelectorAll(".row-perolehan-export").forEach((row, idx) => {
-                let nama = row.querySelector(".nama-p")?.innerText.trim() || "-";
-                let omzet = row.querySelector(".omzet-p")?.innerText.trim() || "0";
-                let uc = row.querySelector(".uc-p")?.innerText.trim() || "0";
-                rowsArr.push([idx + 1, nama, omzet, uc]);
-            });
-        }
-        const ws = XLSX.utils.aoa_to_sheet(rowsArr);
-        const wb = XLSX.utils.book_new();
-        XLSX.utils.book_append_sheet(wb, ws, activeTab);
-        XLSX.writeFile(wb, `${namaFile}.xlsx`);
-    } else if (format === 'pdf') {
-        const elemenPrint = targetElement.cloneNode(true);
-        elemenPrint.style.color = "#000";
-        elemenPrint.style.background = "#fff";
-        elemenPrint.style.padding = "20px";
-        elemenPrint.querySelectorAll(".card, .summary-card").forEach(el => {
-            el.style.background = "#f8fafc";
-            el.style.border = "1px solid #cbd5e1";
-            el.style.color = "#000";
-        });
-        elemenPrint.querySelectorAll("span, div").forEach(el => { el.style.color = "#000"; });
-        html2pdf().set({ margin: 10, filename: `${namaFile}.pdf`, html2canvas: { scale: 2 }, jsPDF: { format: 'a4' } }).from(elemenPrint).save();
-    }
-}
-
-function showPopup(pesan) {
-    document.getElementById("popupText").innerText = pesan;
-    document.getElementById("popup").style.display = "flex";
-}
-
-function tutupPopup() {
-    document.getElementById("popup").style.display = "none";
-}
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    
+    const tgl = new Date();
+    const formatTanggal = `${tgl.getFullYear()}${(tgl.getMonth()+1).toString().padStart(2,'0')}${tgl.getDate().toString().padStart(2,'0')}`;
+    const namaFile = `Rekap_Absen_UFO_${formatTanggal}.csv`;
+    
+    link.setAttribute("href", url);
+    link.setAttribute("download", namaFile);
+    link.style.display = 'none';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+};
 </script>
-
-<!-- POPUP INFORMASI -->
-<div id="popup">
-  <div class="modern-popup-box">
-    <h3>Informasi</h3>
-    <div id="popupText"></div>
-    <button class="btn-popup-ok" onclick="tutupPopup()">OK</button>
-  </div>
-</div>
-
-<!-- POPUP KELUAR -->
-<div id="logoutPopup">
-  <div class="modern-popup-box">
-    <h3>🚪 Keluar Aplikasi</h3>
-    <p>Yakin ingin keluar dari akun ini?</p>
-    <div>
-      <button id="btnBatal" onclick="tutupLogout()">Batal</button>
-      <button id="btnLogoutConfirm" onclick="logoutConfirm()">Keluar</button>
-    </div>
-  </div>
-</div>
-
 </body>
 </html>
