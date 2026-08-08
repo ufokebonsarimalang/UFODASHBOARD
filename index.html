@@ -24,8 +24,8 @@ body {
     margin: 0;
     padding: 30px 20px;
     min-height: 100vh;
-    background: radial-gradient(circle at top, rgba(99, 102, 241, 0.15) 0%, transparent 60%), linear-gradient(135deg, #070913 0%, #0f172a 100%);
-    color: #f8fafc;
+    background: radial-gradient(circle at top, rgba(212, 175, 55, 0.08) 0%, transparent 60%), linear-gradient(135deg, #0b0f19 0%, #111827 100%);
+    color: #f3f4f6;
 }
 
 /* KOTAK LOGIN */
@@ -33,10 +33,11 @@ body {
     max-width: 420px;
     margin: 50px auto;
     padding: 40px 30px;
-    background: #ffffff;
-    border-radius: 28px;
-    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.4);
-    color: #1e293b;
+    background: #111827;
+    border-radius: 20px;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7);
+    color: #f3f4f6;
+    border: 1px solid rgba(212, 175, 55, 0.3);
     animation: fadeIn 0.4s ease;
 }
 
@@ -50,8 +51,8 @@ body {
     height: 90px;
     border-radius: 50%;
     object-fit: cover;
-    border: 3px solid #f1f5f9;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    border: 2px solid rgba(212, 175, 55, 0.5);
+    box-shadow: 0 4px 15px rgba(0,0,0,0.3);
 }
 
 .login-title-area {
@@ -63,14 +64,14 @@ body {
     margin: 0;
     font-size: 22px;
     font-weight: 800;
-    color: #0f172a;
+    color: #ffffff;
     letter-spacing: -0.5px;
 }
 
 .login-title-area p {
     margin: 6px 0 0;
     font-size: 13.5px;
-    color: #64748b;
+    color: #9ca3af;
     font-weight: 500;
 }
 
@@ -82,7 +83,7 @@ body {
     display: block;
     font-size: 12px;
     font-weight: 700;
-    color: #334155;
+    color: #d1d5db;
     margin-bottom: 8px;
     letter-spacing: 0.5px;
 }
@@ -90,44 +91,44 @@ body {
 .input-group input {
     width: 100%;
     padding: 15px 18px;
-    border-radius: 14px;
-    border: 1px solid #cbd5e1;
-    background: #f8fafc;
-    color: #0f172a;
+    border-radius: 12px;
+    border: 1px solid #374151;
+    background: #1f2937;
+    color: #ffffff;
     font-size: 14.5px;
     outline: none;
     transition: all 0.25s ease;
 }
 
 .input-group input:focus {
-    border-color: #6366f1;
-    background: #ffffff;
-    box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.12);
+    border-color: #d4af37;
+    background: #111827;
+    box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.2);
 }
 
 .input-group input::placeholder {
-    color: #94a3b8;
+    color: #6b7280;
 }
 
 #btnLogin {
     width: 100%;
     padding: 16px;
     border: none;
-    border-radius: 14px;
+    border-radius: 12px;
     cursor: pointer;
     font-weight: 700;
     font-size: 15px;
-    color: white;
-    background: #5b21b6;
-    box-shadow: 0 10px 20px -5px rgba(91, 33, 182, 0.4);
+    color: #111827;
+    background: linear-gradient(135deg, #f3e8ff 0%, #d4af37 100%);
+    box-shadow: 0 10px 20px -5px rgba(212, 175, 55, 0.3);
     transition: all 0.25s ease;
     letter-spacing: 0.5px;
 }
 
 #btnLogin:hover {
     transform: translateY(-2px);
-    background: #4c1d95;
-    box-shadow: 0 14px 24px -5px rgba(91, 33, 182, 0.5);
+    background: linear-gradient(135deg, #ffffff 0%, #e6c547 100%);
+    box-shadow: 0 14px 24px -5px rgba(212, 175, 55, 0.4);
 }
 
 /* HEADER DASHBOARD */
@@ -142,13 +143,13 @@ body {
     font-weight: 800;
     margin: 0;
     letter-spacing: -1.5px;
-    background: linear-gradient(90deg, #ffffff, #60a5fa);
+    background: linear-gradient(90deg, #ffffff, #d4af37);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
 }
 
 .header p {
-    color: #94a3b8;
+    color: #9ca3af;
     font-size: 14px;
     margin-top: 6px;
 }
@@ -165,27 +166,27 @@ body {
     width: 100%;
     height: 52px;
     padding: 0 20px;
-    border-radius: 16px;
-    border: 1px solid rgba(59, 130, 246, 0.3);
-    background: rgba(15, 23, 42, 0.8);
+    border-radius: 14px;
+    border: 1px solid rgba(212, 175, 55, 0.3);
+    background: #111827;
     backdrop-filter: blur(16px);
-    color: white;
+    color: #ffffff;
     font-size: 14.5px;
     font-weight: 600;
     outline: none;
     cursor: pointer;
     appearance: none;
     -webkit-appearance: none;
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='18' height='18' fill='%2360a5fa' viewBox='0 0 16 16'%3E%3Cpath d='M1.5 5.5l6 6 6-6'/%3E%3C/svg%3E");
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='18' height='18' fill='%23d4af37' viewBox='0 0 16 16'%3E%3Cpath d='M1.5 5.5l6 6 6-6'/%3E%3C/svg%3E");
     background-repeat: no-repeat;
     background-position: right 20px center;
-    box-shadow: 0 0 15px rgba(59, 130, 246, 0.1);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
     transition: all 0.3s ease;
 }
 
-#nama:hover { border-color: #60a5fa; box-shadow: 0 0 20px rgba(96, 165, 250, 0.25); }
-#nama:focus { border-color: #3b82f6; box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.25), 0 0 25px rgba(59, 130, 246, 0.3); }
-#nama option { background: #0f172a; color: white; }
+#nama:hover { border-color: #d4af37; box-shadow: 0 0 15px rgba(212, 175, 55, 0.15); }
+#nama:focus { border-color: #d4af37; box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.2), 0 0 20px rgba(212, 175, 55, 0.2); }
+#nama option { background: #111827; color: #ffffff; }
 
 /* MENU TAB NAVIGASI */
 .menu-tab {
@@ -202,33 +203,33 @@ body {
 .menu-tab button {
     padding: 11px 16px;
     border: none;
-    border-radius: 14px;
+    border-radius: 12px;
     cursor: pointer;
     font-weight: 600;
     font-size: 13px;
-    background: rgba(15, 23, 42, 0.7);
-    border: 1px solid rgba(59, 130, 246, 0.25);
-    color: #cbd5e1;
+    background: #111827;
+    border: 1px solid rgba(212, 175, 55, 0.2);
+    color: #d1d5db;
     transition: all 0.2s ease;
     display: inline-flex;
     align-items: center;
     gap: 6px;
-    box-shadow: 0 0 12px rgba(59, 130, 246, 0.08);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
 }
 
 .menu-tab button:hover {
-    background: rgba(59, 130, 246, 0.12);
-    color: white;
-    border-color: rgba(96, 165, 250, 0.6);
-    box-shadow: 0 0 20px rgba(59, 130, 246, 0.3);
+    background: #1f2937;
+    color: #ffffff;
+    border-color: rgba(212, 175, 55, 0.5);
+    box-shadow: 0 4px 12px rgba(212, 175, 55, 0.15);
     transform: translateY(-2px);
 }
 
 .menu-tab button.active {
-    background: linear-gradient(135deg, #3b82f6, #06b6d4);
-    color: white;
-    border-color: #93c5fd;
-    box-shadow: 0 0 25px rgba(59, 130, 246, 0.5);
+    background: linear-gradient(135deg, #1f2937, #111827);
+    color: #d4af37;
+    border-color: #d4af37;
+    box-shadow: 0 0 20px rgba(212, 175, 55, 0.25);
 }
 
 /* SUMMARY & KARTU DATA */
@@ -238,13 +239,13 @@ body {
 }
 
 .summary-card {
-    background: rgba(15, 23, 42, 0.8);
+    background: #111827;
     backdrop-filter: blur(20px);
-    border: 1px solid rgba(59, 130, 246, 0.25);
-    border-radius: 22px;
+    border: 1px solid rgba(212, 175, 55, 0.25);
+    border-radius: 18px;
     padding: 22px;
-    color: white;
-    box-shadow: 0 0 25px rgba(59, 130, 246, 0.12);
+    color: #ffffff;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
 }
 
 .summary-card h2 {
@@ -252,11 +253,12 @@ body {
     font-size: 19px;
     font-weight: 700;
     margin-bottom: 12px;
+    color: #d4af37;
 }
 
 .summary-card p {
     margin: 6px 0;
-    color: #cbd5e1;
+    color: #d1d5db;
     font-size: 13.5px;
 }
 
@@ -269,32 +271,32 @@ body {
 }
 
 .card {
-    background: rgba(15, 23, 42, 0.75);
+    background: #111827;
     backdrop-filter: blur(20px);
-    border: 1px solid rgba(59, 130, 246, 0.22);
-    border-radius: 22px;
+    border: 1px solid #374151;
+    border-radius: 18px;
     padding: 18px;
     transition: all 0.25s ease;
-    box-shadow: 0 0 20px rgba(59, 130, 246, 0.08);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.25);
 }
 
 .card:hover {
     transform: translateY(-3px);
-    border-color: rgba(96, 165, 250, 0.6);
-    box-shadow: 0 0 25px rgba(59, 130, 246, 0.3);
+    border-color: rgba(212, 175, 55, 0.4);
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.4);
 }
 
-.card.success { border-left: 5px solid #10b981; border-color: rgba(16, 185, 129, 0.35); }
-.card.warning { border-left: 5px solid #ef4444; border-color: rgba(239, 68, 68, 0.35); }
-.card.late { border: 2px solid #facc15; background: rgba(250, 204, 21, 0.04); box-shadow: 0 0 25px rgba(250, 204, 21, 0.2); }
-.card-notice { border-left: 5px solid #3b82f6; background: rgba(59, 130, 246, 0.04); box-shadow: 0 0 25px rgba(59, 130, 246, 0.2); }
-.card-rules { border-left: 5px solid #facc15; background: rgba(250, 204, 21, 0.04); box-shadow: 0 0 25px rgba(250, 204, 21, 0.2); }
+.card.success { border-left: 5px solid #10b981; border-color: #374151; }
+.card.warning { border-left: 5px solid #ef4444; border-color: #374151; }
+.card.late { border: 2px solid #d4af37; background: #151922; box-shadow: 0 0 20px rgba(212, 175, 55, 0.15); }
+.card-notice { border-left: 5px solid #d4af37; background: #111827; box-shadow: 0 8px 20px rgba(0,0,0,0.25); }
+.card-rules { border-left: 5px solid #d4af37; background: #111827; box-shadow: 0 8px 20px rgba(0,0,0,0.25); }
 
 .tanggal {
     text-align: center;
     font-weight: 700;
     margin-bottom: 14px;
-    color: white;
+    color: #ffffff;
     font-size: 13.5px;
 }
 
@@ -303,13 +305,13 @@ body {
     justify-content: space-between;
     align-items: center;
     padding: 8px 0;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
-    color: #cbd5e1;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    color: #9ca3af;
     font-size: 13px;
 }
 
 .row:last-child { border-bottom: none; }
-.ok { font-weight: 600; color: white; }
+.ok { font-weight: 600; color: #ffffff; }
 .kosong { color: #f87171; font-weight: 700; }
 .status-ok { color: #34d399; font-weight: 700; }
 .status-warning { color: #f87171; font-weight: 700; }
@@ -326,7 +328,7 @@ body {
 .btn-export {
     padding: 10px 16px;
     border: none;
-    border-radius: 12px;
+    border-radius: 10px;
     font-weight: 700;
     font-size: 12.5px;
     cursor: pointer;
@@ -337,18 +339,18 @@ body {
     transition: all 0.25s ease;
 }
 
-.btn-excel { background: linear-gradient(135deg, #059669, #10b981); box-shadow: 0 0 15px rgba(16, 185, 129, 0.3); }
-.btn-pdf { background: linear-gradient(135deg, #dc2626, #ef4444); box-shadow: 0 0 15px rgba(239, 68, 68, 0.3); }
+.btn-excel { background: #065f46; border: 1px solid #10b981; box-shadow: 0 4px 12px rgba(16, 185, 129, 0.2); }
+.btn-pdf { background: #991b1b; border: 1px solid #ef4444; box-shadow: 0 4px 12px rgba(239, 68, 68, 0.2); }
 .btn-export:hover { transform: translateY(-2px); opacity: 0.95; }
 
 /* TOMBOL KELUAR (LOGOUT) */
 .btn-logout-main {
     padding: 9px 18px;
     border: none;
-    border-radius: 12px;
+    border-radius: 10px;
     cursor: pointer;
-    color: white;
-    background: rgba(239, 68, 68, 0.15);
+    color: #f87171;
+    background: rgba(239, 68, 68, 0.1);
     border: 1px solid rgba(239, 68, 68, 0.3);
     font-weight: 600;
     font-size: 13px;
@@ -359,7 +361,7 @@ body {
 }
 
 .btn-logout-main:hover {
-    background: rgba(239, 68, 68, 0.25);
+    background: rgba(239, 68, 68, 0.2);
     border-color: rgba(239, 68, 68, 0.6);
     transform: translateY(-1px);
 }
@@ -370,7 +372,7 @@ body {
     position: fixed;
     top: 0; left: 0;
     width: 100%; height: 100%;
-    background: rgba(0, 0, 0, 0.65);
+    background: rgba(0, 0, 0, 0.75);
     backdrop-filter: blur(8px);
     z-index: 99999;
     justify-content: center;
@@ -378,25 +380,25 @@ body {
 }
 
 .modern-popup-box {
-    background: #1e293b;
+    background: #111827;
     padding: 30px 25px;
-    border-radius: 22px;
+    border-radius: 18px;
     min-width: 310px;
     text-align: center;
-    border: 1px solid rgba(59, 130, 246, 0.4);
-    box-shadow: 0 0 30px rgba(59, 130, 246, 0.25);
+    border: 1px solid rgba(212, 175, 55, 0.4);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6);
     animation: fadeIn 0.3s ease;
 }
 
 .modern-popup-box h3 {
     margin-top: 0;
-    color: white;
+    color: #d4af37;
     font-size: 19px;
     font-weight: 700;
 }
 
 .modern-popup-box p, #popupText {
-    color: #cbd5e1;
+    color: #d1d5db;
     margin: 14px 0 22px;
     font-size: 14px;
     line-height: 1.5;
@@ -405,13 +407,13 @@ body {
 .btn-popup-ok {
     border: none;
     padding: 11px 28px;
-    border-radius: 12px;
+    border-radius: 10px;
     cursor: pointer;
-    color: white;
-    font-weight: 600;
+    color: #111827;
+    font-weight: 700;
     font-size: 13.5px;
-    background: linear-gradient(135deg, #3b82f6, #06b6d4);
-    box-shadow: 0 4px 15px rgba(59, 130, 246, 0.4);
+    background: #d4af37;
+    box-shadow: 0 4px 15px rgba(212, 175, 55, 0.3);
     transition: all 0.2s ease;
 }
 
@@ -420,7 +422,7 @@ body {
 #btnBatal, #btnLogoutConfirm {
     border: none;
     padding: 11px 22px;
-    border-radius: 12px;
+    border-radius: 10px;
     cursor: pointer;
     color: white;
     font-weight: 600;
@@ -428,8 +430,8 @@ body {
     margin: 4px;
     transition: all 0.2s ease;
 }
-#btnBatal { background: #475569; }
-#btnLogoutConfirm { background: #ef4444; }
+#btnBatal { background: #374151; }
+#btnLogoutConfirm { background: #991b1b; }
 #btnBatal:hover, #btnLogoutConfirm:hover { opacity: 0.9; transform: translateY(-1px); }
 
 .spinner {
@@ -487,13 +489,13 @@ body {
     </div>
 
     <!-- INDIKATOR LOADING ANIMASI -->
-    <div id="globalLoading" style="display:none; text-align:center; margin:15px 0; color:#60a5fa; font-weight:600; font-size:14px;">
+    <div id="globalLoading" style="display:none; text-align:center; margin:15px 0; color:#d4af37; font-weight:600; font-size:14px;">
         <span class="spinner" style="margin-right:8px; width:20px; height:20px; border-width:3px;"></span>
         Sedang menyiapkan data, mohon tunggu sebentar...
     </div>
 
     <div style="max-width:1200px; margin:0 auto 14px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px;">
-        <div id="loginInfo" style="padding:7px 16px; border-radius:99px; background:rgba(15, 23, 42, 0.8); border:1px solid rgba(59, 130, 246, 0.3); color:#e2e8f0; font-size:13px; font-weight:600; box-shadow: 0 0 15px rgba(59, 130, 246, 0.15);"></div>
+        <div id="loginInfo" style="padding:7px 16px; border-radius:99px; background:#111827; border:1px solid rgba(212, 175, 55, 0.3); color:#e2e8f0; font-size:13px; font-weight:600; box-shadow: 0 4px 15px rgba(0,0,0,0.2);"></div>
         <button class="btn-logout-main" onclick="logout()">
             🚪 Keluar
         </button>
@@ -800,7 +802,7 @@ function renderAbsensi(result) {
         html += `
         <div class="card ${kelasCard} ${kelasTambahan}">
             <div class="tanggal">📅 ${x.tanggal}<br>${status}
-                ${isTerlambat ? '<div style="color:#facc15;font-weight:700;margin-top:5px;">TERLAMBAT</div>' : ''}
+                ${isTerlambat ? '<div style="color:#d4af37;font-weight:700;margin-top:5px;">TERLAMBAT</div>' : ''}
             </div>
             <div class="row"><span>Masuk</span>${tampil(x.masuk)}</div>
             <div class="row"><span>Istirahat 1</span>${tampil(x.istirahat1)}</div>
@@ -839,8 +841,8 @@ function renderPenjualan(data) {
         grupTanggal[tanggal].forEach(item => {
             totalHari += Number(item.omzet);
             isiProduk += `
-                <div style="margin-bottom:12px; padding-bottom:8px; border-bottom:1px solid rgba(255,255,255,0.06);">
-                    <div style="font-size:12px; font-weight:600; line-height:1.4; margin-bottom:6px; color:#e2e8f0;">${item.produk}</div>
+                <div style="margin-bottom:12px; padding-bottom:8px; border-bottom:1px solid rgba(255,255,255,0.05);">
+                    <div style="font-size:12px; font-weight:600; line-height:1.4; margin-bottom:6px; color:#e5e7eb;">${item.produk}</div>
                     <div class="row"><span>Qty</span><span>${item.qty}</span></div>
                     <div class="row"><span>Omzet</span><span>Rp ${Number(item.omzet).toLocaleString("id-ID")}</span></div>
                 </div>`;
@@ -873,7 +875,7 @@ function renderUC(data) {
         html += `
         <div class="card success">
             <div class="tanggal">📅 ${x.tanggal}</div>
-            <div style="font-size:12px; font-weight:600; line-height:1.4; margin:12px 0; color:#e2e8f0;">${x.produk}</div>
+            <div style="font-size:12px; font-weight:600; line-height:1.4; margin:12px 0; color:#e5e7eb;">${x.produk}</div>
             <div class="row"><span>Qty</span><span>${x.qty}</span></div>
         </div>`;
     });
@@ -914,14 +916,14 @@ function renderPerolehan(data) {
         const warnaOmzet = omzetVal >= 100000000 ? '#34d399' : omzetVal >= 80000000 ? '#f59e0b' : '#ef4444';
 
         html += `
-            <div class="row-perolehan-export" style="display:flex; align-items:center; justify-content:space-between; padding:12px 0; border-bottom:1px solid rgba(255,255,255,0.06); gap:10px;">
+            <div class="row-perolehan-export" style="display:flex; align-items:center; justify-content:space-between; padding:12px 0; border-bottom:1px solid rgba(255,255,255,0.05); gap:10px;">
                 <div style="display:flex; align-items:center; gap:12px; min-width:0; flex:1;">
-                    <div style="width:30px; height:30px; border-radius:50%; background:rgba(59,130,246,0.2); display:flex; align-items:center; justify-content:center; font-weight:700; font-size:13px; flex-shrink:0;">${i + 1}</div>
+                    <div style="width:30px; height:30px; border-radius:50%; background:#1f2937; border:1px solid rgba(212,175,55,0.3); display:flex; align-items:center; justify-content:center; font-weight:700; font-size:13px; flex-shrink:0; color:#d4af37;">${i + 1}</div>
                     <div class="nama-p" style="font-weight:600; font-size:13.5px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${x.nama}</div>
                 </div>
                 <div style="text-align:right; white-space:nowrap; flex-shrink:0;">
                     <div class="omzet-p" style="font-weight:700; font-size:13.5px; color:${warnaOmzet};">Rp ${omzetVal.toLocaleString("id-ID")}</div>
-                    <div class="uc-p" style="font-size:12px; font-weight:600; color:#38bdf8; margin-top:2px;">⭐ UC : ${x.uc || 0}</div>
+                    <div class="uc-p" style="font-size:12px; font-weight:600; color:#d4af37; margin-top:2px;">⭐ UC : ${x.uc || 0}</div>
                 </div>
             </div>`;
     });
@@ -951,13 +953,13 @@ function renderDendaUC(dendaObj) {
     <div class="summary-card">
         <h2 style="margin-bottom:14px;">⚖️ Rekap Denda & Keterlambatan</h2>
         <div style="display:flex; flex-wrap:wrap; gap:12px; margin-top:10px;">
-            <div style="flex:1; min-width:200px; background:rgba(255,255,255,0.05); padding:10px 14px; border-radius:12px; border:1px solid rgba(255,255,255,0.08);">
-                <div style="font-size:11px; color:#94a3b8; font-weight:600; text-transform:uppercase;">Aturan Target UC</div>
-                <div style="font-size:13px; color:#38bdf8; font-weight:700; margin-top:2px;">Disesuaikan Per Promotor</div>
-                <div style="font-size:11px; color:#f43f5e; margin-top:2px;">Denda: Rp 5.000 / Unit Kurang</div>
+            <div style="flex:1; min-width:200px; background:#1a2234; padding:10px 14px; border-radius:12px; border:1px solid #374151;">
+                <div style="font-size:11px; color:#9ca3af; font-weight:600; text-transform:uppercase;">Aturan Target UC</div>
+                <div style="font-size:13px; color:#d4af37; font-weight:700; margin-top:2px;">Disesuaikan Per Promotor</div>
+                <div style="font-size:11px; color:#f87171; margin-top:2px;">Denda: Rp 5.000 / Unit Kurang</div>
             </div>
-            <div style="flex:1; min-width:200px; background:rgba(255,255,255,0.05); padding:10px 14px; border-radius:12px; border:1px solid rgba(255,255,255,0.08);">
-                <div style="font-size:11px; color:#94a3b8; font-weight:600; text-transform:uppercase;">Aturan Keterlambatan</div>
+            <div style="flex:1; min-width:200px; background:#1a2234; padding:10px 14px; border-radius:12px; border:1px solid #374151;">
+                <div style="font-size:11px; color:#9ca3af; font-weight:600; text-transform:uppercase;">Aturan Keterlambatan</div>
                 <div style="font-size:13px; color:#facc15; font-weight:700; margin-top:2px;">Kena Denda Per Late</div>
                 <div style="font-size:11px; color:#f87171; margin-top:2px;">Denda: Rp 10.000 / Kali Late</div>
             </div>
@@ -993,18 +995,18 @@ function renderDendaUC(dendaObj) {
             }
 
             html += `
-            <div class="row-perolehan-export" style="display:flex; justify-content:space-between; align-items:center; padding:12px 0; border-bottom:1px solid rgba(255,255,255,0.08); gap:12px;">
+            <div class="row-perolehan-export" style="display:flex; justify-content:space-between; align-items:center; padding:12px 0; border-bottom:1px solid rgba(255,255,255,0.05); gap:12px;">
                 <div style="min-width:0; flex:1; padding-right:8px;">
-                    <div class="nama-p" style="font-size:11px; font-weight:700; color:#fff; white-space:nowrap; overflow:hidden; text-overflow:clip;">
+                    <div class="nama-p" style="font-size:13px; font-weight:700; color:#fff; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">
                         ${i+1}. ${x.nama}
                     </div>
                 </div>
                 <div style="text-align:right; flex-shrink:0; white-space:nowrap;">
                     ${totalDenda > 0 
-                        ? `<div class="omzet-p" style="font-weight:800; font-size:13.5px; color:#ff3333; text-shadow: 0 0 8px rgba(255, 51, 51, 0.4);">Rp ${totalDenda.toLocaleString("id-ID")}</div>
+                        ? `<div class="omzet-p" style="font-weight:800; font-size:13.5px; color:#f87171;">Rp ${totalDenda.toLocaleString("id-ID")}</div>
                            <div class="uc-p" style="font-size:10px; color:#fde047; margin-top:2px; font-weight:600;">${infoDetail}</div>`
                         : `<div class="omzet-p" style="font-weight:700; font-size:12px; color:#34d399;">Aman</div>
-                           <div class="uc-p" style="font-size:10px; color:#94a3b8; margin-top:2px;">${infoDetail}</div>`
+                           <div class="uc-p" style="font-size:10px; color:#9ca3af; margin-top:2px;">${infoDetail}</div>`
                     }
                 </div>
             </div>`;
@@ -1031,8 +1033,8 @@ function renderRules(result) {
         list.forEach(a => {
             html += `
             <div class="card card-rules">
-                <div class="tanggal" style="text-align:left; font-size:14px; color:#facc15;">📌 ${a.poin || a.Poin || ""}</div>
-                <div style="font-size:13px; line-height:1.5; color:#e2e8f0; margin-top:8px; border-top:1px solid rgba(255,255,255,0.06); padding-top:8px;">${a.desc || a.Desc || a.Deskripsi || ""}</div>
+                <div class="tanggal" style="text-align:left; font-size:14px; color:#d4af37;">📌 ${a.poin || a.Poin || ""}</div>
+                <div style="font-size:13px; line-height:1.5; color:#d1d5db; margin-top:8px; border-top:1px solid rgba(255,255,255,0.05); padding-top:8px;">${a.desc || a.Desc || a.Deskripsi || ""}</div>
             </div>`;
         });
     }
@@ -1056,10 +1058,10 @@ function renderNotice(result) {
         list.forEach(x => {
             html += `
                 <div class="card card-notice">
-                    <div class="tanggal" style="text-align:left; font-size:12px; color:#cbd5e1;">📅 ${x.tanggal || x.Tanggal || "-"}</div>
-                    <div style="font-weight:700; font-size:14px; color:#60a5fa; margin:6px 0;">📣 ${x.judul || x.Judul || "Notice"}</div>
-                    <div style="font-size:13px; line-height:1.5; color:#e2e8f0; border-top:1px solid rgba(255,255,255,0.06); padding-top:8px; margin-bottom:12px;">${x.pesan || x.Pesan || ""}</div>
-                    <div style="font-size:11px; color:#94a3b8; text-align:right;">Oleh: <b>${x.dari || x.Dari || "Supervisor"}</b></div>
+                    <div class="tanggal" style="text-align:left; font-size:12px; color:#9ca3af;">📅 ${x.tanggal || x.Tanggal || "-"}</div>
+                    <div style="font-weight:700; font-size:14px; color:#d4af37; margin:6px 0;">📣 ${x.judul || x.Judul || "Notice"}</div>
+                    <div style="font-size:13px; line-height:1.5; color:#d1d5db; border-top:1px solid rgba(255,255,255,0.05); padding-top:8px; margin-bottom:12px;">${x.pesan || x.Pesan || ""}</div>
+                    <div style="font-size:11px; color:#9ca3af; text-align:right;">Oleh: <b>${x.dari || x.Dari || "Supervisor"}</b></div>
                 </div>`;
         });
     }
@@ -1083,9 +1085,9 @@ function renderPromo(result) {
         list.forEach(p => {
             html += `
             <div class="card success">
-                <div class="tanggal" style="text-align:left; font-size:14px; color:#60a5fa;">🔥 ${p.judul || p.Judul || ""}</div>
-                <div style="font-size:11.5px; color:#cbd5e1; margin:6px 0;"><b>Periode:</b> ${p.periode || p.Periode || ""}</div>
-                <div style="font-size:13px; line-height:1.5; color:#e2e8f0; border-top:1px solid rgba(255,255,255,0.06); padding-top:8px;">${p.detail || p.Detail || ""}</div>
+                <div class="tanggal" style="text-align:left; font-size:14px; color:#d4af37;">🔥 ${p.judul || p.Judul || ""}</div>
+                <div style="font-size:11.5px; color:#9ca3af; margin:6px 0;"><b>Periode:</b> ${p.periode || p.Periode || ""}</div>
+                <div style="font-size:13px; line-height:1.5; color:#d1d5db; border-top:1px solid rgba(255,255,255,0.05); padding-top:8px;">${p.detail || p.Detail || ""}</div>
             </div>`;
         });
     }
