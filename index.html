@@ -947,7 +947,7 @@ function renderPerolehan(data) {
 function renderDendaUC(dendaObj) {
     if(!dendaObj) return;
     const resPerolehan = dendaObj.perolehan;
-    const resLate = resPerolehan ? dendaObj.late : null; // Menyesuaikan objek data late
+    const resLate = resPerolehan ? dendaObj.late : null;
 
     const DENDA_UC_PER_UNIT = 5000;
     const DENDA_LATE_PER_KALI = 10000;
@@ -973,7 +973,7 @@ function renderDendaUC(dendaObj) {
         </div>
     </div>`;
 
-    let html = `<div class="summary-card" style="display: flex; flex-direction: column; gap: 12px;">`;
+    let html = `<div class="summary-card" style="display: flex; flex-direction: column; gap: 12px; background: transparent; border: none; padding: 0; box-shadow: none;">`;
     
     if(resPerolehan && resPerolehan.list) {
         resPerolehan.list.forEach((x, i) => {
@@ -981,47 +981,45 @@ function renderDendaUC(dendaObj) {
             const isIkutUC = (x.ikutUC || "YA").toString().toUpperCase() !== "TIDAK";
             const targetMinUC = isIkutUC ? Number(x.targetUC || 16) : 0;
             
-            // Hitung denda UC
             const kurangUC = (isIkutUC && totalUC < targetMinUC) ? (targetMinUC - totalUC) : 0;
             const dendaUC = kurangUC * DENDA_UC_PER_UNIT;
             
-            // Hitung denda Late
             const totalTerlambat = lateMap[x.nama.toUpperCase()] || 0;
             const dendaLate = totalTerlambat * DENDA_LATE_PER_KALI;
             
-            // Total Keseluruhan
             const totalDenda = dendaUC + dendaLate;
 
             html += `
-            <div class="row-perolehan-export" style="background: #151c2c; border: 1px solid rgba(255,255,255,0.06); border-radius: 14px; padding: 14px 16px; display: flex; flex-direction: column; gap: 10px;">
-                <!-- Baris Atas: Nomor & Nama Promotor -->
+            <div class="row-perolehan-export" style="background: #111827; border: 1px solid #374151; border-radius: 14px; padding: 14px 16px; display: flex; flex-direction: column; gap: 10px; box-shadow: 0 4px 12px rgba(0,0,0,0.2);">
+                <!-- Baris Atas: Nomor, Nama, & Total Denda Keseluruhan -->
                 <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(255,255,255,0.06); padding-bottom: 8px;">
-                    <div style="display: flex; align-items: center; gap: 10px;">
-                        <span style="background: #1f2937; color: #d4af37; border-radius: 6px; padding: 2px 8px; font-size: 12px; font-weight: 700;">#${i+1}</span>
-                        <span class="nama-p" style="font-size: 14px; font-weight: 700; color: #ffffff;">${x.nama}</span>
+                    <div style="display: flex; align-items: center; gap: 10px; min-width: 0; flex: 1;">
+                        <span style="background: #1f2937; color: #d4af37; border-radius: 6px; padding: 2px 8px; font-size: 11px; font-weight: 700; flex-shrink: 0;">#${i+1}</span>
+                        <span class="nama-p" style="font-size: 13.5px; font-weight: 700; color: #ffffff; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${x.nama}</span>
                     </div>
-                    <div style="font-size: 12px; font-weight: 600; color: ${totalDenda > 0 ? '#f87171' : '#34d399'};">
-                        Total: <b>Rp ${totalDenda.toLocaleString("id-ID")}</b>
+                    <div style="text-align: right; flex-shrink: 0; margin-left: 10px;">
+                        <span style="font-size: 11px; color: #9ca3af; font-weight: 600;">Total: </span>
+                        <span style="font-size: 13.5px; font-weight: 800; color: ${totalDenda > 0 ? '#f87171' : '#34d399'};">Rp ${totalDenda.toLocaleString("id-ID")}</span>
                     </div>
                 </div>
 
-                <!-- Baris Bawah: Pemisahan Kolom Denda UC & Denda Late -->
+                <!-- Baris Bawah: Dua Kolom Rincian Denda UC & Denda Late -->
                 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
-                    <!-- Kotak Kecil Denda UC -->
-                    <div style="background: #111827; padding: 8px 10px; border-radius: 10px; border: 1px solid #374151;">
-                        <div style="font-size: 10.5px; color: #9ca3af; font-weight: 600; text-transform: uppercase;">Denda UC</div>
-                        <div style="display: flex; justify-content: space-between; align-items: baseline; margin-top: 4px;">
+                    <!-- Kotak Denda UC -->
+                    <div style="background: #1a2234; padding: 10px 12px; border-radius: 10px; border: 1px solid rgba(255,255,255,0.05); display: flex; flex-direction: column; justify-content: space-between;">
+                        <div style="font-size: 10.5px; color: #9ca3af; font-weight: 700; text-transform: uppercase; margin-bottom: 4px;">Denda UC</div>
+                        <div style="display: flex; justify-content: space-between; align-items: baseline; gap: 4px;">
                             <span class="omzet-p" style="font-size: 13px; font-weight: 700; color: ${dendaUC > 0 ? '#f87171' : '#34d399'};">Rp ${dendaUC.toLocaleString("id-ID")}</span>
-                            <span class="uc-p" style="font-size: 11px; color: #9ca3af;">(${isIkutUC ? `Kurang ${kurangUC} unit` : 'Non-Target'})</span>
+                            <span class="uc-p" style="font-size: 10.5px; color: #9ca3af; font-weight: 500;">(${isIkutUC ? `kurang ${kurangUC}` : 'non-target'})</span>
                         </div>
                     </div>
 
-                    <!-- Kotak Kecil Denda Late -->
-                    <div style="background: #111827; padding: 8px 10px; border-radius: 10px; border: 1px solid #374151;">
-                        <div style="font-size: 10.5px; color: #9ca3af; font-weight: 600; text-transform: uppercase;">Denda Late</div>
-                        <div style="display: flex; justify-content: space-between; align-items: baseline; margin-top: 4px;">
+                    <!-- Kotak Denda Late -->
+                    <div style="background: #1a2234; padding: 10px 12px; border-radius: 10px; border: 1px solid rgba(255,255,255,0.05); display: flex; flex-direction: column; justify-content: space-between;">
+                        <div style="font-size: 10.5px; color: #9ca3af; font-weight: 700; text-transform: uppercase; margin-bottom: 4px;">Denda Late</div>
+                        <div style="display: flex; justify-content: space-between; align-items: baseline; gap: 4px;">
                             <span class="omzet-p" style="font-size: 13px; font-weight: 700; color: ${dendaLate > 0 ? '#facc15' : '#34d399'};">Rp ${dendaLate.toLocaleString("id-ID")}</span>
-                            <span class="uc-p" style="font-size: 11px; color: #9ca3af;">(${totalTerlambat}x telat)</span>
+                            <span class="uc-p" style="font-size: 10.5px; color: #9ca3af; font-weight: 500;">(${totalTerlambat}x telat)</span>
                         </div>
                     </div>
                 </div>
