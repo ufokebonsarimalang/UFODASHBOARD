@@ -665,6 +665,7 @@ async function loadNama(){
         const res = await fetch(WEBAPP_URL + "?action=nama");
         const data = await res.json();
         
+        // Buat opsi default paling atas yang terpilih (selected) dan tidak bisa dipilih ulang
         let html = `<option value="" disabled selected hidden>Pilih Nama Promotor</option>`;
         if(Array.isArray(data)) {
             data.forEach((nama) => { 
@@ -673,7 +674,7 @@ async function loadNama(){
         }
         document.getElementById("nama").innerHTML = html;
 
-        // Ambil data pendukung admin secara paralel
+        // Ambil data pendukung admin secara paralel (tanpa langsung memicu gantiNamaAdmin)
         const [resPerolehan, resLate, resPromo, resRules, resNotice] = await Promise.all([
             fetch(WEBAPP_URL + "?action=perolehan").then(r => r.json()),
             fetch(WEBAPP_URL + "?action=rekap_terlambat").then(r => r.json()),
@@ -688,16 +689,13 @@ async function loadNama(){
         cacheData.rules = resRules;
         cacheData.notice = resNotice;
 
-        // Jika dropdown pertama kali load dan admin ingin langsung melihat data pertama
-        if (data.length > 0) {
-            document.getElementById("nama").value = data[0];
-            await gantiNamaAdmin();
-        }
+        // HAPUS atau comment bagian pemanggilan gantiNamaAdmin() otomatis di sini
+        // Biarkan kosong agar dashboard admin bersih dan menunggu Admin memilih nama dari dropdown.
+
     } catch(e) {
         console.error("Gagal memuat nama promotor", e);
     }
 }
-
 async function gantiNamaAdmin() {
     let namaTerpilih = document.getElementById("nama").value.trim();
     if(!namaTerpilih) return;
