@@ -708,6 +708,18 @@ function pindahMenu(namaMenu) {
     document.getElementById("exportArea").style.display = "none";
     resetActiveButtons();
 
+    // Tentukan menu apa saja yang BUKAN milik perorangan (tidak butuh dropdown nama)
+    const menuGlobal = ["Perolehan", "DendaUC", "Promo", "Rules", "Notice"];
+    const isGlobal = menuGlobal.includes(namaMenu);
+
+    // Jika Admin, sembunyikan dropdown nama jika sedang membuka menu global
+    if (currentRole === "ADMIN") {
+        const searchBoxEl = document.querySelector(".search-box");
+        if (searchBoxEl) {
+            searchBoxEl.style.display = isGlobal ? "none" : "flex";
+        }
+    }
+
     if (namaMenu === "Absensi") {
         document.getElementById("btnAbsen").classList.add("active");
         renderAbsensi(cacheData.absensi);
