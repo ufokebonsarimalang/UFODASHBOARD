@@ -458,6 +458,21 @@ body {
     .grid { grid-template-columns: 1fr !important; }
     .search-box { flex-direction: column; }
 }
+    /* ==========================================================
+   KUNCI LEBAR UTAMA DASHBOARD DI PC AGAR TERPUSAT & RAPI
+   ========================================================== */
+@media(min-width: 1025px) {
+    body {
+        max-width: 1150px;
+        margin: 0 auto;
+    }
+    
+    /* Pastikan area hasil perolehan / denda / list juga ikut terpusat dan tidak terlalu lebar */
+    #hasil {
+        max-width: 1150px !important;
+        margin: 0 auto !important;
+    }
+}
 </style>
 </head>
 <body>
