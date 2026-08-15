@@ -708,11 +708,12 @@ async function login() {
             document.querySelector(".search-box").style.display = "none";
             document.getElementById("btnPerolehan").style.display = "none";
             await muatSemuaDataLatarBelakang(currentUser);
-            pindahMenu("Absensi");
+            // Diam dan menunggu user memilih menu sendiri
         } else {
             document.querySelector(".search-box").style.display = "block";
             document.getElementById("btnPerolehan").style.display = "inline-block";
             await loadNama();
+            // Diam dan menunggu admin memilih nama / menu sendiri
         }
     } catch(err) {
         showPopup("Gagal terhubung ke server: " + err.message);
