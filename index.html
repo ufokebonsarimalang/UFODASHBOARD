@@ -156,7 +156,7 @@ body {
 
 /* KOTAK PENCARIAN / DROPDOWN NAMA */
 .search-box {
-    max-width: 600px;
+    max-width: 700px;
     margin: 0 auto 20px;
     display: flex;
     gap: 12px;
@@ -195,7 +195,7 @@ body {
     gap: 8px;
     margin-bottom: 25px;
     flex-wrap: wrap;
-    max-width: 1100px;
+    max-width: 1300px;
     margin-left: auto;
     margin-right: auto;
 }
@@ -234,7 +234,7 @@ body {
 
 /* SUMMARY & KARTU DATA */
 #summary {
-    max-width: 1200px;
+    max-width: 1300px;
     margin: 0 auto 20px;
 }
 
@@ -266,7 +266,7 @@ body {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
     gap: 16px;
-    max-width: 1200px;
+    max-width: 1300px;
     margin: 0 auto;
 }
 
@@ -318,7 +318,7 @@ body {
 
 /* TOMBOL EKSPOR KHUSUS ADMIN */
 .export-container {
-    max-width: 1200px;
+    max-width: 1300px;
     margin: 0 auto 15px;
     display: none;
     justify-content: flex-end;
@@ -447,7 +447,18 @@ body {
 @keyframes spin { to { transform: rotate(360deg); } }
 @keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
 
-@media(max-width: 1024px) { .grid { grid-template-columns: repeat(2, 1fr); } }
+/* PENGATURAN KHUSUS LAYAR BESAR / PC / LAPTOP (Desktop View) */
+@media(min-width: 1025px) {
+    body { padding: 40px 50px; }
+    .header h1 { font-size: 44px; }
+    .grid { grid-template-columns: repeat(5, 1fr); gap: 20px; max-width: 1500px; }
+    .card { padding: 20px; }
+    .tanggal { font-size: 14.5px; }
+    .row { font-size: 14px; padding: 9px 0; }
+    #summary, .menu-tab, .export-container, div[style*="max-width:1200px"] { max-width: 1500px !important; }
+}
+
+@media(max-width: 1024px) { .grid { grid-template-columns: repeat(3, 1fr); } }
 @media(max-width: 768px) {
     body { padding: 15px; }
     .header h1 { font-size: 26px; }
@@ -665,7 +676,6 @@ async function loadNama(){
         const res = await fetch(WEBAPP_URL + "?action=nama");
         const data = await res.json();
         
-        // Buat opsi default paling atas yang terpilih (selected) dan tidak bisa dipilih ulang
         let html = `<option value="" disabled selected hidden>Pilih Nama Promotor</option>`;
         if(Array.isArray(data)) {
             data.forEach((nama) => { 
@@ -674,7 +684,6 @@ async function loadNama(){
         }
         document.getElementById("nama").innerHTML = html;
 
-        // Ambil data pendukung admin secara paralel (tanpa langsung memicu gantiNamaAdmin)
         const [resPerolehan, resLate, resPromo, resRules, resNotice] = await Promise.all([
             fetch(WEBAPP_URL + "?action=perolehan").then(r => r.json()),
             fetch(WEBAPP_URL + "?action=rekap_terlambat").then(r => r.json()),
@@ -689,13 +698,11 @@ async function loadNama(){
         cacheData.rules = resRules;
         cacheData.notice = resNotice;
 
-        // HAPUS atau comment bagian pemanggilan gantiNamaAdmin() otomatis di sini
-        // Biarkan kosong agar dashboard admin bersih dan menunggu Admin memilih nama dari dropdown.
-
     } catch(e) {
         console.error("Gagal memuat nama promotor", e);
     }
 }
+
 async function gantiNamaAdmin() {
     let namaTerpilih = document.getElementById("nama").value.trim();
     if(!namaTerpilih) return;
@@ -708,11 +715,9 @@ function pindahMenu(namaMenu) {
     document.getElementById("exportArea").style.display = "none";
     resetActiveButtons();
 
-    // Tentukan menu apa saja yang BUKAN milik perorangan (tidak butuh dropdown nama)
     const menuGlobal = ["Perolehan", "DendaUC", "Promo", "Rules", "Notice"];
     const isGlobal = menuGlobal.includes(namaMenu);
 
-    // Jika Admin, sembunyikan dropdown nama jika sedang membuka menu global
     if (currentRole === "ADMIN") {
         const searchBoxEl = document.querySelector(".search-box");
         if (searchBoxEl) {
@@ -957,7 +962,6 @@ function renderDendaUC(dendaObj) {
         resLate.list.forEach(x => { lateMap[x.nama.toUpperCase()] = x.terlambat; });
     }
 
-    // HEADER / SUMMARY
     document.getElementById("summary").innerHTML = `
     <div class="summary-card">
         <h2 style="margin-bottom:14px;">⚖️ Rekap Denda & Keterlambatan</h2>
@@ -991,7 +995,6 @@ function renderDendaUC(dendaObj) {
 
             html += `
             <div class="row-perolehan-export" style="background: #111827; border: 1px solid #374151; border-radius: 14px; padding: 14px 16px; display: flex; flex-direction: column; gap: 10px; box-shadow: 0 4px 12px rgba(0,0,0,0.2);">
-                <!-- Baris Atas: Nomor, Nama, & Total Denda Keseluruhan -->
                 <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(255,255,255,0.06); padding-bottom: 8px;">
                     <div style="display: flex; align-items: center; gap: 10px; min-width: 0; flex: 1;">
                         <span style="background: #1f2937; color: #d4af37; border-radius: 6px; padding: 2px 8px; font-size: 11px; font-weight: 700; flex-shrink: 0;">#${i+1}</span>
@@ -1003,9 +1006,7 @@ function renderDendaUC(dendaObj) {
                     </div>
                 </div>
 
-                <!-- Baris Bawah: Dua Kolom Rincian Denda UC & Denda Late -->
                 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
-                    <!-- Kotak Denda UC -->
                     <div style="background: #1a2234; padding: 10px 12px; border-radius: 10px; border: 1px solid rgba(255,255,255,0.05); display: flex; flex-direction: column; justify-content: space-between;">
                         <div style="font-size: 10.5px; color: #9ca3af; font-weight: 700; text-transform: uppercase; margin-bottom: 4px;">Denda UC</div>
                         <div style="display: flex; justify-content: space-between; align-items: baseline; gap: 4px;">
@@ -1014,7 +1015,6 @@ function renderDendaUC(dendaObj) {
                         </div>
                     </div>
 
-                    <!-- Kotak Denda Late -->
                     <div style="background: #1a2234; padding: 10px 12px; border-radius: 10px; border: 1px solid rgba(255,255,255,0.05); display: flex; flex-direction: column; justify-content: space-between;">
                         <div style="font-size: 10.5px; color: #9ca3af; font-weight: 700; text-transform: uppercase; margin-bottom: 4px;">Denda Late</div>
                         <div style="display: flex; justify-content: space-between; align-items: baseline; gap: 4px;">
@@ -1032,6 +1032,7 @@ function renderDendaUC(dendaObj) {
     document.getElementById("hasil").className = "";
     document.getElementById("hasil").innerHTML = html;
 }
+
 function renderRules(result) {
     if(!result) return;
     const list = result.data || [];
