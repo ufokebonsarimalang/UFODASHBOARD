@@ -511,6 +511,41 @@ body {
         font-size: 13.5px !important;
     }
 }
+    /* ==========================================================
+   PAKSA PERBESAR FONT & ELEMEN SECARA MENYELURUH DI PC
+   ========================================================== */
+@media(min-width: 1025px) {
+    /* Perbesar ukuran font dasar secara global di PC */
+    body {
+        font-size: 16px !important;
+    }
+
+    /* Paksa perbesar semua teks di dalam card, summary, dan baris list */
+    .card, .summary-card, div, span, p {
+        font-size-adjust: inherit;
+    }
+
+    /* Perbesar kotak baris perolehan/denda agar teks yang membesar muat dengan lega */
+    .row-perolehan-export {
+        padding: 16px 20px !important;
+    }
+    
+    /* Perbesar ukuran badge nomor urut dan avatar nama */
+    .row-perolehan-export div[style*="width:30px"] {
+        width: 38px !important;
+        height: 38px !important;
+        font-size: 15px !important;
+    }
+
+    /* Perbesar teks nama dan nominal di semua menu */
+    .nama-p, .omzet-p {
+        font-size: 16.5px !important;
+    }
+    
+    .uc-p {
+        font-size: 14px !important;
+    }
+}
 </style>
 </head>
 <body>
