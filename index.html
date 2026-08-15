@@ -1246,14 +1246,38 @@ function prosesEkspor(format) {
                 let qty = card.querySelector(".row span:last-child")?.innerText || "0";
                 rowsArr.push([tglText, namaProduk, qty]);
             });
-        } else if (activeTab === "Perolehan" || activeTab === "DendaUC") {
-            rowsArr.push([activeTab === "Perolehan" ? "PEROLEHAN PROMOTOR" : "REKAP DENDA & LATE"], []);
-            rowsArr.push(["No", "Nama Promotor", "Omzet", "UC / Keterangan"]);
+        } else if (activeTab === "Perolehan") {
+            rowsArr.push(["PEROLEHAN PROMOTOR"], []);
+            rowsArr.push(["No", "Nama Promotor", "Omzet", "UC"]);
             targetElement.querySelectorAll(".row-perolehan-export").forEach((row, idx) => {
                 let nama = row.querySelector(".nama-p")?.innerText.trim() || "-";
                 let omzet = row.querySelector(".omzet-p")?.innerText.trim() || "0";
                 let uc = row.querySelector(".uc-p")?.innerText.trim() || "0";
                 rowsArr.push([idx + 1, nama, omzet, uc]);
+            });
+        } else if (activeTab === "DendaUC") {
+            rowsArr.push(["REKAP DENDA & KETERLAMBATAN (LATE)"], []);
+            rowsArr.push(["No", "Nama Promotor", "Denda UC", "Keterangan UC", "Denda Late", "Jumlah Late", "Total Denda"]);
+            targetElement.querySelectorAll(".row-perolehan-export").forEach((row, idx) => {
+                let nama = row.querySelector(".nama-p")?.innerText.trim() || "-";
+                let totalDenda = row.querySelectorAll("span[style*='font-weight: 800']")[0]?.innerText.trim() || "0";
+                
+                // Ambil rincian dari kotak Denda UC & Denda Late di dalam card
+                let rincianKolom = row.querySelectorAll("div[style*='display: flex; flex-direction: column; justify-content: space-between']");
+                let dendaUCVal = "0";
+                let ketUC = "-";
+                let dendaLateVal = "0";
+                let ketLate = "-";
+
+                if (rincianKolom.length >= 2) {
+                    dendaUCVal = rincianKolom[0].querySelectorAll(".omzet-p")[0]?.innerText.trim() || "0";
+                    ketUC = rincianKolom[0].querySelectorAll(".uc-p")[0]?.innerText.trim() || "-";
+                    
+                    dendaLateVal = rincianKolom[1].querySelectorAll(".omzet-p")[0]?.innerText.trim() || "0";
+                    ketLate = rincianKolom[1].querySelectorAll(".uc-p")[0]?.innerText.trim() || "-";
+                }
+
+                rowsArr.push([idx + 1, nama, dendaUCVal, ketUC, dendaLateVal, ketLate, totalDenda]);
             });
         }
         const ws = XLSX.utils.aoa_to_sheet(rowsArr);
@@ -1265,7 +1289,7 @@ function prosesEkspor(format) {
         elemenPrint.style.color = "#000";
         elemenPrint.style.background = "#fff";
         elemenPrint.style.padding = "20px";
-        elemenPrint.querySelectorAll(".card, .summary-card").forEach(el => {
+        elemenPrint.querySelectorAll(".card, .summary-card, div[style*='background: #111827']").forEach(el => {
             el.style.background = "#f8fafc";
             el.style.border = "1px solid #cbd5e1";
             el.style.color = "#000";
