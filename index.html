@@ -546,6 +546,24 @@ body {
         font-size: 14px !important;
     }
 }
+    /* ==========================================================
+   PERBAIKAN LEBAR KOTAK MENU DENDA & LATE DI PC
+   ========================================================== */
+@media(min-width: 1025px) {
+    /* Batasi lebar kontainer denda di PC agar tidak terlalu lebar */
+    #hasil .summary-card {
+        max-width: 850px !important;
+        margin-left: auto !important;
+        margin-right: auto !important;
+    }
+
+    /* Batasi juga setiap baris kartu promotor pada menu Denda & Late */
+    #hasil .row-perolehan-export {
+        max-width: 850px !important;
+        margin-left: auto !important;
+        margin-right: auto !important;
+    }
+}
 </style>
 </head>
 <body>
