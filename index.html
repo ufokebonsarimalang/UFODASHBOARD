@@ -5,10 +5,10 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>UFO Kebonsari - Dashboard Promotor</title>
 
-<!-- Google Font: Outfit -->
+<!-- Google Font: Plus Jakarta Sans (Gaya Dashboard SaaS Modern) -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
 <!-- Library Ekspor Excel & PDF -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
@@ -17,199 +17,244 @@
 <style>
 * {
     box-sizing: border-box;
-    font-family: 'Outfit', sans-serif !important;
+    font-family: 'Plus Jakarta Sans', sans-serif !important;
 }
 
 body {
     margin: 0;
-    padding: 25px 20px;
+    padding: 0 0 40px 0;
     min-height: 100vh;
-    background: radial-gradient(circle at top, rgba(212, 175, 55, 0.08) 0%, transparent 60%), linear-gradient(135deg, #0b0f19 0%, #111827 100%);
-    color: #f3f4f6;
+    background: #f8fafc;
+    color: #0f172a;
+}
+
+/* TOP NAVBAR ALA SAAS PROFESSIONAL (SEPERTI CONTOH) */
+.saas-navbar {
+    background: #ffffff;
+    border-bottom: 1px solid #e2e8f0;
+    padding: 12px 30px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.02);
+}
+
+.nav-brand {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.nav-brand img {
+    width: 36px;
+    height: 36px;
+    border-radius: 8px;
+    object-fit: cover;
+}
+
+.nav-brand span {
+    font-size: 16px;
+    font-weight: 800;
+    color: #0f172a;
+    letter-spacing: -0.5px;
+}
+
+.nav-right-area {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.user-badge {
+    background: #f1f5f9;
+    padding: 6px 14px;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 600;
+    color: #334155;
+    border: 1px solid #e2e8f0;
+}
+
+.btn-logout-saas {
+    background: #fef2f2;
+    color: #dc2626;
+    border: 1px solid #fecaca;
+    padding: 6px 14px;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+.btn-logout-saas:hover { background: #fee2e2; }
+
+/* CONTAINER UTAMA */
+.main-container {
+    max-width: 1200px;
+    margin: 30px auto;
+    padding: 0 20px;
 }
 
 /* KOTAK LOGIN */
 #loginBox {
-    max-width: 420px;
-    margin: 50px auto;
-    padding: 40px 30px;
-    background: #111827;
-    border-radius: 20px;
-    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7);
-    color: #f3f4f6;
-    border: 1px solid rgba(212, 175, 55, 0.3);
+    max-width: 400px;
+    margin: 80px auto;
+    padding: 35px 30px;
+    background: #ffffff;
+    border-radius: 16px;
+    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05);
+    border: 1px solid #e2e8f0;
     animation: fadeIn 0.4s ease;
-}
-
-.login-logo-container {
-    text-align: center;
-    margin-bottom: 20px;
-}
-
-.login-logo-container img {
-    width: 90px;
-    height: 90px;
-    border-radius: 50%;
-    object-fit: cover;
-    border: 2px solid rgba(212, 175, 55, 0.5);
-    box-shadow: 0 4px 15px rgba(0,0,0,0.3);
 }
 
 .login-title-area {
     text-align: center;
-    margin-bottom: 30px;
+    margin-bottom: 25px;
 }
 
 .login-title-area h2 {
     margin: 0;
-    font-size: 22px;
+    font-size: 20px;
     font-weight: 800;
-    color: #ffffff;
-    letter-spacing: -0.5px;
+    color: #0f172a;
 }
 
 .login-title-area p {
     margin: 6px 0 0;
-    font-size: 13.5px;
-    color: #9ca3af;
-    font-weight: 500;
+    font-size: 13px;
+    color: #64748b;
 }
 
 .input-group {
-    margin-bottom: 20px;
+    margin-bottom: 18px;
 }
 
 .input-group label {
     display: block;
-    font-size: 12px;
+    font-size: 11.5px;
     font-weight: 700;
-    color: #d1d5db;
-    margin-bottom: 8px;
+    color: #475569;
+    margin-bottom: 6px;
+    text-transform: uppercase;
     letter-spacing: 0.5px;
 }
 
 .input-group input {
     width: 100%;
-    padding: 15px 18px;
-    border-radius: 12px;
-    border: 1px solid #374151;
-    background: #1f2937;
-    color: #ffffff;
-    font-size: 14.5px;
+    padding: 12px 16px;
+    border-radius: 10px;
+    border: 1px solid #cbd5e1;
+    background: #f8fafc;
+    color: #0f172a;
+    font-size: 14px;
     outline: none;
-    transition: all 0.25s ease;
+    transition: all 0.2s;
 }
 
 .input-group input:focus {
-    border-color: #d4af37;
-    background: #111827;
-    box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.2);
+    border-color: #2563eb;
+    background: #ffffff;
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
 }
 
 #btnLogin {
     width: 100%;
-    padding: 16px;
+    padding: 13px;
     border: none;
-    border-radius: 12px;
+    border-radius: 10px;
     cursor: pointer;
     font-weight: 700;
-    font-size: 15px;
-    color: #111827;
-    background: linear-gradient(135deg, #f3e8ff 0%, #d4af37 100%);
-    box-shadow: 0 10px 20px -5px rgba(212, 175, 55, 0.3);
-    transition: all 0.25s ease;
+    font-size: 14px;
+    color: #ffffff;
+    background: #2563eb;
+    box-shadow: 0 4px 12px rgba(37, 99, 235, 0.2);
+    transition: all 0.2s;
 }
-
-#btnLogin:hover {
-    transform: translateY(-2px);
-    background: linear-gradient(135deg, #ffffff 0%, #e6c547 100%);
-}
+#btnLogin:hover { background: #1d4ed8; }
 
 /* HEADER DASHBOARD */
-.header {
-    text-align: center;
+.dashboard-header {
     margin-bottom: 25px;
+    background: #ffffff;
+    padding: 24px;
+    border-radius: 16px;
+    border: 1px solid #e2e8f0;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.02);
 }
 
-.header h1 {
-    font-size: 38px;
+.dashboard-header h1 {
+    font-size: 24px;
     font-weight: 800;
     margin: 0;
-    letter-spacing: -1.5px;
-    background: linear-gradient(90deg, #ffffff, #d4af37);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
+    color: #0f172a;
+    letter-spacing: -0.5px;
 }
 
-.header p {
-    color: #9ca3af;
-    font-size: 14px;
-    margin-top: 6px;
+.dashboard-header p {
+    color: #64748b;
+    font-size: 13.5px;
+    margin: 4px 0 0;
 }
 
-/* KOTAK PENCARIAN / DROPDOWN NAMA */
+/* DROPDOWN ADMIN */
 .search-box {
-    max-width: 1100px;
-    margin: 0 auto 20px;
+    margin-bottom: 20px;
 }
 
 #nama {
     width: 100%;
-    height: 52px;
-    padding: 0 20px;
-    border-radius: 14px;
-    border: 1px solid rgba(212, 175, 55, 0.3);
-    background: #111827;
-    color: #ffffff;
-    font-size: 14.5px;
+    height: 48px;
+    padding: 0 16px;
+    border-radius: 10px;
+    border: 1px solid #cbd5e1;
+    background: #ffffff;
+    color: #0f172a;
+    font-size: 14px;
     font-weight: 600;
     outline: none;
     cursor: pointer;
     appearance: none;
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='18' height='18' fill='%23d4af37' viewBox='0 0 16 16'%3E%3Cpath d='M1.5 5.5l6 6 6-6'/%3E%3C/svg%3E");
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='%2364748b' viewBox='0 0 16 16'%3E%3Cpath d='M1.5 5.5l6 6 6-6'/%3E%3C/svg%3E");
     background-repeat: no-repeat;
-    background-position: right 20px center;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    background-position: right 16px center;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.02);
 }
-#nama option { background: #111827; color: #ffffff; }
 
-/* KARTU MENU UTAMA (HALAMAN PERTAMA SEBELUM MASUK DETAIL) */
+/* GRID KARTU MENU UTAMA */
 #menuGridContainer {
-    max-width: 1100px;
-    margin: 0 auto;
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 20px;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
     animation: fadeIn 0.3s ease;
 }
 
 .menu-card-item {
-    background: #111827;
-    border: 1px solid rgba(212, 175, 55, 0.25);
-    border-radius: 18px;
-    padding: 25px;
-    text-align: center;
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 14px;
+    padding: 20px;
+    text-align: left;
     cursor: pointer;
-    transition: all 0.25s ease;
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.25);
+    transition: all 0.2s ease;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.02);
 }
 
 .menu-card-item:hover {
-    transform: translateY(-4px);
-    border-color: #d4af37;
-    box-shadow: 0 12px 30px rgba(212, 175, 55, 0.2);
-    background: #151d2e;
+    transform: translateY(-2px);
+    border-color: #2563eb;
+    box-shadow: 0 10px 15px -3px rgba(37, 99, 235, 0.08);
 }
 
-.menu-card-item .icon { font-size: 36px; margin-bottom: 12px; }
-.menu-card-item h3 { margin: 0 0 6px; font-size: 18px; color: #ffffff; font-weight: 700; }
-.menu-card-item p { margin: 0; font-size: 13px; color: #9ca3af; }
+.menu-card-item .icon { font-size: 28px; margin-bottom: 10px; }
+.menu-card-item h3 { margin: 0 0 4px; font-size: 15px; color: #0f172a; font-weight: 700; }
+.menu-card-item p { margin: 0; font-size: 12px; color: #64748b; line-height: 1.4; }
 
-/* AREA KONTEN DETAIL (MUNCUL SETELAH MENU DIKLIK) */
+/* DETAIL VIEW */
 #detailViewSection {
     display: none;
-    max-width: 1100px;
-    margin: 0 auto;
     animation: fadeIn 0.3s ease;
 }
 
@@ -218,98 +263,96 @@ body {
     justify-content: space-between;
     align-items: center;
     margin-bottom: 20px;
-    flex-wrap: wrap;
-    gap: 10px;
 }
 
 .btn-back-menu {
-    padding: 10px 18px;
+    padding: 8px 16px;
     border: none;
-    border-radius: 10px;
+    border-radius: 8px;
     cursor: pointer;
     font-weight: 700;
-    font-size: 13px;
-    color: #111827;
-    background: #d4af37;
+    font-size: 12.5px;
+    color: #ffffff;
+    background: #0f172a;
     display: inline-flex;
     align-items: center;
     gap: 6px;
-    box-shadow: 0 4px 15px rgba(212, 175, 55, 0.3);
-    transition: all 0.2s ease;
+    transition: all 0.2s;
 }
-.btn-back-menu:hover { opacity: 0.9; transform: translateY(-1px); }
+.btn-back-menu:hover { background: #334155; }
 
 /* SUMMARY & KARTU DATA */
 #summary { margin-bottom: 20px; }
 
 .summary-card {
-    background: #111827;
-    border: 1px solid rgba(212, 175, 55, 0.25);
-    border-radius: 18px;
-    padding: 22px;
-    color: #ffffff;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 14px;
+    padding: 20px;
+    color: #0f172a;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.02);
 }
 
 .summary-card h2 {
     margin-top: 0;
-    font-size: 19px;
+    font-size: 18px;
     font-weight: 700;
-    margin-bottom: 12px;
-    color: #d4af37;
+    margin-bottom: 10px;
+    color: #2563eb;
 }
 
 .summary-card p {
-    margin: 6px 0;
-    color: #d1d5db;
+    margin: 5px 0;
+    color: #475569;
     font-size: 13.5px;
 }
 
 .grid {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
-    gap: 20px;
+    gap: 16px;
 }
 
 .card {
-    background: #111827;
-    border: 1px solid #374151;
-    border-radius: 18px;
-    padding: 20px;
-    transition: all 0.25s ease;
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.25);
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 14px;
+    padding: 18px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.02);
+    transition: all 0.2s;
 }
+.card:hover { box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
 
-.card.success { border-left: 5px solid #10b981; }
-.card.warning { border-left: 5px solid #ef4444; }
-.card.late { border: 2px solid #d4af37; background: #151922; }
-.card-notice, .card-rules { border-left: 5px solid #d4af37; }
+.card.success { border-left: 4px solid #10b981; }
+.card.warning { border-left: 4px solid #ef4444; }
+.card.late { border: 2px solid #f59e0b; background: #fffbeb; }
+.card-notice, .card-rules { border-left: 4px solid #2563eb; }
 
 .tanggal {
     text-align: center;
     font-weight: 700;
-    margin-bottom: 14px;
-    color: #ffffff;
-    font-size: 14px;
+    margin-bottom: 12px;
+    color: #0f172a;
+    font-size: 13.5px;
 }
 
 .row {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 9px 0;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-    color: #9ca3af;
-    font-size: 13.5px;
+    padding: 8px 0;
+    border-bottom: 1px solid #f1f5f9;
+    color: #64748b;
+    font-size: 13px;
 }
 
 .row:last-child { border-bottom: none; }
-.ok { font-weight: 600; color: #ffffff; }
-.kosong { color: #f87171; font-weight: 700; }
-.status-ok { color: #34d399; font-weight: 700; }
-.status-warning { color: #f87171; font-weight: 700; }
+.ok { font-weight: 600; color: #0f172a; }
+.kosong { color: #ef4444; font-weight: 700; }
+.status-ok { color: #059669; font-weight: 700; }
+.status-warning { color: #dc2626; font-weight: 700; }
 
-/* TOMBOL EKSPOR & LOGOUT */
+/* EKSPOR */
 .export-container {
     margin-bottom: 15px;
     display: none;
@@ -318,76 +361,65 @@ body {
 }
 
 .btn-export {
-    padding: 10px 16px;
+    padding: 8px 14px;
     border: none;
-    border-radius: 10px;
+    border-radius: 8px;
     font-weight: 700;
-    font-size: 12.5px;
+    font-size: 12px;
     cursor: pointer;
     color: white;
     display: flex;
     align-items: center;
     gap: 6px;
 }
-.btn-excel { background: #065f46; border: 1px solid #10b981; }
-.btn-pdf { background: #991b1b; border: 1px solid #ef4444; }
-
-.btn-logout-main {
-    padding: 9px 18px;
-    border: none;
-    border-radius: 10px;
-    cursor: pointer;
-    color: #f87171;
-    background: rgba(239, 68, 68, 0.1);
-    border: 1px solid rgba(239, 68, 68, 0.3);
-    font-weight: 600;
-    font-size: 13px;
-}
+.btn-excel { background: #059669; }
+.btn-pdf { background: #dc2626; }
 
 /* POPUP */
 #popup, #logoutPopup {
     display: none;
     position: fixed;
     top: 0; left: 0; width: 100%; height: 100%;
-    background: rgba(0, 0, 0, 0.75);
-    backdrop-filter: blur(8px);
+    background: rgba(15, 23, 42, 0.4);
+    backdrop-filter: blur(3px);
     z-index: 99999;
     justify-content: center; align-items: center;
 }
 
 .modern-popup-box {
-    background: #111827; padding: 30px 25px; border-radius: 18px;
-    min-width: 310px; text-align: center;
-    border: 1px solid rgba(212, 175, 55, 0.4);
-    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6);
+    background: #ffffff; padding: 25px; border-radius: 14px;
+    min-width: 300px; text-align: center;
+    border: 1px solid #e2e8f0;
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
 }
 
 .btn-popup-ok {
-    border: none; padding: 11px 28px; border-radius: 10px;
-    cursor: pointer; color: #111827; font-weight: 700; background: #d4af37;
+    border: none; padding: 10px 24px; border-radius: 8px;
+    cursor: pointer; color: #ffffff; font-weight: 700; background: #2563eb;
 }
 
 #btnBatal, #btnLogoutConfirm {
-    border: none; padding: 11px 22px; border-radius: 10px;
+    border: none; padding: 10px 20px; border-radius: 8px;
     cursor: pointer; color: white; font-weight: 600; margin: 4px;
 }
-#btnBatal { background: #374151; }
-#btnLogoutConfirm { background: #991b1b; }
+#btnBatal { background: #64748b; }
+#btnLogoutConfirm { background: #dc2626; }
 
 .spinner {
-    width: 18px; height: 18px; display: inline-block;
-    border: 3px solid rgba(255,255,255,.3); border-top: 3px solid #fff;
+    width: 16px; height: 16px; display: inline-block;
+    border: 2px solid rgba(37,99,235,.2); border-top: 2px solid #2563eb;
     border-radius: 50%; animation: spin .8s linear infinite; vertical-align: middle;
 }
 
 @keyframes spin { to { transform: rotate(360deg); } }
-@keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: translateY(0); } }
 
 @media(max-width: 1024px) { 
-    .grid, #menuGridContainer { grid-template-columns: repeat(2, 1fr) !important; } 
+    #menuGridContainer { grid-template-columns: repeat(2, 1fr) !important; } 
+    .grid { grid-template-columns: repeat(2, 1fr) !important; }
 }
-@media(max-width: 768px) {
-    .grid, #menuGridContainer { grid-template-columns: 1fr !important; }
+@media(max-width: 640px) {
+    #menuGridContainer, .grid { grid-template-columns: 1fr !important; }
 }
 </style>
 </head>
@@ -395,8 +427,8 @@ body {
 
 <!-- KOTAK LOGIN -->
 <div id="loginBox">
-    <div class="login-logo-container">
-        <img src="logo.png" alt="UFO Logo" onerror="this.style.display='none'">
+    <div style="text-align:center; margin-bottom:15px;">
+        <img src="logo.png" alt="UFO Logo" style="width:70px; height:70px; border-radius:50%; object-fit:cover; border:2px solid #e2e8f0;" onerror="this.style.display='none'">
     </div>
     <div class="login-title-area">
         <h2>UFO KEBONSARI MALANG</h2>
@@ -416,87 +448,99 @@ body {
     <button id="btnLogin" onclick="login()">MASUK</button>
 </div>
 
-<!-- DASHBOARD UTAMA -->
+<!-- DASHBOARD UTAMA DENGAN SAAS NAVBAR -->
 <div id="dashboard" style="display:none;">
-    <div class="header">
-        <h1>UFO KEBONSARI</h1>
-        <p>Dashboard Monitoring Promotor & Toko</p>
-    </div>
-
-    <!-- INDIKATOR LOADING -->
-    <div id="globalLoading" style="display:none; text-align:center; margin:15px 0; color:#d4af37; font-weight:600; font-size:14px;">
-        <span class="spinner" style="margin-right:8px; width:20px; height:20px; border-width:3px;"></span>
-        Sedang menyiapkan data, mohon tunggu sebentar...
-    </div>
-
-    <div style="max-width:1100px; margin:0 auto 25px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px;">
-        <div id="loginInfo" style="padding:7px 16px; border-radius:99px; background:#111827; border:1px solid rgba(212, 175, 55, 0.3); color:#e2e8f0; font-size:13px; font-weight:600;"></div>
-        <button class="btn-logout-main" onclick="logout()">🚪 Keluar</button>
-    </div>
-
-    <!-- TAMPILAN 1: HALAMAN UTAMA BERUPA KARTU MENU -->
-    <div id="menuGridContainer">
-        <div class="menu-card-item" onclick="pindahMenu('Absensi')">
-            <div class="icon">📅</div>
-            <h3>Absensi</h3>
-            <p>Rekap kehadiran dan status finger harian</p>
+    
+    <!-- SAAS TOP NAVBAR -->
+    <div class="saas-navbar">
+        <div class="nav-brand">
+            <img src="logo.png" alt="Logo" onerror="this.style.display='none'">
+            <span>UFO KEBONSARI $\bullet$ DASHBOARD</span>
         </div>
-        <div class="menu-card-item" onclick="pindahMenu('Penjualan')">
-            <div class="icon">💼</div>
-            <h3>Penjualan</h3>
-            <p>Omzet produk harian dan perolehan unit</p>
-        </div>
-        <div class="menu-card-item" onclick="pindahMenu('UC')">
-            <div class="icon">⭐</div>
-            <h3>UC</h3>
-            <p>Pencapaian poin UC promotor</p>
-        </div>
-        <div class="menu-card-item" id="menuPerolehanCard" onclick="pindahMenu('Perolehan')">
-            <div class="icon">📈</div>
-            <h3>Perolehan</h3>
-            <p>Peringkat & akumulasi omzet seluruh promotor</p>
-        </div>
-        <div class="menu-card-item" onclick="pindahMenu('DendaUC')">
-            <div class="icon">⚡</div>
-            <h3>Denda & Late</h3>
-            <p>Rekapitulasi keterlambatan & denda target</p>
-        </div>
-        <div class="menu-card-item" onclick="pindahMenu('Promo')">
-            <div class="icon">🏷️</div>
-            <h3>Promo Toko</h3>
-            <p>Daftar promo produk & program toko aktif</p>
-        </div>
-        <div class="menu-card-item" onclick="pindahMenu('Rules')">
-            <div class="icon">✨</div>
-            <h3>SOP Promotor</h3>
-            <p>Aturan kerja & standar operasional display</p>
-        </div>
-        <div class="menu-card-item" onclick="pindahMenu('Notice')">
-            <div class="icon">🔔</div>
-            <h3>Notice</h3>
-            <p>Pengumuman & informasi penting supervisor</p>
+        <div class="nav-right-area">
+            <div id="loginInfo" class="user-badge"></div>
+            <button class="btn-logout-saas" onclick="logout()">Keluar</button>
         </div>
     </div>
 
-    <!-- TAMPILAN 2: HALAMAN DETAIL DATA (DITAMPILKAN KETIKA MENU DIKLIK) -->
-    <div id="detailViewSection" style="display:none;">
-        <div class="nav-back-bar">
-            <button class="btn-back-menu" onclick="kembaliKeMenuUtama()">⬅ Kembali ke Menu</button>
-            <div id="currentMenuTitle" style="color:#d4af37; font-weight:700; font-size:16px;"></div>
+    <div class="main-container">
+
+        <!-- HEADER HALAMAN -->
+        <div class="dashboard-header" id="headerTitleArea">
+            <h1>Dashboard Promotor</h1>
+            <p>Presisi hari ini & monitoring performa toko secara real-time.</p>
         </div>
 
-        <div class="search-box" id="searchBoxWrapper">
-            <select id="nama" onchange="gantiNamaAdmin()"></select>
+        <!-- INDIKATOR LOADING -->
+        <div id="globalLoading" style="display:none; text-align:center; margin:15px 0; color:#2563eb; font-weight:600; font-size:13.5px;">
+            <span class="spinner" style="margin-right:8px;"></span> Menyiapkan data dari server...
         </div>
 
-        <div id="summary"></div>
-
-        <div class="export-container" id="exportArea">
-            <button class="btn-export btn-excel" onclick="prosesEkspor('excel')">📥 Unduh Excel</button>
-            <button class="btn-export btn-pdf" onclick="prosesEkspor('pdf')">📄 Unduh PDF</button>
+        <!-- TAMPILAN 1: KARTU MENU UTAMA -->
+        <div id="menuGridContainer">
+            <div class="menu-card-item" onclick="pindahMenu('Absensi')">
+                <div class="icon">📅</div>
+                <h3>Absensi</h3>
+                <p>Rekap kehadiran dan status finger harian</p>
+            </div>
+            <div class="menu-card-item" onclick="pindahMenu('Penjualan')">
+                <div class="icon">💼</div>
+                <h3>Penjualan</h3>
+                <p>Omzet produk harian & perolehan unit</p>
+            </div>
+            <div class="menu-card-item" onclick="pindahMenu('UC')">
+                <div class="icon">⭐</div>
+                <h3>UC</h3>
+                <p>Pencapaian poin UC promotor</p>
+            </div>
+            <div class="menu-card-item" id="menuPerolehanCard" onclick="pindahMenu('Perolehan')">
+                <div class="icon">📈</div>
+                <h3>Perolehan</h3>
+                <p>Peringkat & akumulasi omzet seluruh promotor</p>
+            </div>
+            <div class="menu-card-item" onclick="pindahMenu('DendaUC')">
+                <div class="icon">⚡</div>
+                <h3>Denda & Late</h3>
+                <p>Rekapitulasi keterlambatan & denda target</p>
+            </div>
+            <div class="menu-card-item" onclick="pindahMenu('Promo')">
+                <div class="icon">🏷️</div>
+                <h3>Promo Toko</h3>
+                <p>Daftar promo produk & program toko aktif</p>
+            </div>
+            <div class="menu-card-item" onclick="pindahMenu('Rules')">
+                <div class="icon">✨</div>
+                <h3>SOP Promotor</h3>
+                <p>Aturan kerja & standar operasional display</p>
+            </div>
+            <div class="menu-card-item" onclick="pindahMenu('Notice')">
+                <div class="icon">🔔</div>
+                <h3>Notice</h3>
+                <p>Pengumuman & informasi penting supervisor</p>
+            </div>
         </div>
 
-        <div id="hasil" class="grid"></div>
+        <!-- TAMPILAN 2: HALAMAN DETAIL DATA -->
+        <div id="detailViewSection">
+            <div class="nav-back-bar">
+                <button class="btn-back-menu" onclick="kembaliKeMenuUtama()">⬅ Kembali ke Menu</button>
+                <div id="currentMenuTitle" style="color:#0f172a; font-weight:700; font-size:15px;"></div>
+            </div>
+
+            <div class="search-box" id="searchBoxWrapper">
+                <select id="nama" onchange="gantiNamaAdmin()"></select>
+            </div>
+
+            <div id="summary"></div>
+
+            <div class="export-container" id="exportArea">
+                <button class="btn-export btn-excel" onclick="prosesEkspor('excel')">📥 Unduh Excel</button>
+                <button class="btn-export btn-pdf" onclick="prosesEkspor('pdf')">📄 Unduh PDF</button>
+            </div>
+
+            <div id="hasil" class="grid"></div>
+        </div>
+
     </div>
 </div>
 
@@ -511,14 +555,13 @@ let cacheData = {
     denda: null, promo: null, rules: null, notice: null
 };
 
-// Cek Sesi Otomatis Saat Halaman Dimuat
 document.addEventListener("DOMContentLoaded", () => {
     const savedName = localStorage.getItem("loginNama");
     const savedRole = localStorage.getItem("loginRole");
     if (savedName && savedRole) {
         currentUser = savedName;
         currentRole = savedRole;
-        document.getElementById("loginInfo").innerHTML = "⭕ <b>" + currentUser + "</b>" + (currentRole === "ADMIN" ? " (ADMIN)" : "");
+        document.getElementById("loginInfoinnerHTML", document.getElementById("loginInfo").innerHTML = "👤 <b>" + currentUser + "</b>" + (currentRole === "ADMIN" ? " (Admin)" : ""));
         document.getElementById("loginBox").style.display = "none";
         document.getElementById("dashboard").style.display = "block";
 
@@ -535,7 +578,7 @@ document.addEventListener("DOMContentLoaded", () => {
 async function login() {
     const btn = document.getElementById("btnLogin");
     btn.disabled = true;
-    btn.innerHTML = `<span class="spinner" style="margin-right:8px;"></span>MEMPROSES...`;
+    btn.innerHTML = `<span class="spinner" style="margin-right:6px;"></span>MEMPROSES...`;
     
     const nama = document.getElementById("loginNama").value.trim().toUpperCase();
     const pin = document.getElementById("loginPin").value.trim();
@@ -563,7 +606,7 @@ async function login() {
         localStorage.setItem("loginNama", currentUser);
         localStorage.setItem("loginRole", currentRole);
 
-        document.getElementById("loginInfo").innerHTML = "⭕ <b>" + currentUser + "</b>" + (currentRole === "ADMIN" ? " (ADMIN)" : "");
+        document.getElementById("loginInfo").innerHTML = "👤 <b>" + currentUser + "</b>" + (currentRole === "ADMIN" ? " (Admin)" : "");
         document.getElementById("loginBox").style.display = "none";
         document.getElementById("dashboard").style.display = "block";
 
@@ -652,12 +695,11 @@ async function gantiNamaAdmin() {
     jalankanRenderMenu(activeTab);
 }
 
-// Navigasi Antar Halaman Kartu & Detail
 function pindahMenu(namaMenu) {
     activeTab = namaMenu;
     document.getElementById("menuGridContainer").style.display = "none";
     document.getElementById("detailViewSection").style.display = "block";
-    document.getElementById("currentMenuTitle").innerText = "Menu: " + namaMenu;
+    document.getElementById("currentMenuTitleinnerHTML", document.getElementById("currentMenuTitle").innerText = "Menu: " + namaMenu);
     
     jalankanRenderMenu(namaMenu);
 }
@@ -751,7 +793,7 @@ function renderAbsensi(result) {
         html += `
         <div class="card ${kelasCard} ${kelasTambahan}">
             <div class="tanggal">📅 ${x.tanggal}<br>${status}
-                ${isTerlambat ? '<div style="color:#d4af37;font-weight:700;margin-top:5px;">TERLAMBAT</div>' : ''}
+                ${isTerlambat ? '<div style="color:#d97706;font-weight:700;margin-top:4px;">TERLAMBAT</div>' : ''}
             </div>
             <div class="row"><span>Masuk</span>${tampil(x.masuk)}</div>
             <div class="row"><span>Istirahat 1</span>${tampil(x.istirahat1)}</div>
@@ -774,7 +816,7 @@ function renderPenjualan(data) {
         <h2>💰 ${data.nama}</h2>
         <p>Periode : <b>${data.tanggalPertama} - ${data.tanggalTerakhir}</b></p>
         <p>Total Unit : <b>${data.totalUnit}</b></p>
-        <p>Total Omzet Toko : <span style="font-weight:bold; color:${Number(data.totalOmzet) >= 100000000 ? '#34d399' : Number(data.totalOmzet) >= 80000000 ? '#f59e0b' : '#ef4444'};">Rp ${Number(data.totalOmzet).toLocaleString("id-ID")}</span></p>
+        <p>Total Omzet Toko : <span style="font-weight:bold; color:${Number(data.totalOmzet) >= 100000000 ? '#059669' : Number(data.totalOmzet) >= 80000000 ? '#d97706' : '#dc2626'};">Rp ${Number(data.totalOmzet).toLocaleString("id-ID")}</span></p>
     </div>`;
 
     let html = "";
@@ -790,8 +832,8 @@ function renderPenjualan(data) {
         grupTanggal[tanggal].forEach(item => {
             totalHari += Number(item.omzet);
             isiProduk += `
-                <div style="margin-bottom:12px; padding-bottom:8px; border-bottom:1px solid rgba(255,255,255,0.05);">
-                    <div style="font-size:12px; font-weight:600; line-height:1.4; margin-bottom:6px; color:#e5e7eb;">${item.produk}</div>
+                <div style="margin-bottom:10px; padding-bottom:6px; border-bottom:1px solid #f1f5f9;">
+                    <div style="font-size:12px; font-weight:600; line-height:1.4; margin-bottom:4px; color:#334155;">${item.produk}</div>
                     <div class="row"><span>Qty</span><span>${item.qty}</span></div>
                     <div class="row"><span>Omzet</span><span>Rp ${Number(item.omzet).toLocaleString("id-ID")}</span></div>
                 </div>`;
@@ -824,7 +866,7 @@ function renderUC(data) {
         html += `
         <div class="card success">
             <div class="tanggal">📅 ${x.tanggal}</div>
-            <div style="font-size:12px; font-weight:600; line-height:1.4; margin:12px 0; color:#e5e7eb;">${x.produk}</div>
+            <div style="font-size:12px; font-weight:600; line-height:1.4; margin:10px 0; color:#334155;">${x.produk}</div>
             <div class="row"><span>Qty</span><span>${x.qty}</span></div>
         </div>`;
     });
@@ -850,10 +892,10 @@ function renderPerolehan(data) {
     <h2>📊 Perolehan</h2>
     ${currentRole === "ADMIN" ? 
         `<p>👥 Jumlah Promotor : <b>${data.list.length}</b></p>
-         <p>💰 Total Omzet Toko : <span style="font-weight:bold;color:#34d399">Rp ${totalOmzet.toLocaleString("id-ID")}</span></p>
+         <p>💰 Total Omzet Toko : <span style="font-weight:bold;color:#059669">Rp ${totalOmzet.toLocaleString("id-ID")}</span></p>
          <p>💎 Total UC : <b>${totalUC}</b></p>` :
         `<p>👤 ${currentUser}</p>
-         <p>💰 Total Omzet : <span style="font-weight:bold; color:${Number(user ? user.omzet : 0) >= 100000000 ? '#34d399' : Number(user ? user.omzet : 0) >= 80000000 ? '#f59e0b' : '#ef4444'};">Rp ${Number(user ? user.omzet : 0).toLocaleString("id-ID")}</span></p>
+         <p>💰 Total Omzet : <span style="font-weight:bold; color:${Number(user ? user.omzet : 0) >= 100000000 ? '#059669' : Number(user ? user.omzet : 0) >= 80000000 ? '#d97706' : '#dc2626'};">Rp ${Number(user ? user.omzet : 0).toLocaleString("id-ID")}</span></p>
          <p>🏅 Posisi : <b>${posisi} dari ${data.list.length} Promotor</b></p>`
     }
     </div>`;
@@ -861,17 +903,17 @@ function renderPerolehan(data) {
     let html = `<div class="summary-card">`;
     data.list.forEach((x, i) => {
         const omzetVal = Number(x.omzet || 0);
-        const warnaOmzet = omzetVal >= 100000000 ? '#34d399' : omzetVal >= 80000000 ? '#f59e0b' : '#ef4444';
+        const warnaOmzet = omzetVal >= 100000000 ? '#059669' : omzetVal >= 80000000 ? '#d97706' : '#dc2626';
 
         html += `
-            <div class="row-perolehan-export" style="display:flex; align-items:center; justify-content:space-between; padding:12px 0; border-bottom:1px solid rgba(255,255,255,0.05); gap:10px;">
+            <div class="row-perolehan-export" style="display:flex; align-items:center; justify-content:space-between; padding:10px 0; border-bottom:1px solid #f1f5f9; gap:10px;">
                 <div style="display:flex; align-items:center; gap:12px; min-width:0; flex:1;">
-                    <div style="width:30px; height:30px; border-radius:50%; background:#1f2937; border:1px solid rgba(212,175,55,0.3); display:flex; align-items:center; justify-content:center; font-weight:700; font-size:13px; flex-shrink:0; color:#d4af37;">${i + 1}</div>
-                    <div class="nama-p" style="font-weight:600; font-size:13.5px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${x.nama}</div>
+                    <div style="width:28px; height:28px; border-radius:50%; background:#f1f5f9; border:1px solid #cbd5e1; display:flex; align-items:center; justify-content:center; font-weight:700; font-size:12px; flex-shrink:0; color:#2563eb;">${i + 1}</div>
+                    <div class="nama-p" style="font-weight:600; font-size:13px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; color:#0f172a;">${x.nama}</div>
                 </div>
                 <div style="text-align:right; white-space:nowrap; flex-shrink:0;">
-                    <div class="omzet-p" style="font-weight:700; font-size:13.5px; color:${warnaOmzet};">Rp ${omzetVal.toLocaleString("id-ID")}</div>
-                    <div class="uc-p" style="font-size:12px; font-weight:600; color:#d4af37; margin-top:2px;">⭐ UC : ${x.uc || 0}</div>
+                    <div class="omzet-p" style="font-weight:700; font-size:13px; color:${warnaOmzet};">Rp ${omzetVal.toLocaleString("id-ID")}</div>
+                    <div class="uc-p" style="font-size:11.5px; font-weight:600; color:#d97706; margin-top:2px;">⭐ UC : ${x.uc || 0}</div>
                 </div>
             </div>`;
     });
@@ -897,20 +939,20 @@ function renderDendaUC(dendaObj) {
 
     document.getElementById("summary").innerHTML = `
     <div class="summary-card">
-        <h2 style="margin-bottom:14px;">⚖️ Rekap Denda & Keterlambatan</h2>
-        <div style="display:flex; flex-wrap:wrap; gap:12px; margin-top:10px;">
-            <div style="flex:1; min-width:200px; background:#1a2234; padding:12px 14px; border-radius:12px; border:1px solid #374151;">
-                <div style="font-size:11px; color:#9ca3af; font-weight:600; text-transform:uppercase;">Denda Target UC</div>
-                <div style="font-size:13px; color:#f87171; font-weight:700; margin-top:2px;">Rp 5.000 / Unit Kurang</div>
+        <h2 style="margin-bottom:12px;">⚖️ Rekap Denda & Keterlambatan</h2>
+        <div style="display:flex; flex-wrap:wrap; gap:10px; margin-top:8px;">
+            <div style="flex:1; min-width:180px; background:#f8fafc; padding:10px 12px; border-radius:10px; border:1px solid #e2e8f0;">
+                <div style="font-size:10.5px; color:#64748b; font-weight:600; text-transform:uppercase;">Denda Target UC</div>
+                <div style="font-size:12.5px; color:#dc2626; font-weight:700; margin-top:2px;">Rp 5.000 / Unit Kurang</div>
             </div>
-            <div style="flex:1; min-width:200px; background:#1a2234; padding:12px 14px; border-radius:12px; border:1px solid #374151;">
-                <div style="font-size:11px; color:#9ca3af; font-weight:600; text-transform:uppercase;">Denda Keterlambatan</div>
-                <div style="font-size:13px; color:#facc15; font-weight:700; margin-top:2px;">Rp 10.000 / Kali Terlambat</div>
+            <div style="flex:1; min-width:180px; background:#f8fafc; padding:10px 12px; border-radius:10px; border:1px solid #e2e8f0;">
+                <div style="font-size:10.5px; color:#64748b; font-weight:600; text-transform:uppercase;">Denda Keterlambatan</div>
+                <div style="font-size:12.5px; color:#d97706; font-weight:700; margin-top:2px;">Rp 10.000 / Kali Terlambat</div>
             </div>
         </div>
     </div>`;
 
-    let html = `<div class="summary-card" style="display: flex; flex-direction: column; gap: 12px; background: transparent; border: none; padding: 0; box-shadow: none;">`;
+    let html = `<div class="summary-card" style="display: flex; flex-direction: column; gap: 10px; background: transparent; border: none; padding: 0; box-shadow: none;">`;
     
     if(resPerolehan && resPerolehan.list) {
         resPerolehan.list.forEach((x, i) => {
@@ -927,32 +969,32 @@ function renderDendaUC(dendaObj) {
             const totalDenda = dendaUC + dendaLate;
 
             html += `
-            <div class="row-perolehan-export" style="background: #111827; border: 1px solid #374151; border-radius: 14px; padding: 14px 16px; display: flex; flex-direction: column; gap: 10px; box-shadow: 0 4px 12px rgba(0,0,0,0.2);">
-                <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(255,255,255,0.06); padding-bottom: 8px;">
-                    <div style="display: flex; align-items: center; gap: 10px; min-width: 0; flex: 1;">
-                        <span style="background: #1f2937; color: #d4af37; border-radius: 6px; padding: 2px 8px; font-size: 11px; font-weight: 700; flex-shrink: 0;">#${i+1}</span>
-                        <span class="nama-p" style="font-size: 13.5px; font-weight: 700; color: #ffffff; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${x.nama}</span>
+            <div class="row-perolehan-export" style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 12px; padding: 12px 14px; display: flex; flex-direction: column; gap: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.02);">
+                <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #f1f5f9; padding-bottom: 6px;">
+                    <div style="display: flex; align-items: center; gap: 8px; min-width: 0; flex: 1;">
+                        <span style="background: #f1f5f9; color: #2563eb; border-radius: 6px; padding: 2px 6px; font-size: 10.5px; font-weight: 700; flex-shrink: 0;">#${i+1}</span>
+                        <span class="nama-p" style="font-size: 13px; font-weight: 700; color: #0f172a; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${x.nama}</span>
                     </div>
                     <div style="text-align: right; flex-shrink: 0; margin-left: 10px;">
-                        <span style="font-size: 11px; color: #9ca3af; font-weight: 600;">Total: </span>
-                        <span style="font-size: 13.5px; font-weight: 800; color: ${totalDenda > 0 ? '#f87171' : '#34d399'};">Rp ${totalDenda.toLocaleString("id-ID")}</span>
+                        <span style="font-size: 11px; color: #64748b; font-weight: 600;">Total: </span>
+                        <span style="font-size: 13px; font-weight: 800; color: ${totalDenda > 0 ? '#dc2626' : '#059669'};">Rp ${totalDenda.toLocaleString("id-ID")}</span>
                     </div>
                 </div>
 
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
-                    <div style="background: #1a2234; padding: 10px 12px; border-radius: 10px; border: 1px solid rgba(255,255,255,0.05); display: flex; flex-direction: column; justify-content: space-between;">
-                        <div style="font-size: 10.5px; color: #9ca3af; font-weight: 700; text-transform: uppercase; margin-bottom: 4px;">Denda UC</div>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
+                    <div style="background: #f8fafc; padding: 8px 10px; border-radius: 8px; border: 1px solid #e2e8f0; display: flex; flex-direction: column; justify-content: space-between;">
+                        <div style="font-size: 10px; color: #64748b; font-weight: 700; text-transform: uppercase; margin-bottom: 2px;">Denda UC</div>
                         <div style="display: flex; justify-content: space-between; align-items: baseline; gap: 4px;">
-                            <span class="omzet-p" style="font-size: 13px; font-weight: 700; color: ${dendaUC > 0 ? '#f87171' : '#34d399'};">Rp ${dendaUC.toLocaleString("id-ID")}</span>
-                            <span class="uc-p" style="font-size: 10.5px; color: #9ca3af; font-weight: 500;">(${isIkutUC ? `kurang ${kurangUC}` : 'non-target'})</span>
+                            <span class="omzet-p" style="font-size: 12px; font-weight: 700; color: ${dendaUC > 0 ? '#dc2626' : '#059669'};">Rp ${dendaUC.toLocaleString("id-ID")}</span>
+                            <span class="uc-p" style="font-size: 10px; color: #64748b; font-weight: 500;">(${isIkutUC ? `kurang ${kurangUC}` : 'non-target'})</span>
                         </div>
                     </div>
 
-                    <div style="background: #1a2234; padding: 10px 12px; border-radius: 10px; border: 1px solid rgba(255,255,255,0.05); display: flex; flex-direction: column; justify-content: space-between;">
-                        <div style="font-size: 10.5px; color: #9ca3af; font-weight: 700; text-transform: uppercase; margin-bottom: 4px;">Denda Late</div>
+                    <div style="background: #f8fafc; padding: 8px 10px; border-radius: 8px; border: 1px solid #e2e8f0; display: flex; flex-direction: column; justify-content: space-between;">
+                        <div style="font-size: 10px; color: #64748b; font-weight: 700; text-transform: uppercase; margin-bottom: 2px;">Denda Late</div>
                         <div style="display: flex; justify-content: space-between; align-items: baseline; gap: 4px;">
-                            <span class="omzet-p" style="font-size: 13px; font-weight: 700; color: ${dendaLate > 0 ? '#facc15' : '#34d399'};">Rp ${dendaLate.toLocaleString("id-ID")}</span>
-                            <span class="uc-p" style="font-size: 10.5px; color: #9ca3af; font-weight: 500;">(${totalTerlambat}x telat)</span>
+                            <span class="omzet-p" style="font-size: 12px; font-weight: 700; color: ${dendaLate > 0 ? '#d97706' : '#059669'};">Rp ${dendaLate.toLocaleString("id-ID")}</span>
+                            <span class="uc-p" style="font-size: 10px; color: #64748b; font-weight: 500;">(${totalTerlambat}x telat)</span>
                         </div>
                     </div>
                 </div>
@@ -976,8 +1018,8 @@ function renderRules(result) {
     else {
         list.forEach(a => {
             html += `<div class="card card-rules">
-                <div class="tanggal" style="text-align:left; font-size:14px; color:#d4af37;">📌 ${a.poin || a.Poin || ""}</div>
-                <div style="font-size:13px; line-height:1.5; color:#d1d5db; margin-top:8px; border-top:1px solid rgba(255,255,255,0.05); padding-top:8px;">${a.desc || a.Desc || a.Deskripsi || ""}</div>
+                <div class="tanggal" style="text-align:left; font-size:13.5px; color:#2563eb;">📌 ${a.poin || a.Poin || ""}</div>
+                <div style="font-size:12.5px; line-height:1.5; color:#475569; margin-top:6px; border-top:1px solid #f1f5f9; padding-top:6px;">${a.desc || a.Desc || a.Deskripsi || ""}</div>
             </div>`;
         });
     }
@@ -995,10 +1037,10 @@ function renderNotice(result) {
     else {
         list.forEach(x => {
             html += `<div class="card card-notice">
-                <div class="tanggal" style="text-align:left; font-size:12px; color:#9ca3af;">📅 ${x.tanggal || x.Tanggal || "-"}</div>
-                <div style="font-weight:700; font-size:14px; color:#d4af37; margin:6px 0;">📣 ${x.judul || x.Judul || "Notice"}</div>
-                <div style="font-size:13px; line-height:1.5; color:#d1d5db; border-top:1px solid rgba(255,255,255,0.05); padding-top:8px; margin-bottom:12px;">${x.pesan || x.Pesan || ""}</div>
-                <div style="font-size:11px; color:#9ca3af; text-align:right;">Oleh: <b>${x.dari || x.Dari || "Supervisor"}</b></div>
+                <div class="tanggal" style="text-align:left; font-size:11.5px; color:#64748b;">📅 ${x.tanggal || x.Tanggal || "-"}</div>
+                <div style="font-weight:700; font-size:13.5px; color:#2563eb; margin:5px 0;">📣 ${x.judul || x.Judul || "Notice"}</div>
+                <div style="font-size:12.5px; line-height:1.5; color:#475569; border-top:1px solid #f1f5f9; padding-top:6px; margin-bottom:10px;">${x.pesan || x.Pesan || ""}</div>
+                <div style="font-size:11px; color:#64748b; text-align:right;">Oleh: <b>${x.dari || x.Dari || "Supervisor"}</b></div>
             </div>`;
         });
     }
@@ -1016,9 +1058,9 @@ function renderPromo(result) {
     else {
         list.forEach(p => {
             html += `<div class="card success">
-                <div class="tanggal" style="text-align:left; font-size:14px; color:#d4af37;">🔥 ${p.judul || p.Judul || ""}</div>
-                <div style="font-size:11.5px; color:#9ca3af; margin:6px 0;"><b>Periode:</b> ${p.periode || p.Periode || ""}</div>
-                <div style="font-size:13px; line-height:1.5; color:#d1d5db; border-top:1px solid rgba(255,255,255,0.05); padding-top:8px;">${p.detail || p.Detail || ""}</div>
+                <div class="tanggal" style="text-align:left; font-size:13.5px; color:#2563eb;">🔥 ${p.judul || p.Judul || ""}</div>
+                <div style="font-size:11px; color:#64748b; margin:5px 0;"><b>Periode:</b> ${p.periode || p.Periode || ""}</div>
+                <div style="font-size:12.5px; line-height:1.5; color:#475569; border-top:1px solid #f1f5f9; padding-top:6px;">${p.detail || p.Detail || ""}</div>
             </div>`;
         });
     }
@@ -1065,8 +1107,8 @@ function tutupPopup() { document.getElementById("popup").style.display = "none";
 <!-- POPUP INFORMASI -->
 <div id="popup">
   <div class="modern-popup-box">
-    <h3>Informasi</h3>
-    <div id="popupText"></div>
+    <h3 style="margin-top:0; font-size:16px;">Informasi</h3>
+    <div id="popupText" style="margin:15px 0; font-size:13.5px; color:#475569;"></div>
     <button class="btn-popup-ok" onclick="tutupPopup()">OK</button>
   </div>
 </div>
@@ -1074,8 +1116,8 @@ function tutupPopup() { document.getElementById("popup").style.display = "none";
 <!-- POPUP KELUAR -->
 <div id="logoutPopup">
   <div class="modern-popup-box">
-    <h3>🚪 Keluar Aplikasi</h3>
-    <p>Yakin ingin keluar dari akun ini?</p>
+    <h3 style="margin-top:0; font-size:16px;">🚪 Keluar Aplikasi</h3>
+    <p style="margin:15px 0; font-size:13.5px; color:#475569;">Yakin ingin keluar dari akun ini?</p>
     <div>
       <button id="btnBatal" onclick="tutupLogout()">Batal</button>
       <button id="btnLogoutConfirm" onclick="logoutConfirm()">Keluar</button>
