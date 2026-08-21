@@ -22,7 +22,6 @@
 
 body {
     margin: 0;
-    padding: 30px 20px;
     min-height: 100vh;
     background: radial-gradient(circle at top, rgba(212, 175, 55, 0.08) 0%, transparent 60%), linear-gradient(135deg, #0b0f19 0%, #111827 100%);
     color: #f3f4f6;
@@ -31,7 +30,7 @@ body {
 /* KOTAK LOGIN */
 #loginBox {
     max-width: 420px;
-    margin: 50px auto;
+    margin: 80px auto;
     padding: 40px 30px;
     background: #111827;
     border-radius: 20px;
@@ -106,10 +105,6 @@ body {
     box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.2);
 }
 
-.input-group input::placeholder {
-    color: #6b7280;
-}
-
 #btnLogin {
     width: 100%;
     padding: 16px;
@@ -128,55 +123,136 @@ body {
 #btnLogin:hover {
     transform: translateY(-2px);
     background: linear-gradient(135deg, #ffffff 0%, #e6c547 100%);
-    box-shadow: 0 14px 24px -5px rgba(212, 175, 55, 0.4);
 }
 
-/* HEADER DASHBOARD */
-.header {
+/* LAYOUT UTAMA DASHBOARD (SIDEBAR + KONTEN) */
+#dashboard {
+    display: none;
+    min-height: 100vh;
+}
+
+.app-layout {
+    display: flex;
+    min-height: 100vh;
+}
+
+/* SIDEBAR KIRI */
+.sidebar {
+    width: 270px;
+    background: #0d1322;
+    border-right: 1px solid rgba(212, 175, 55, 0.2);
+    display: flex;
+    flex-direction: column;
+    padding: 25px 20px;
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    z-index: 100;
+    box-shadow: 5px 0 25px rgba(0,0,0,0.4);
+}
+
+.sidebar-brand {
     text-align: center;
     margin-bottom: 25px;
-    animation: fadeIn 0.4s ease;
+    padding-bottom: 20px;
+    border-bottom: 1px solid rgba(255,255,255,0.06);
 }
 
-.header h1 {
-    font-size: 38px;
+.sidebar-brand h2 {
+    font-size: 18px;
     font-weight: 800;
-    margin: 0;
-    letter-spacing: -1.5px;
+    margin: 8px 0 2px;
     background: linear-gradient(90deg, #ffffff, #d4af37);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
 }
 
-.header p {
+.sidebar-brand p {
+    font-size: 11.5px;
     color: #9ca3af;
-    font-size: 14px;
-    margin-top: 6px;
+    margin: 0;
+}
+
+/* MENU TAB DI SIDEBAR */
+.menu-tab {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    flex-grow: 1;
+    overflow-y: auto;
+}
+
+.menu-tab button {
+    width: 100%;
+    padding: 12px 16px;
+    border: none;
+    border-radius: 12px;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 13.5px;
+    background: transparent;
+    color: #d1d5db;
+    text-align: left;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.menu-tab button:hover {
+    background: #1f2937;
+    color: #ffffff;
+    transform: translateX(3px);
+}
+
+.menu-tab button.active {
+    background: linear-gradient(135deg, #1f2937, #111827);
+    color: #d4af37;
+    border: 1px solid rgba(212, 175, 55, 0.4);
+    box-shadow: 0 4px 15px rgba(212, 175, 55, 0.15);
+}
+
+/* KONTEN UTAMA DI KANAN SIDEBAR */
+.main-content {
+    margin-left: 270px;
+    flex-grow: 1;
+    padding: 30px;
+    max-width: calc(100% - 270px);
+}
+
+/* HEADER DALAM KONTEN */
+.content-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 25px;
+    flex-wrap: wrap;
+    gap: 15px;
+    background: #111827;
+    padding: 15px 22px;
+    border-radius: 16px;
+    border: 1px solid rgba(212, 175, 55, 0.2);
 }
 
 /* KOTAK PENCARIAN / DROPDOWN NAMA */
 .search-box {
-    max-width: 1100px;
-    margin: 0 auto 20px;
-    display: flex;
-    gap: 12px;
+    margin-bottom: 20px;
 }
 
 #nama {
     width: 100%;
-    height: 52px;
+    height: 50px;
     padding: 0 20px;
     border-radius: 14px;
     border: 1px solid rgba(212, 175, 55, 0.3);
     background: #111827;
-    backdrop-filter: blur(16px);
     color: #ffffff;
     font-size: 14.5px;
     font-weight: 600;
     outline: none;
     cursor: pointer;
     appearance: none;
-    -webkit-appearance: none;
     background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='18' height='18' fill='%23d4af37' viewBox='0 0 16 16'%3E%3Cpath d='M1.5 5.5l6 6 6-6'/%3E%3C/svg%3E");
     background-repeat: no-repeat;
     background-position: right 20px center;
@@ -184,63 +260,15 @@ body {
     transition: all 0.3s ease;
 }
 
-#nama:hover { border-color: #d4af37; box-shadow: 0 0 15px rgba(212, 175, 55, 0.15); }
-#nama:focus { border-color: #d4af37; box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.2), 0 0 20px rgba(212, 175, 55, 0.2); }
 #nama option { background: #111827; color: #ffffff; }
 
-/* MENU TAB NAVIGASI */
-.menu-tab {
-    display: flex;
-    justify-content: center;
-    gap: 8px;
-    margin-bottom: 25px;
-    flex-wrap: wrap;
-    max-width: 1100px;
-    margin-left: auto;
-    margin-right: auto;
-}
-
-.menu-tab button {
-    padding: 11px 16px;
-    border: none;
-    border-radius: 12px;
-    cursor: pointer;
-    font-weight: 600;
-    font-size: 13px;
-    background: #111827;
-    border: 1px solid rgba(212, 175, 55, 0.2);
-    color: #d1d5db;
-    transition: all 0.2s ease;
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
-}
-
-.menu-tab button:hover {
-    background: #1f2937;
-    color: #ffffff;
-    border-color: rgba(212, 175, 55, 0.5);
-    box-shadow: 0 4px 12px rgba(212, 175, 55, 0.15);
-    transform: translateY(-2px);
-}
-
-.menu-tab button.active {
-    background: linear-gradient(135deg, #1f2937, #111827);
-    color: #d4af37;
-    border-color: #d4af37;
-    box-shadow: 0 0 20px rgba(212, 175, 55, 0.25);
-}
-
-/* SUMMARY & KARTU DATA (DIKUNCI MAKSIMAL 1100px DI PC) */
+/* SUMMARY & KARTU DATA */
 #summary {
-    max-width: 1100px;
-    margin: 0 auto 20px;
+    margin-bottom: 20px;
 }
 
 .summary-card {
     background: #111827;
-    backdrop-filter: blur(20px);
     border: 1px solid rgba(212, 175, 55, 0.25);
     border-radius: 18px;
     padding: 22px;
@@ -262,18 +290,15 @@ body {
     font-size: 13.5px;
 }
 
-/* GRID: Diatur 3 Kolom di PC agar tidak terlalu kecil/melebar */
+/* GRID KARTU */
 .grid {
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(auto-fill, minmax(310px, 1fr));
     gap: 20px;
-    max-width: 1100px;
-    margin: 0 auto;
 }
 
 .card {
     background: #111827;
-    backdrop-filter: blur(20px);
     border: 1px solid #374151;
     border-radius: 18px;
     padding: 20px;
@@ -284,14 +309,12 @@ body {
 .card:hover {
     transform: translateY(-3px);
     border-color: rgba(212, 175, 55, 0.4);
-    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.4);
 }
 
-.card.success { border-left: 5px solid #10b981; border-color: #374151; }
-.card.warning { border-left: 5px solid #ef4444; border-color: #374151; }
-.card.late { border: 2px solid #d4af37; background: #151922; box-shadow: 0 0 20px rgba(212, 175, 55, 0.15); }
-.card-notice { border-left: 5px solid #d4af37; background: #111827; box-shadow: 0 8px 20px rgba(0,0,0,0.25); }
-.card-rules { border-left: 5px solid #d4af37; background: #111827; box-shadow: 0 8px 20px rgba(0,0,0,0.25); }
+.card.success { border-left: 5px solid #10b981; }
+.card.warning { border-left: 5px solid #ef4444; }
+.card.late { border: 2px solid #d4af37; background: #151922; }
+.card-notice, .card-rules { border-left: 5px solid #d4af37; }
 
 .tanggal {
     text-align: center;
@@ -317,10 +340,9 @@ body {
 .status-ok { color: #34d399; font-weight: 700; }
 .status-warning { color: #f87171; font-weight: 700; }
 
-/* TOMBOL EKSPOR KHUSUS ADMIN */
+/* TOMBOL EKSPOR */
 .export-container {
-    max-width: 1100px;
-    margin: 0 auto 15px;
+    margin-bottom: 15px;
     display: none;
     justify-content: flex-end;
     gap: 10px;
@@ -340,13 +362,12 @@ body {
     transition: all 0.25s ease;
 }
 
-.btn-excel { background: #065f46; border: 1px solid #10b981; box-shadow: 0 4px 12px rgba(16, 185, 129, 0.2); }
-.btn-pdf { background: #991b1b; border: 1px solid #ef4444; box-shadow: 0 4px 12px rgba(239, 68, 68, 0.2); }
-.btn-export:hover { transform: translateY(-2px); opacity: 0.95; }
+.btn-excel { background: #065f46; border: 1px solid #10b981; }
+.btn-pdf { background: #991b1b; border: 1px solid #ef4444; }
 
-/* TOMBOL KELUAR (LOGOUT) */
+/* TOMBOL KELUAR */
 .btn-logout-main {
-    padding: 9px 18px;
+    padding: 8px 16px;
     border: none;
     border-radius: 10px;
     cursor: pointer;
@@ -363,8 +384,6 @@ body {
 
 .btn-logout-main:hover {
     background: rgba(239, 68, 68, 0.2);
-    border-color: rgba(239, 68, 68, 0.6);
-    transform: translateY(-1px);
 }
 
 /* POPUP MODERN */
@@ -388,21 +407,6 @@ body {
     text-align: center;
     border: 1px solid rgba(212, 175, 55, 0.4);
     box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6);
-    animation: fadeIn 0.3s ease;
-}
-
-.modern-popup-box h3 {
-    margin-top: 0;
-    color: #d4af37;
-    font-size: 19px;
-    font-weight: 700;
-}
-
-.modern-popup-box p, #popupText {
-    color: #d1d5db;
-    margin: 14px 0 22px;
-    font-size: 14px;
-    line-height: 1.5;
 }
 
 .btn-popup-ok {
@@ -412,13 +416,8 @@ body {
     cursor: pointer;
     color: #111827;
     font-weight: 700;
-    font-size: 13.5px;
     background: #d4af37;
-    box-shadow: 0 4px 15px rgba(212, 175, 55, 0.3);
-    transition: all 0.2s ease;
 }
-
-.btn-popup-ok:hover { opacity: 0.9; transform: translateY(-1px); }
 
 #btnBatal, #btnLogoutConfirm {
     border: none;
@@ -427,13 +426,10 @@ body {
     cursor: pointer;
     color: white;
     font-weight: 600;
-    font-size: 13.5px;
     margin: 4px;
-    transition: all 0.2s ease;
 }
 #btnBatal { background: #374151; }
 #btnLogoutConfirm { background: #991b1b; }
-#btnBatal:hover, #btnLogoutConfirm:hover { opacity: 0.9; transform: translateY(-1px); }
 
 .spinner {
     width: 18px; height: 18px;
@@ -448,120 +444,23 @@ body {
 @keyframes spin { to { transform: rotate(360deg); } }
 @keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
 
-/* RESPONSIVE BREAKPOINTS */
-@media(max-width: 1024px) { 
-    .grid { grid-template-columns: repeat(2, 1fr) !important; } 
-}
-@media(max-width: 768px) {
-    body { padding: 15px; }
-    .header h1 { font-size: 26px; }
-    .grid { grid-template-columns: 1fr !important; }
-    .search-box { flex-direction: column; }
-}
-    /* ==========================================================
-   KUNCI LEBAR UTAMA DASHBOARD DI PC AGAR TERPUSAT & RAPI
-   ========================================================== */
-@media(min-width: 1025px) {
-    body {
-        max-width: 1150px;
-        margin: 0 auto;
+/* RESPONSIVE UNTUK HP / LAYAR KECIL */
+@media(max-width: 900px) {
+    .sidebar {
+        width: 100%;
+        height: auto;
+        position: relative;
+        box-shadow: none;
+        border-right: none;
+        border-bottom: 1px solid rgba(212, 175, 55, 0.2);
     }
-    
-    /* Pastikan area hasil perolehan / denda / list juga ikut terpusat dan tidak terlalu lebar */
-    #hasil {
-        max-width: 1150px !important;
-        margin: 0 auto !important;
+    .main-content {
+        margin-left: 0;
+        max-width: 100%;
+        padding: 15px;
     }
-}
-    /* ==========================================================
-   PERBESAR UKURAN FONT KHUSUS DI LAYAR PC / LAPTOP
-   ========================================================== */
-@media(min-width: 1025px) {
-    body {
-        font-size: 16px !important; /* Menaikkan ukuran teks dasar di PC */
-    }
-
-    /* Perbesar teks pada menu tab, tombol, dan card */
-    .menu-tab button {
-        font-size: 14.5px !important;
-        padding: 13px 20px !important;
-    }
-
-    .summary-card p, .card p {
-        font-size: 15px !important;
-    }
-
-    .tanggal {
-        font-size: 16px !important;
-    }
-
-    .row {
-        font-size: 15px !important;
-        padding: 11px 0 !important;
-    }
-
-    /* Perbesar teks nama promotor & omzet di menu Perolehan/Denda */
-    .nama-p {
-        font-size: 16px !important;
-    }
-    .omzet-p {
-        font-size: 16px !important;
-    }
-    .uc-p {
-        font-size: 13.5px !important;
-    }
-}
-    /* ==========================================================
-   PAKSA PERBESAR FONT & ELEMEN SECARA MENYELURUH DI PC
-   ========================================================== */
-@media(min-width: 1025px) {
-    /* Perbesar ukuran font dasar secara global di PC */
-    body {
-        font-size: 16px !important;
-    }
-
-    /* Paksa perbesar semua teks di dalam card, summary, dan baris list */
-    .card, .summary-card, div, span, p {
-        font-size-adjust: inherit;
-    }
-
-    /* Perbesar kotak baris perolehan/denda agar teks yang membesar muat dengan lega */
-    .row-perolehan-export {
-        padding: 16px 20px !important;
-    }
-    
-    /* Perbesar ukuran badge nomor urut dan avatar nama */
-    .row-perolehan-export div[style*="width:30px"] {
-        width: 38px !important;
-        height: 38px !important;
-        font-size: 15px !important;
-    }
-
-    /* Perbesar teks nama dan nominal di semua menu */
-    .nama-p, .omzet-p {
-        font-size: 16.5px !important;
-    }
-    
-    .uc-p {
-        font-size: 14px !important;
-    }
-}
-    /* ==========================================================
-   PERBAIKAN LEBAR KOTAK MENU DENDA & LATE DI PC
-   ========================================================== */
-@media(min-width: 1025px) {
-    /* Batasi lebar kontainer denda di PC agar tidak terlalu lebar */
-    #hasil .summary-card {
-        max-width: 850px !important;
-        margin-left: auto !important;
-        margin-right: auto !important;
-    }
-
-    /* Batasi juga setiap baris kartu promotor pada menu Denda & Late */
-    #hasil .row-perolehan-export {
-        max-width: 850px !important;
-        margin-left: auto !important;
-        margin-right: auto !important;
+    .app-layout {
+        flex-direction: column;
     }
 }
 </style>
@@ -591,50 +490,66 @@ body {
     <button id="btnLogin" onclick="login()">MASUK</button>
 </div>
 
-<!-- DASHBOARD UTAMA -->
-<div id="dashboard" style="display:none;">
-    <div class="header">
-        <h1>UFO KEBONSARI</h1>
-        <p>Dashboard Monitoring Promotor & Toko</p>
+<!-- DASHBOARD UTAMA DENGAN SIDEBAR KIRI -->
+<div id="dashboard">
+    <div class="app-layout">
+        
+        <!-- SIDEBAR KIRI -->
+        <aside class="sidebar">
+            <div class="sidebar-brand">
+                <h2>UFO KEBONSARI</h2>
+                <p>Dashboard Promotor & Toko</p>
+            </div>
+
+            <!-- MENU TAB NAVIGASI (VERTIKAL DI SIDEBAR) -->
+            <div class="menu-tab">
+                <button id="btnAbsen" onclick="pindahMenu('Absensi')">📅 Absensi</button>
+                <button id="btnJual" onclick="pindahMenu('Penjualan')">💼 Penjualan</button>
+                <button id="btnUC" onclick="pindahMenu('UC')">⭐ UC</button>
+                <button id="btnPerolehan" onclick="pindahMenu('Perolehan')">📈 Perolehan</button> 
+                <button id="btnDenda" onclick="pindahMenu('DendaUC')">⚡ Denda & Late</button>
+                <button id="btnPromo" onclick="pindahMenu('Promo')">🏷️ Promo Toko</button>
+                <button id="btnRules" onclick="pindahMenu('Rules')">✨ SOP Promotor</button>
+                <button id="btnNotice" onclick="pindahMenu('Notice')">🔔 Notice</button>
+            </div>
+        </aside>
+
+        <!-- KONTEN UTAMA DI KANAN -->
+        <main class="main-content">
+            
+            <!-- HEADER ATAS KONTEN (INFO USER & LOGOUT) -->
+            <div class="content-header">
+                <div id="loginInfo" style="color:#e2e8f0; font-size:13.5px; font-weight:600;"></div>
+                <button class="btn-logout-main" onclick="logout()">
+                    🚪 Keluar
+                </button>
+            </div>
+
+            <!-- INDIKATOR LOADING ANIMASI -->
+            <div id="globalLoading" style="display:none; text-align:center; margin:15px 0; color:#d4af37; font-weight:600; font-size:14px;">
+                <span class="spinner" style="margin-right:8px; width:20px; height:20px; border-width:3px;"></span>
+                Sedang menyiapkan data, mohon tunggu sebentar...
+            </div>
+
+            <!-- DROPDOWN PILIH NAMA ADMIN -->
+            <div class="search-box">
+                <select id="nama" onchange="gantiNamaAdmin()"></select>
+            </div>
+
+            <!-- KOTAK SUMMARY -->
+            <div id="summary"></div>
+
+            <!-- AREA EKSPOR (HANYA MUNCUL UNTUK ADMIN) -->
+            <div class="export-container" id="exportArea">
+                <button class="btn-export btn-excel" onclick="prosesEkspor('excel')">📥 Unduh Excel</button>
+                <button class="btn-export btn-pdf" onclick="prosesEkspor('pdf')">📄 Unduh PDF</button>
+            </div>
+
+            <!-- HASIL KARTU / DATA -->
+            <div id="hasil" class="grid"></div>
+
+        </main>
     </div>
-
-    <!-- INDIKATOR LOADING ANIMASI -->
-    <div id="globalLoading" style="display:none; text-align:center; margin:15px 0; color:#d4af37; font-weight:600; font-size:14px;">
-        <span class="spinner" style="margin-right:8px; width:20px; height:20px; border-width:3px;"></span>
-        Sedang menyiapkan data, mohon tunggu sebentar...
-    </div>
-
-    <div style="max-width:1200px; margin:0 auto 14px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px;">
-        <div id="loginInfo" style="padding:7px 16px; border-radius:99px; background:#111827; border:1px solid rgba(212, 175, 55, 0.3); color:#e2e8f0; font-size:13px; font-weight:600; box-shadow: 0 4px 15px rgba(0,0,0,0.2);"></div>
-        <button class="btn-logout-main" onclick="logout()">
-            🚪 Keluar
-        </button>
-    </div>
-
-    <div class="search-box">
-        <select id="nama" onchange="gantiNamaAdmin()"></select>
-    </div>
-
-    <div id="summary"></div>
-
-    <div class="menu-tab">
-        <button id="btnAbsen" onclick="pindahMenu('Absensi')">📅 Absensi</button>
-        <button id="btnJual" onclick="pindahMenu('Penjualan')">💼 Penjualan</button>
-        <button id="btnUC" onclick="pindahMenu('UC')">⭐ UC</button>
-        <button id="btnPerolehan" onclick="pindahMenu('Perolehan')">📈 Perolehan</button> 
-        <button id="btnDenda" onclick="pindahMenu('DendaUC')">⚡ Denda & Late</button>
-        <button id="btnPromo" onclick="pindahMenu('Promo')">🏷️ Promo Toko</button>
-        <button id="btnRules" onclick="pindahMenu('Rules')">✨ SOP Promotor</button>
-        <button id="btnNotice" onclick="pindahMenu('Notice')">🔔 Notice</button>
-    </div>
-
-    <!-- AREA EKSPOR (HANYA MUNCUL UNTUK ADMIN) -->
-    <div class="export-container" id="exportArea">
-        <button class="btn-export btn-excel" onclick="prosesEkspor('excel')">📥 Unduh Excel</button>
-        <button class="btn-export btn-pdf" onclick="prosesEkspor('pdf')">📄 Unduh PDF</button>
-    </div>
-
-    <div id="hasil" class="grid"></div>
 </div>
 
 <script>
@@ -654,7 +569,6 @@ let cacheData = {
     notice: null
 };
 
-// Cek Sesi Otomatis Saat Halaman Dimuat
 document.addEventListener("DOMContentLoaded", () => {
     const savedName = localStorage.getItem("loginNama");
     const savedRole = localStorage.getItem("loginRole");
@@ -671,7 +585,7 @@ document.addEventListener("DOMContentLoaded", () => {
             muatSemuaDataLatarBelakang(currentUser).then(() => pindahMenu("Absensi"));
         } else {
             document.querySelector(".search-box").style.display = "block";
-            document.getElementById("btnPerolehan").style.display = "inline-block";
+            document.getElementById("btnPerolehan").style.display = "flex";
             loadNama().then(() => pindahMenu("Absensi"));
         }
     }
@@ -726,12 +640,10 @@ async function login() {
             document.querySelector(".search-box").style.display = "none";
             document.getElementById("btnPerolehan").style.display = "none";
             await muatSemuaDataLatarBelakang(currentUser);
-            // Diam dan menunggu user memilih menu sendiri
         } else {
             document.querySelector(".search-box").style.display = "block";
-            document.getElementById("btnPerolehan").style.display = "inline-block";
+            document.getElementById("btnPerolehan").style.display = "flex";
             await loadNama();
-            // Diam dan menunggu admin memilih nama / menu sendiri
         }
     } catch(err) {
         showPopup("Gagal terhubung ke server: " + err.message);
@@ -776,7 +688,6 @@ async function loadNama(){
         const res = await fetch(WEBAPP_URL + "?action=nama");
         const data = await res.json();
         
-        // Buat opsi default paling atas yang terpilih (selected) dan tidak bisa dipilih ulang
         let html = `<option value="" disabled selected hidden>Pilih Nama Promotor</option>`;
         if(Array.isArray(data)) {
             data.forEach((nama) => { 
@@ -785,7 +696,6 @@ async function loadNama(){
         }
         document.getElementById("nama").innerHTML = html;
 
-        // Ambil data pendukung admin secara paralel (tanpa langsung memicu gantiNamaAdmin)
         const [resPerolehan, resLate, resPromo, resRules, resNotice] = await Promise.all([
             fetch(WEBAPP_URL + "?action=perolehan").then(r => r.json()),
             fetch(WEBAPP_URL + "?action=rekap_terlambat").then(r => r.json()),
@@ -799,14 +709,11 @@ async function loadNama(){
         cacheData.promo = resPromo;
         cacheData.rules = resRules;
         cacheData.notice = resNotice;
-
-        // HAPUS atau comment bagian pemanggilan gantiNamaAdmin() otomatis di sini
-        // Biarkan kosong agar dashboard admin bersih dan menunggu Admin memilih nama dari dropdown.
-
     } catch(e) {
         console.error("Gagal memuat nama promotor", e);
     }
 }
+
 async function gantiNamaAdmin() {
     let namaTerpilih = document.getElementById("nama").value.trim();
     if(!namaTerpilih) return;
@@ -819,15 +726,13 @@ function pindahMenu(namaMenu) {
     document.getElementById("exportArea").style.display = "none";
     resetActiveButtons();
 
-    // Tentukan menu apa saja yang BUKAN milik perorangan (tidak butuh dropdown nama)
     const menuGlobal = ["Perolehan", "DendaUC", "Promo", "Rules", "Notice"];
     const isGlobal = menuGlobal.includes(namaMenu);
 
-    // Jika Admin, sembunyikan dropdown nama jika sedang membuka menu global
     if (currentRole === "ADMIN") {
         const searchBoxEl = document.querySelector(".search-box");
         if (searchBoxEl) {
-            searchBoxEl.style.display = isGlobal ? "none" : "flex";
+            searchBoxEl.style.display = isGlobal ? "none" : "block";
         }
     }
 
@@ -1068,7 +973,6 @@ function renderDendaUC(dendaObj) {
         resLate.list.forEach(x => { lateMap[x.nama.toUpperCase()] = x.terlambat; });
     }
 
-    // HEADER / SUMMARY
     document.getElementById("summary").innerHTML = `
     <div class="summary-card">
         <h2 style="margin-bottom:14px;">⚖️ Rekap Denda & Keterlambatan</h2>
@@ -1102,7 +1006,6 @@ function renderDendaUC(dendaObj) {
 
             html += `
             <div class="row-perolehan-export" style="background: #111827; border: 1px solid #374151; border-radius: 14px; padding: 14px 16px; display: flex; flex-direction: column; gap: 10px; box-shadow: 0 4px 12px rgba(0,0,0,0.2);">
-                <!-- Baris Atas: Nomor, Nama, & Total Denda Keseluruhan -->
                 <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(255,255,255,0.06); padding-bottom: 8px;">
                     <div style="display: flex; align-items: center; gap: 10px; min-width: 0; flex: 1;">
                         <span style="background: #1f2937; color: #d4af37; border-radius: 6px; padding: 2px 8px; font-size: 11px; font-weight: 700; flex-shrink: 0;">#${i+1}</span>
@@ -1114,9 +1017,7 @@ function renderDendaUC(dendaObj) {
                     </div>
                 </div>
 
-                <!-- Baris Bawah: Dua Kolom Rincian Denda UC & Denda Late -->
                 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
-                    <!-- Kotak Denda UC -->
                     <div style="background: #1a2234; padding: 10px 12px; border-radius: 10px; border: 1px solid rgba(255,255,255,0.05); display: flex; flex-direction: column; justify-content: space-between;">
                         <div style="font-size: 10.5px; color: #9ca3af; font-weight: 700; text-transform: uppercase; margin-bottom: 4px;">Denda UC</div>
                         <div style="display: flex; justify-content: space-between; align-items: baseline; gap: 4px;">
@@ -1125,7 +1026,6 @@ function renderDendaUC(dendaObj) {
                         </div>
                     </div>
 
-                    <!-- Kotak Denda Late -->
                     <div style="background: #1a2234; padding: 10px 12px; border-radius: 10px; border: 1px solid rgba(255,255,255,0.05); display: flex; flex-direction: column; justify-content: space-between;">
                         <div style="font-size: 10.5px; color: #9ca3af; font-weight: 700; text-transform: uppercase; margin-bottom: 4px;">Denda Late</div>
                         <div style="display: flex; justify-content: space-between; align-items: baseline; gap: 4px;">
@@ -1143,6 +1043,7 @@ function renderDendaUC(dendaObj) {
     document.getElementById("hasil").className = "";
     document.getElementById("hasil").innerHTML = html;
 }
+
 function renderRules(result) {
     if(!result) return;
     const list = result.data || [];
@@ -1281,7 +1182,6 @@ function prosesEkspor(format) {
                 let nama = row.querySelector(".nama-p")?.innerText.trim() || "-";
                 let totalDenda = row.querySelectorAll("span[style*='font-weight: 800']")[0]?.innerText.trim() || "0";
                 
-                // Ambil rincian dari kotak Denda UC & Denda Late di dalam card
                 let rincianKolom = row.querySelectorAll("div[style*='display: flex; flex-direction: column; justify-content: space-between']");
                 let dendaUCVal = "0";
                 let ketUC = "-";
