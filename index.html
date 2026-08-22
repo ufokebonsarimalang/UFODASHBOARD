@@ -173,7 +173,7 @@
         }
         #nama option { background: #111827; color: #ffffff; }
 
-        /* KARTU MENU UTAMA (HALAMAN PERTAMA SEBELUM MASUK DETAIL) */
+        /* KARTU MENU UTAMA */
         #menuGridContainer {
             max-width: 1100px;
             margin: 0 auto;
@@ -207,7 +207,6 @@
         .menu-card-item h3 { margin: 0 0 6px; font-size: 18px; color: #ffffff; font-weight: 700; }
         .menu-card-item p { margin: 0; font-size: 13px; color: #9ca3af; }
 
-        /* KELAS KHUSUS PEMBEDA TAMPILAN ADMIN vs PROMOTOR */
         .admin-badge {
             position: absolute;
             top: 12px;
@@ -222,7 +221,7 @@
             display: none;
         }
 
-        /* AREA KONTEN DETAIL (MUNCUL SETELAH MENU DIKLIK) */
+        /* AREA KONTEN DETAIL */
         #detailViewSection {
             display: none;
             max-width: 1100px;
@@ -256,7 +255,6 @@
         }
         .btn-back-menu:hover { opacity: 0.9; transform: translateY(-1px); }
 
-        /* SUMMARY & KARTU DATA */
         #summary { margin-bottom: 20px; }
 
         .summary-card {
@@ -361,15 +359,16 @@
             font-size: 13px;
         }
 
-        /* POPUP */
-        #popup, #logoutPopup {
+        /* POPUP UMUM & ZOOM SOP */
+        #popup, #logoutPopup, #sopModal {
             display: none;
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0, 0, 0, 0.75);
+            background: rgba(0, 0, 0, 0.85);
             backdrop-filter: blur(8px);
             z-index: 99999;
             justify-content: center; align-items: center;
+            padding: 20px;
         }
 
         .modern-popup-box {
@@ -377,6 +376,42 @@
             min-width: 310px; text-align: center;
             border: 1px solid rgba(212, 175, 55, 0.4);
             box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6);
+        }
+
+        .sop-modal-content {
+            position: relative;
+            max-width: 90%;
+            max-height: 90vh;
+            background: #111827;
+            padding: 24px 20px 20px;
+            border-radius: 20px;
+            border: 1px solid rgba(212, 175, 55, 0.4);
+            box-shadow: 0 25px 50px rgba(0,0,0,0.7);
+            text-align: center;
+        }
+        .sop-modal-content img {
+            width: 100%;
+            max-height: 75vh;
+            object-fit: contain;
+            border-radius: 12px;
+        }
+        .sop-close-btn {
+            position: absolute;
+            top: -12px;
+            right: -12px;
+            background: #ef4444;
+            color: #fff;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            font-weight: 700;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+            border: 2px solid #fff;
         }
 
         .btn-popup-ok {
@@ -500,14 +535,13 @@
         </div>
     </div>
 
-    <!-- TAMPILAN 2: HALAMAN DETAIL DATA (DITAMPILKAN KETIKA MENU DIKLIK) -->
+    <!-- TAMPILAN 2: HALAMAN DETAIL DATA -->
     <div id="detailViewSection" style="display:none;">
         <div class="nav-back-bar">
             <button class="btn-back-menu" onclick="kembaliKeMenuUtama()">⬅ Kembali ke Menu</button>
             <div id="currentMenuTitle" style="color:#d4af37; font-weight:700; font-size:16px;"></div>
         </div>
 
-        <!-- Dropdown Nama (Hanya tampil untuk ADMIN, disembunyikan untuk USER) -->
         <div class="search-box" id="searchBoxWrapper">
             <select id="nama" onchange="gantiNamaAdmin()"></select>
         </div>
@@ -534,7 +568,6 @@ let cacheData = {
     denda: null, promo: null, rules: null, notice: null
 };
 
-// Cek Sesi Otomatis Saat Halaman Dimuat
 document.addEventListener("DOMContentLoaded", () => {
     const savedName = localStorage.getItem("loginNama");
     const savedRole = localStorage.getItem("loginRole");
@@ -556,7 +589,6 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 });
 
-// Fungsi untuk menyesuaikan visual label/badge tampilan Admin vs Promotor
 function aturTampilanBerdasarkanRole() {
     const badges = document.querySelectorAll('.admin-badge');
     const subtitle = document.getElementById("roleSubtitle");
@@ -701,24 +733,19 @@ async function gantiNamaAdmin() {
     jalankanRenderMenu(activeTab);
 }
 
-// Navigasi Antar Halaman Kartu & Detail dengan Pemuatan Cepat
 async function pindahMenu(namaMenu) {
     activeTab = namaMenu;
     document.getElementById("menuGridContainer").style.display = "none";
     document.getElementById("detailViewSection").style.display = "block";
     document.getElementById("currentMenuTitle").innerText = "Menu: " + namaMenu;
     
-    // Tampilkan indikator loading yang interaktif
     document.getElementById("hasil").innerHTML = `<div style="text-align:center; padding:40px; color:#d4af37; font-weight:600;"><span class="spinner" style="margin-right:10px; width:22px; height:22px; border-width:3px;"></span>Memuat data ${namaMenu}, mohon tunggu...</div>`;
     document.getElementById("summary").innerHTML = "";
 
-    // Tarik data spesifik secara instan jika belum ada di cache
     await pastikanDataMenuSiap(namaMenu);
-
     jalankanRenderMenu(namaMenu);
 }
 
-// Fungsi pengaman untuk menarik data secara instan saat menu diklik
 async function pastikanDataMenuSiap(namaMenu) {
     try {
         let targetNama = (currentRole === "ADMIN") ? (document.getElementById("nama").value.trim() || currentUser) : currentUser;
@@ -1072,6 +1099,7 @@ function renderDendaUC(dendaObj) {
     document.getElementById("hasil").innerHTML = html;
 }
 
+// FUNGSI RENDER SOP DENGAN THUMBNAIL & POPUP ZOOM
 function renderRules(result) {
     if(!result) return;
     const list = result.data || [];
@@ -1084,30 +1112,25 @@ function renderRules(result) {
     } else {
         list.forEach(a => {
             const judul = a.poin || a.Poin || "SOP Promotor";
-            // Mendapatkan sumber gambar dari spreadsheet (bisa nama file atau link URL langsung)
             const sumberGambar = a.gambar || a.Gambar || a.desc || a.Desc || "";
 
-            // Menyesuaikan jika diisi nama file lokal atau link lengkap
             let pathGambar = sumberGambar;
             if (sumberGambar && !sumberGambar.startsWith("http://") && !sumberGambar.startsWith("https://")) {
-                pathGambar = "images/" + sumberGambar; // Menyesuaikan folder gambar lokal jika ada
+                pathGambar = "images/" + sumberGambar;
             }
 
             html += `
-            <div class="card card-rules" style="margin-bottom: 20px;">
-                <div class="tanggal" style="text-align:left; font-size:15px; color:#d4af37; font-weight:700; margin-bottom: 12px;">📌 ${judul}</div>`;
+            <div class="card card-rules" style="margin-bottom: 15px; display: flex; flex-direction: row; align-items: center; justify-content: space-between; gap: 15px; cursor: pointer;" onclick="bukaModalSOP('${pathGambar}', '${judul.replace(/'/g, "\\'")}')">
+                <div style="flex: 1;">
+                    <div style="font-size: 15px; color: #d4af37; font-weight: 700; margin-bottom: 4px;">📌 ${judul}</div>
+                    <div style="font-size: 12px; color: #9ca3af;">Ketuk untuk memperbesar gambar SOP</div>
+                </div>`;
                 
                 if (pathGambar) {
                     html += `
-                    <div style="background: #0b0f19; padding: 10px; border-radius: 12px; border: 1px solid rgba(212, 175, 55, 0.2); text-align: center;">
-                        <img src="${pathGambar}" 
-                             alt="${judul}" 
-                             style="width: 100%; height: auto; border-radius: 8px; display: block;"
-                             onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
-                        <div style="display:none; color:#f87171; font-size:12px; padding:10px;">Gambar SOP untuk <b>${judul}</b> gagal dimuat atau belum diisi di Spreadsheet.</div>
+                    <div style="width: 70px; height: 70px; flex-shrink: 0; background: #0b0f19; border-radius: 10px; overflow: hidden; border: 1px solid rgba(212, 175, 55, 0.3);">
+                        <img src="${pathGambar}" alt="${judul}" style="width: 100%; height: 100%; object-fit: cover; display: block;" onerror="this.onerror=null; this.parentElement.style.display='none';">
                     </div>`;
-                } else {
-                    html += `<div style="color:#9ca3af; font-size:13px; font-style:italic;">Belum ada gambar SOP untuk poin ini.</div>`;
                 }
 
             html += `</div>`;
@@ -1116,6 +1139,33 @@ function renderRules(result) {
     
     document.getElementById("hasil").className = ""; 
     document.getElementById("hasil").innerHTML = html;
+}
+
+// Fungsi Zoom Modal SOP
+function bukaModalSOP(urlGambar, judulSop) {
+    let modal = document.getElementById("sopModal");
+    if (!modal) {
+        const modalDiv = document.createElement("div");
+        modalDiv.id = "sopModal";
+        modalDiv.innerHTML = `
+            <div class="sop-modal-content">
+                <div class="sop-close-btn" onclick="tutupModalSOP()">✕</div>
+                <div id="sopModalTitle" style="color: #d4af37; font-weight: 700; font-size: 16px; margin-bottom: 12px;"></div>
+                <img id="sopModalImg" src="" alt="SOP Preview">
+            </div>
+        `;
+        document.body.appendChild(modalDiv);
+        modal = modalDiv;
+    }
+
+    document.getElementById("sopModalTitle").innerText = "📌 " + judulSop;
+    document.getElementById("sopModalImg").src = urlGambar;
+    modal.style.display = "flex";
+}
+
+function tutupModalSOP() {
+    const modal = document.getElementById("sopModal");
+    if (modal) modal.style.display = "none";
 }
 
 function renderNotice(result) {
