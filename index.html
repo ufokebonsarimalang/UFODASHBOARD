@@ -778,15 +778,24 @@ function renderAbsensi(result) {
     data.sort((a,b) => Number(a.tanggal) - Number(b.tanggal));
 
     let belumPulang = 0;
-    data.forEach(x => { if(!x.pulang) belumPulang++; });
+    let tidakAbsenMasuk = 0;
+    let tidakAbsenPulang = 0;
+
+    data.forEach(x => { 
+        if(!x.pulang) belumPulang++; 
+        // Deteksi status tidak absen dari data backend atau pengecekan string kosong
+        if(!x.masuk || (x.statusMasuk && x.statusMasuk.includes("TIDAK"))) tidakAbsenMasuk++;
+        if(!x.pulang || (x.statusPulang && x.statusPulang.includes("TIDAK"))) tidakAbsenPulang++;
+    });
 
     if(data.length){
         document.getElementById("summary").innerHTML = `
         <div class="summary-card">
             <h2>🏆 ${data[0].nama}</h2>
             <p>Total Hari Absen : <b>${data.length}</b></p>
-            <p>Belum Finger Pulang : <b>${belumPulang}</b></p>
             <p>Datang Terlambat : <b>${terlambat}</b></p>
+            <p style="color:#f87171; margin-top:8px;">⚠️ Tidak Absen Masuk : <b>${tidakAbsenMasuk}x</b></p>
+            <p style="color:#f87171;">⚠️ Tidak Absen Pulang : <b>${tidakAbsenPulang}x</b></p>
         </div>`;
         if(currentRole === "ADMIN") document.getElementById("exportArea").style.display = "flex";
     } else {
@@ -796,8 +805,20 @@ function renderAbsensi(result) {
     let html = "";
     data.forEach(x => {
         const isTerlambat = (x.terlambat || "").toString().toUpperCase() === "YA";
-        const status = x.pulang ? '<span class="status-ok">Lengkap</span>' : '<span class="status-warning">Belum Lengkap</span>';
-        const kelasCard = x.pulang ? "success" : "warning";
+        
+        // Deteksi apakah tidak absen masuk atau pulang
+        const isNoMasuk = !x.masuk || x.masuk.trim() === "";
+        const isNoPulang = !x.pulang || x.pulang.trim() === "";
+
+        let statusText = 'Lengkap';
+        let kelasCard = 'success';
+        
+        if (isNoMasuk || isNoPulang) {
+            statusText = 'Belum Lengkap / Bolong';
+            kelasCard = 'warning';
+        }
+
+        const status = `<span class="${(isNoMasuk || isNoPulang) ? 'status-warning' : 'status-ok'}">${statusText}</span>`;
         const kelasTambahan = isTerlambat ? "late" : "";
 
         html += `
@@ -805,12 +826,12 @@ function renderAbsensi(result) {
             <div class="tanggal">📅 ${x.tanggal}<br>${status}
                 ${isTerlambat ? '<div style="color:#d4af37;font-weight:700;margin-top:5px;">TERLAMBAT</div>' : ''}
             </div>
-            <div class="row"><span>Masuk</span>${tampil(x.masuk)}</div>
+            <div class="row"><span>Masuk</span>${isNoMasuk ? '<span class="kosong">TIDAK FINGER</span>' : tampil(x.masuk)}</div>
             <div class="row"><span>Istirahat 1</span>${tampil(x.istirahat1)}</div>
             <div class="row"><span>Kembali 1</span>${tampil(x.kembali1)}</div>
             <div class="row"><span>Istirahat 2</span>${tampil(x.istirahat2)}</div>
             <div class="row"><span>Kembali 2</span>${tampil(x.kembali2)}</div>
-            <div class="row"><span>Pulang</span>${tampil(x.pulang)}</div>
+            <div class="row"><span>Pulang</span>${isNoPulang ? '<span class="kosong">TIDAK FINGER</span>' : tampil(x.pulang)}</div>
         </div>`;
     });
 
@@ -818,7 +839,6 @@ function renderAbsensi(result) {
     document.getElementById("hasil").className = "grid";
     document.getElementById("hasil").innerHTML = html;
 }
-
 function renderPenjualan(data) {
     if(!data) return;
     document.getElementById("summary").innerHTML = `
@@ -899,7 +919,7 @@ function renderPerolehan(data) {
 
     document.getElementById("summary").innerHTML = `
     <div class="summary-card">
-    <h2>📊 Perolehan</h2>
+    <h2>📊 Perolehan & Rekap Toko</h2>
     ${currentRole === "ADMIN" ? 
         `<p>👥 Jumlah Promotor : <b>${data.list.length}</b></p>
          <p>💰 Total Omzet Toko : <span style="font-weight:bold;color:#34d399">Rp ${totalOmzet.toLocaleString("id-ID")}</span></p>
