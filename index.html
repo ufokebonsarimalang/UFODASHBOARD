@@ -1072,14 +1072,10 @@ function renderDendaUC(dendaObj) {
     document.getElementById("hasil").innerHTML = html;
 }
 
-// ---------------- RENDER SOP BERBASIS GAMBAR GITHUB OTOMATIS ----------------
 function renderRules(result) {
     if(!result) return;
     const list = result.data || [];
     
-    // Ganti URL di bawah ini sesuai dengan link folder GitHub tempat Anda menyimpan gambar SOP
-    const GITHUB_BASE_URL = "https://raw.githubusercontent.com/ufokebonsarimalang/UFODASHBOARD/main/img/sop/";
-
     document.getElementById("summary").innerHTML = `<div class="summary-card"><h2>✨ Panduan SOP & Display Toko</h2></div>`;
 
     let html = "";
@@ -1087,21 +1083,34 @@ function renderRules(result) {
         html = `<div class="card">Data SOP tidak ditemukan</div>`;
     } else {
         list.forEach(a => {
-            const judul = a.poin || a.Poin || "SOP";
-            // Otomatis menggabungkan link GitHub dengan judul yang ada di sheet RULES (berformat .jpg)
-            const imageUrl = GITHUB_BASE_URL + encodeURIComponent(judul) + ".jpg"; 
+            const judul = a.poin || a.Poin || "SOP Promotor";
+            // Mendapatkan sumber gambar dari spreadsheet (bisa nama file atau link URL langsung)
+            const sumberGambar = a.gambar || a.Gambar || a.desc || a.Desc || "";
+
+            // Menyesuaikan jika diisi nama file lokal atau link lengkap
+            let pathGambar = sumberGambar;
+            if (sumberGambar && !sumberGambar.startsWith("http://") && !sumberGambar.startsWith("https://")) {
+                pathGambar = "images/" + sumberGambar; // Menyesuaikan folder gambar lokal jika ada
+            }
 
             html += `
             <div class="card card-rules" style="margin-bottom: 20px;">
-                <div class="tanggal" style="text-align:left; font-size:15px; color:#d4af37; font-weight:700; margin-bottom: 12px;">📌 ${judul}</div>
-                <div style="background: #0b0f19; padding: 10px; border-radius: 12px; border: 1px solid rgba(212, 175, 55, 0.2); text-align: center;">
-                    <img src="${imageUrl}" 
-                         alt="${judul}" 
-                         style="width: 100%; height: auto; border-radius: 8px; display: block;"
-                         onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
-                    <div style="display:none; color:#f87171; font-size:12px; padding:10px;">Gambar untuk <b>${judul}</b> belum diupload ke GitHub atau format nama filenya tidak sama persis.</div>
-                </div>
-            </div>`;
+                <div class="tanggal" style="text-align:left; font-size:15px; color:#d4af37; font-weight:700; margin-bottom: 12px;">📌 ${judul}</div>`;
+                
+                if (pathGambar) {
+                    html += `
+                    <div style="background: #0b0f19; padding: 10px; border-radius: 12px; border: 1px solid rgba(212, 175, 55, 0.2); text-align: center;">
+                        <img src="${pathGambar}" 
+                             alt="${judul}" 
+                             style="width: 100%; height: auto; border-radius: 8px; display: block;"
+                             onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+                        <div style="display:none; color:#f87171; font-size:12px; padding:10px;">Gambar SOP untuk <b>${judul}</b> gagal dimuat atau belum diisi di Spreadsheet.</div>
+                    </div>`;
+                } else {
+                    html += `<div style="color:#9ca3af; font-size:13px; font-style:italic;">Belum ada gambar SOP untuk poin ini.</div>`;
+                }
+
+            html += `</div>`;
         });
     }
     
