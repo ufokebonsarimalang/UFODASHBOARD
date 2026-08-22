@@ -491,12 +491,12 @@
         <div class="menu-card-item" onclick="pindahMenu('Rules')">
             <div class="icon">✨</div>
             <h3>SOP Promotor</h3>
-            <p>Aturan kerja & standar operasional display</p>
+            <p>Aturan kerja & standar operasional</p>
         </div>
         <div class="menu-card-item" onclick="pindahMenu('Notice')">
             <div class="icon">🔔</div>
             <h3>Notice</h3>
-            <p>Pengumuman & informasi penting supervisor</p>
+            <p>Pengumuman & informasi penting</p>
         </div>
     </div>
 
@@ -1041,7 +1041,7 @@ function renderDendaUC(dendaObj) {
 function renderRules(result) {
     if(!result) return;
     const list = result.data || [];
-    document.getElementById("summary").innerHTML = `<div class="summary-card"><h2>✨ Aturan Display</h2></div>`;
+    document.getElementById("summary").innerHTML = `<div class="summary-card"><h2>✨ Aturan Toko</h2></div>`;
 
     let html = "";
     if (list.length === 0) html = `<div class="card">Data tidak ditemukan</div>`;
