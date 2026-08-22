@@ -725,13 +725,12 @@ function jalankanRenderMenu(namaMenu) {
     const menuGlobal = ["Perolehan", "DendaUC", "Promo", "Rules", "Notice"];
     const isGlobal = menuGlobal.includes(namaMenu);
 
-    // KONTROL TAMPILAN DROPDOWN NAMA: Hilangkan jika role USER, atau jika menu bersifat global
     const searchBoxEl = document.getElementById("searchBoxWrapper");
     if (searchBoxEl) {
         if (currentRole === "USER") {
-            searchBoxEl.style.display = "none"; // Sembunyikan total untuk Promotor
+            searchBoxEl.style.display = "none"; 
         } else {
-            searchBoxEl.style.display = isGlobal ? "none" : "block"; // Admin diatur sesuai jenis menu
+            searchBoxEl.style.display = isGlobal ? "none" : "block"; 
         }
     }
 
@@ -770,7 +769,7 @@ function tampil(v){
     return (v && v.trim() !== "") ? `<span class="ok">${v}</span>` : `<span class="kosong">-</span>`;
 }
 
-// ---------------- FUNGSI RENDER ASLI MILIK ANDA ----------------
+// ---------------- FUNGSI RENDER ----------------
 function renderAbsensi(result) {
     if(!result) return;
     const data = result.data || [];
@@ -783,7 +782,6 @@ function renderAbsensi(result) {
 
     data.forEach(x => { 
         if(!x.pulang) belumPulang++; 
-        // Deteksi status tidak absen dari data backend atau pengecekan string kosong
         if(!x.masuk || (x.statusMasuk && x.statusMasuk.includes("TIDAK"))) tidakAbsenMasuk++;
         if(!x.pulang || (x.statusPulang && x.statusPulang.includes("TIDAK"))) tidakAbsenPulang++;
     });
@@ -805,8 +803,6 @@ function renderAbsensi(result) {
     let html = "";
     data.forEach(x => {
         const isTerlambat = (x.terlambat || "").toString().toUpperCase() === "YA";
-        
-        // Deteksi apakah tidak absen masuk atau pulang
         const isNoMasuk = !x.masuk || x.masuk.trim() === "";
         const isNoPulang = !x.pulang || x.pulang.trim() === "";
 
@@ -839,6 +835,7 @@ function renderAbsensi(result) {
     document.getElementById("hasil").className = "grid";
     document.getElementById("hasil").innerHTML = html;
 }
+
 function renderPenjualan(data) {
     if(!data) return;
     document.getElementById("summary").innerHTML = `
@@ -1038,32 +1035,34 @@ function renderDendaUC(dendaObj) {
     document.getElementById("hasil").innerHTML = html;
 }
 
+// ---------------- RENDER SOP BERBASIS GAMBAR GITHUB OTOMATIS ----------------
 function renderRules(result) {
     if(!result) return;
     const list = result.data || [];
-    const GITHUB_BASE_URL = "https://raw.githubusercontent.com/USERNAME-ANDA/NAMA-REPO/main/img/sop/";
+    
+    // Ganti URL di bawah ini sesuai dengan link folder GitHub tempat Anda menyimpan gambar SOP
+    const GITHUB_BASE_URL = "https://raw.githubusercontent.com/ufokebonsarimalang/UFODASHBOARD/main/img/sop/";
 
-    document.getElementById("summary").innerHTML = `<div class="summary-card"><h2>✨ Panduan SOP & Display</h2></div>`;
+    document.getElementById("summary").innerHTML = `<div class="summary-card"><h2>✨ Panduan SOP & Display Toko</h2></div>`;
 
     let html = "";
     if (list.length === 0) {
-        html = `<div class="card">Data tidak ditemukan</div>`;
+        html = `<div class="card">Data SOP tidak ditemukan</div>`;
     } else {
         list.forEach(a => {
             const judul = a.poin || a.Poin || "SOP";
-            // Kita buat link otomatis berdasarkan judul
-            // encodeURIComponent agar spasi di judul tetap valid jadi URL
-            const imageUrl = https://github.com/ufokebonsarimalang/UFODASHBOARD + encodeURIComponent(judul) + ".jpg"; 
+            // Otomatis menggabungkan link GitHub dengan judul yang ada di sheet RULES (berformat .jpg)
+            const imageUrl = GITHUB_BASE_URL + encodeURIComponent(judul) + ".jpg"; 
 
             html += `
             <div class="card card-rules" style="margin-bottom: 20px;">
                 <div class="tanggal" style="text-align:left; font-size:15px; color:#d4af37; font-weight:700; margin-bottom: 12px;">📌 ${judul}</div>
-                <div style="background: #0b0f19; padding: 10px; border-radius: 12px; border: 1px solid rgba(212, 175, 55, 0.2);">
+                <div style="background: #0b0f19; padding: 10px; border-radius: 12px; border: 1px solid rgba(212, 175, 55, 0.2); text-align: center;">
                     <img src="${imageUrl}" 
                          alt="${judul}" 
-                         style="width: 100%; height: auto; border-radius: 8px;"
+                         style="width: 100%; height: auto; border-radius: 8px; display: block;"
                          onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
-                    <div style="display:none; color:#f87171; font-size:12px; padding:10px;">Gambar untuk <b>${judul}</b> belum diupload ke GitHub atau format salah.</div>
+                    <div style="display:none; color:#f87171; font-size:12px; padding:10px;">Gambar untuk <b>${judul}</b> belum diupload ke GitHub atau format nama filenya tidak sama persis.</div>
                 </div>
             </div>`;
         });
@@ -1072,6 +1071,8 @@ function renderRules(result) {
     document.getElementById("hasil").className = ""; 
     document.getElementById("hasil").innerHTML = html;
 }
+
+function renderNotice(result) {
     if(!result) return;
     const list = result.data || [];
     document.getElementById("summary").innerHTML = `<div class="summary-card"><h2>🔔 Notice</h2></div>`;
