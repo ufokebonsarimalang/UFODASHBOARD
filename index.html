@@ -1041,19 +1041,41 @@ function renderDendaUC(dendaObj) {
 function renderRules(result) {
     if(!result) return;
     const list = result.data || [];
-    document.getElementById("summary").innerHTML = `<div class="summary-card"><h2>✨ Aturan Toko</h2></div>`;
+    document.getElementById("summary").innerHTML = `<div class="summary-card"><h2>✨ Panduan SOP & Display Toko</h2></div>`;
 
     let html = "";
-    if (list.length === 0) html = `<div class="card">Data tidak ditemukan</div>`;
+    if (list.length === 0) html = `<div class="card">Data SOP belum tersedia</div>`;
     else {
         list.forEach(a => {
-            html += `<div class="card card-rules">
-                <div class="tanggal" style="text-align:left; font-size:14px; color:#d4af37;">📌 ${a.poin || a.Poin || ""}</div>
-                <div style="font-size:13px; line-height:1.5; color:#d1d5db; margin-top:8px; border-top:1px solid rgba(255,255,255,0.05); padding-top:8px;">${a.desc || a.Desc || a.Deskripsi || ""}</div>
-            </div>`;
+            const judul = a.poin || a.Poin || "SOP Promotor";
+            const konten = a.desc || a.Desc || a.Deskripsi || "";
+            
+            // Cek apakah kolom deskripsi berisi link gambar (mengandung http/https atau ekstensi gambar)
+            const isGambar = konten.startsWith("http://") || konten.startsWith("https://") || konten.match(/\.(jpeg|jpg|gif|png)$/i);
+
+            html += `
+            <div class="card card-rules" style="margin-bottom: 20px;">
+                <div class="tanggal" style="text-align:left; font-size:15px; color:#d4af37; font-weight:700; margin-bottom: 12px;">📌 ${judul}</div>`;
+                
+                if (isGambar) {
+                    // Jika berupa link gambar, tampilkan gambarnya (bisa diklik untuk memperbesar)
+                    html += `
+                    <div style="text-align: center; background: #0b0f19; padding: 10px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.08);">
+                        <a href="${konten}" target="_blank" title="Klik untuk memperbesar gambar">
+                            <img src="${konten}" alt="${judul}" style="max-width: 100%; height: auto; border-radius: 8px; cursor: pointer; display: block; margin: 0 auto;" onerror="this.onerror=null; this.parentElement.innerHTML='<span style=\'color:#f87171;\'>Gagal memuat gambar SOP</span>';">
+                        </a>
+                        <div style="font-size: 11px; color: #9ca3af; margin-top: 6px; font-style: italic;">*Ketuk gambar untuk memperbesar</div>
+                    </div>`;
+                } else {
+                    // Jika berupa teks biasa, tampilkan seperti biasa
+                    html += `
+                    <div style="font-size: 13px; line-height: 1.5; color: #d1d5db; border-top: 1px solid rgba(255,255,255,0.05); padding-top: 8px;">${konten}</div>`;
+                }
+
+            html += `</div>`;
         });
     }
-    document.getElementById("hasil").className = "grid";
+    document.getElementById("hasil").className = ""; // Ubah grid jadi satu kolom ke bawah agar gambar tampil besar dan leluasa
     document.getElementById("hasil").innerHTML = html;
 }
 
