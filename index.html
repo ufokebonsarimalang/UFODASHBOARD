@@ -701,14 +701,51 @@ async function gantiNamaAdmin() {
     jalankanRenderMenu(activeTab);
 }
 
-// Navigasi Antar Halaman Kartu & Detail
-function pindahMenu(namaMenu) {
+// Navigasi Antar Halaman Kartu & Detail dengan Pemuatan Cepat
+async function pindahMenu(namaMenu) {
     activeTab = namaMenu;
     document.getElementById("menuGridContainer").style.display = "none";
     document.getElementById("detailViewSection").style.display = "block";
     document.getElementById("currentMenuTitle").innerText = "Menu: " + namaMenu;
     
+    // Tampilkan indikator loading yang interaktif
+    document.getElementById("hasil").innerHTML = `<div style="text-align:center; padding:40px; color:#d4af37; font-weight:600;"><span class="spinner" style="margin-right:10px; width:22px; height:22px; border-width:3px;"></span>Memuat data ${namaMenu}, mohon tunggu...</div>`;
+    document.getElementById("summary").innerHTML = "";
+
+    // Tarik data spesifik secara instan jika belum ada di cache
+    await pastikanDataMenuSiap(namaMenu);
+
     jalankanRenderMenu(namaMenu);
+}
+
+// Fungsi pengaman untuk menarik data secara instan saat menu diklik
+async function pastikanDataMenuSiap(namaMenu) {
+    try {
+        let targetNama = (currentRole === "ADMIN") ? (document.getElementById("nama").value.trim() || currentUser) : currentUser;
+        
+        if (namaMenu === "Absensi" && !cacheData.absensi) {
+            cacheData.absensi = await fetch(WEBAPP_URL + "?nama=" + encodeURIComponent(targetNama)).then(r => r.json());
+        } else if (namaMenu === "Penjualan" && !cacheData.penjualan) {
+            cacheData.penjualan = await fetch(WEBAPP_URL + "?action=penjualan&nama=" + encodeURIComponent(targetNama)).then(r => r.json());
+        } else if (namaMenu === "UC" && !cacheData.uc) {
+            cacheData.uc = await fetch(WEBAPP_URL + "?action=uc&nama=" + encodeURIComponent(targetNama)).then(r => r.json());
+        } else if ((namaMenu === "Perolehan" || namaMenu === "DendaUC") && !cacheData.perolehan) {
+            const [resP, resL] = await Promise.all([
+                fetch(WEBAPP_URL + "?action=perolehan").then(r => r.json()),
+                fetch(WEBAPP_URL + "?action=rekap_terlambat").then(r => r.json())
+            ]);
+            cacheData.perolehan = resP;
+            cacheData.denda = { perolehan: resP, late: resL };
+        } else if (namaMenu === "Promo" && !cacheData.promo) {
+            cacheData.promo = await fetch(WEBAPP_URL + "?action=promo").then(r => r.json());
+        } else if (namaMenu === "Rules" && !cacheData.rules) {
+            cacheData.rules = await fetch(WEBAPP_URL + "?action=rules").then(r => r.json());
+        } else if (namaMenu === "Notice" && !cacheData.notice) {
+            cacheData.notice = await fetch(WEBAPP_URL + "?action=notice").then(r => r.json());
+        }
+    } catch(e) {
+        console.error("Gagal memuat data menu:", e);
+    }
 }
 
 function kembaliKeMenuUtama() {
