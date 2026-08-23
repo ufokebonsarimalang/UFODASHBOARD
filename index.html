@@ -486,7 +486,7 @@
         <button class="btn-logout-main" onclick="logout()">🚪 Keluar</button>
     </div>
 
-    <!-- TAMPILAN 1: HALAMAN UTAMA BERUPA KARTU MENU -->
+    <!-- TAMPILAN 1: HALAMAN UTAMA BERUPA KARTU MENU (URUTAN SESUAI PERMINTAAN) -->
     <div id="menuGridContainer">
         <div class="menu-card-item" onclick="pindahMenu('Absensi')">
             <span class="admin-badge" data-badge="menu">Pribadi</span>
@@ -506,13 +506,6 @@
             <h3>UC</h3>
             <p>Pencapaian poin UC promotor</p>
         </div>
-        <!-- MENU KHUSUS PROMOTOR -->
-        <div class="menu-card-item" id="menuPelanggaranSaya" onclick="pindahMenu('PelanggaranSaya')" style="display:none;">
-            <span class="admin-badge" data-badge="menu" style="background:rgba(239, 68, 68, 0.15); color:#f87171; border-color:rgba(239, 68, 68, 0.3);">Catatan</span>
-            <div class="icon">🚨</div>
-            <h3>Pelanggaran Saya</h3>
-            <p>Riwayat pelanggaran & sanksi dari catatan admin</p>
-        </div>
         <div class="menu-card-item" id="menuPerolehanCard" onclick="pindahMenu('Perolehan')">
             <span class="admin-badge" data-badge="admin">Admin Only</span>
             <div class="icon">📈</div>
@@ -530,11 +523,7 @@
             <h3>Promo Toko</h3>
             <p>Daftar promo produk & program toko aktif</p>
         </div>
-        <div class="menu-card-item" onclick="pindahMenu('Reward')">
-            <div class="icon">🏆</div>
-            <h3>Reward Promotor</h3>
-            <p>Daftar hadiah & bonus pencapaian</p>
-        </div>
+        <!-- 4 MENU UTAMA KHUSUS (SOP, PUNISHMENT, PELANGGARAN SAYA, REWARD) -->
         <div class="menu-card-item" onclick="pindahMenu('Rules')">
             <div class="icon">✨</div>
             <h3>SOP Promotor</h3>
@@ -544,6 +533,17 @@
             <div class="icon">⚠️</div>
             <h3>Punishment</h3>
             <p>Daftar sanksi & ketentuan pelanggaran</p>
+        </div>
+        <div class="menu-card-item" onclick="pindahMenu('PelanggaranSaya')">
+            <span class="admin-badge" data-badge="admin">Monitor Admin</span>
+            <div class="icon">🚨</div>
+            <h3>Pelanggaran Saya</h3>
+            <p>Catatan pelanggaran & sanksi promotor</p>
+        </div>
+        <div class="menu-card-item" onclick="pindahMenu('Reward')">
+            <div class="icon">🏆</div>
+            <h3>Reward Promotor</h3>
+            <p>Daftar hadiah & bonus pencapaian</p>
         </div>
     </div>
 
@@ -593,11 +593,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
         if (currentRole === "USER") {
             document.getElementById("menuPerolehanCard").style.display = "none";
-            document.getElementById("menuPelanggaranSaya").style.display = "block";
             muatSemuaDataLatarBelakang(currentUser);
         } else {
             document.getElementById("menuPerolehanCard").style.display = "block";
-            document.getElementById("menuPelanggaranSaya").style.display = "none";
             loadNama();
         }
     }
@@ -666,11 +664,9 @@ async function login() {
 
         if (currentRole === "USER") {
             document.getElementById("menuPerolehanCard").style.display = "none";
-            document.getElementById("menuPelanggaranSaya").style.display = "block";
             await muatSemuaDataLatarBelakang(currentUser);
         } else {
             document.getElementById("menuPerolehanCard").style.display = "block";
-            document.getElementById("menuPelanggaranSaya").style.display = "none";
             await loadNama();
         }
     } catch(err) {
@@ -728,21 +724,11 @@ async function loadNama(){
         }
         document.getElementById("nama").innerHTML = html;
 
-        const [resPerolehan, resLate, resPromo, resReward, resRules, resPunishment] = await Promise.all([
-            fetch(WEBAPP_URL + "?action=perolehan").then(r => r.json()),
-            fetch(WEBAPP_URL + "?action=rekap_terlambat").then(r => r.json()),
-            fetch(WEBAPP_URL + "?action=promo").then(r => r.json()),
-            fetch(WEBAPP_URL + "?action=reward").then(r => r.json()).catch(() => ({data: []})),
-            fetch(WEBAPP_URL + "?action=rules").then(r => r.json()),
-            fetch(WEBAPP_URL + "?action=punishment").then(r => r.json()).catch(() => ({data: []}))
-        ]);
-
-        cacheData.perolehan = resPerolehan;
-        cacheData.denda = { perolehan: resPerolehan, late: resLate };
-        cacheData.promo = resPromo;
-        cacheData.reward = resReward;
-        cacheData.rules = resRules;
-        cacheData.punishment = resPunishment;
+        let targetPertama = data[0] || "";
+        if(targetPertama) {
+            document.getElementById("nama").value = targetPertama;
+            await muatSemuaDataLatarBelakang(targetPertama);
+        }
     } catch(e) {
         console.error("Gagal memuat nama promotor", e);
     }
@@ -759,7 +745,7 @@ async function pindahMenu(namaMenu) {
     activeTab = namaMenu;
     document.getElementById("menuGridContainer").style.display = "none";
     document.getElementById("detailViewSection").style.display = "block";
-    document.getElementById("currentMenuTitle").innerText = "Menu: " + (namaMenu === "Punishment" ? "Punishment (Sanksi)" : namaMenu === "Reward" ? "Reward Promotor" : namaMenu === "PelanggaranSaya" ? "Pelanggaran Saya" : namaMenu);
+    document.getElementById("currentMenuTitle").innerText = "Menu: " + (namaMenu === "Punishment" ? "Punishment (Sanksi)" : namaMenu === "Reward" ? "Reward Promotor" : namaMenu === "PelanggaranSaya" ? "Catatan Pelanggaran" : namaMenu);
     
     document.getElementById("hasil").innerHTML = `<div style="text-align:center; padding:40px; color:#d4af37; font-weight:600;"><span class="spinner" style="margin-right:10px; width:22px; height:22px; border-width:3px;"></span>Memuat data ${namaMenu}, mohon tunggu...</div>`;
     document.getElementById("summary").innerHTML = "";
@@ -778,8 +764,9 @@ async function pastikanDataMenuSiap(namaMenu) {
             cacheData.penjualan = await fetch(WEBAPP_URL + "?action=penjualan&nama=" + encodeURIComponent(targetNama)).then(r => r.json());
         } else if (namaMenu === "UC" && !cacheData.uc) {
             cacheData.uc = await fetch(WEBAPP_URL + "?action=uc&nama=" + encodeURIComponent(targetNama)).then(r => r.json());
-        } else if (namaMenu === "PelanggaranSaya" && !cacheData.pelanggaranSaya) {
-            cacheData.pelanggaranSaya = await fetch(WEBAPP_URL + "?action=pelanggaran_saya&nama=" + encodeURIComponent(currentUser)).then(r => r.json()).catch(() => ({data: []}));
+        } else if (namaMenu === "PelanggaranSaya") {
+            let cekNama = (currentRole === "ADMIN") ? targetNama : currentUser;
+            cacheData.pelanggaranSaya = await fetch(WEBAPP_URL + "?action=pelanggaran_saya&nama=" + encodeURIComponent(cekNama)).then(r => r.json()).catch(() => ({data: []}));
         } else if ((namaMenu === "Perolehan" || namaMenu === "DendaUC") && !cacheData.perolehan) {
             const [resP, resL] = await Promise.all([
                 fetch(WEBAPP_URL + "?action=perolehan").then(r => r.json()),
@@ -820,7 +807,7 @@ function jalankanRenderMenu(namaMenu) {
         if (currentRole === "USER") {
             searchBoxEl.style.display = "none"; 
         } else {
-            searchBoxEl.style.display = isGlobal ? "none" : "block"; 
+            searchBoxEl.style.display = (isGlobal && namaMenu !== "PelanggaranSaya") ? "none" : "block"; 
         }
     }
 
@@ -995,14 +982,15 @@ function renderUC(data) {
     document.getElementById("hasil").innerHTML = html;
 }
 
-// RENDER PELANGGARAN SAYA (BERDASARKAN INPUT ADMIN DI SHEET PELANGGARAN)
+// RENDER PELANGGARAN SAYA
 function renderPelanggaranSaya(result) {
     if(!result) return;
     const list = result.data || [];
+    let targetNama = (currentRole === "ADMIN") ? (document.getElementById("nama").value.trim() || currentUser) : currentUser;
 
     document.getElementById("summary").innerHTML = `
     <div class="summary-card">
-        <h2>🚨 Catatan Pelanggaran Saya</h2>
+        <h2>🚨 Catatan Pelanggaran (${targetNama})</h2>
         <p>Total Tercatat : <b>${list.length} Kasus Pelanggaran</b></p>
     </div>`;
 
@@ -1011,7 +999,7 @@ function renderPelanggaranSaya(result) {
         html = `<div class="card success" style="text-align:center; padding:30px;">
             <div style="font-size:28px; margin-bottom:8px;">🎉</div>
             <div style="font-weight:700; color:#34d399; font-size:16px;">Bersih dari Pelanggaran!</div>
-            <div style="font-size:13px; color:#9ca3af; margin-top:4px;">Tidak ada catatan sanksi yang diinput oleh admin untuk Anda.</div>
+            <div style="font-size:13px; color:#9ca3af; margin-top:4px;">Tidak ada catatan sanksi yang diinput untuk promotor ini.</div>
         </div>`;
     } else {
         list.forEach(item => {
