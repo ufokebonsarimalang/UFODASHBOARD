@@ -255,27 +255,32 @@
 
         #summary { margin-bottom: 15px; }
 
+        /* KARTU HEADER DI DALAM MENU (DIJAMIN RAPI DAN PAS DI HP) */
         .summary-card {
             background: #111827;
             border: 1px solid rgba(212, 175, 55, 0.25);
-            border-radius: 16px;
-            padding: 18px;
+            border-radius: 14px;
+            padding: 16px;
             color: #ffffff;
-            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.25);
         }
 
         .summary-card h2 {
-            margin-top: 0;
-            font-size: 17px;
+            margin: 0 0 8px 0;
+            font-size: 15.5px;
             font-weight: 700;
-            margin-bottom: 10px;
             color: #d4af37;
+            line-height: 1.4;
+            display: flex;
+            align-items: center;
+            gap: 6px;
         }
 
         .summary-card p {
-            margin: 5px 0;
+            margin: 4px 0;
             color: #d1d5db;
             font-size: 13px;
+            line-height: 1.4;
         }
 
         .grid {
@@ -297,7 +302,7 @@
         .card.warning { border-left: 4px solid #ef4444; }
         .card.late { border: 2px solid #d4af37; background: #151922; }
 
-        /* TAMPILAN LIST RAPI DAN BERSIH UNTUK HP (REWARD, PUNISHMENT, RULES, PELANGGARAN) */
+        /* TAMPILAN LIST RAPI DAN BERSIH UNTUK HP */
         .mobile-list-container {
             display: flex;
             flex-direction: column;
@@ -576,7 +581,7 @@
             <h3>Promo Toko</h3>
             <p>Daftar promo produk & program toko aktif</p>
         </div>
-        <!-- 4 MENU UTAMA KHUSUS -->
+        <!-- MENU UTAMA KELOMPOK ATURAN & REWARD -->
         <div class="menu-card-item" onclick="pindahMenu('Rules')">
             <div class="icon">✨</div>
             <h3>SOP Promotor</h3>
@@ -595,8 +600,14 @@
         </div>
         <div class="menu-card-item" onclick="pindahMenu('Reward')">
             <div class="icon">🏆</div>
-            <h3>Reward Promotor</h3>
-            <p>Daftar hadiah & bonus pencapaian</p>
+            <h3>Daftar Reward</h3>
+            <p>Daftar hadiah & bonus pencapaian toko</p>
+        </div>
+        <div class="menu-card-item" onclick="pindahMenu('RewardSaya')">
+            <span class="admin-badge" data-badge="admin">Monitor Admin</span>
+            <div class="icon">🎁</div>
+            <h3>Reward Saya</h3>
+            <p>Riwayat hadiah & bonus yang Anda dapatkan</p>
         </div>
     </div>
 
@@ -630,7 +641,7 @@ let activeTab = "Absensi";
 
 let cacheData = {
     absensi: null, penjualan: null, uc: null, perolehan: null,
-    denda: null, promo: null, reward: null, rules: null, punishment: null, pelanggaranSaya: null
+    denda: null, promo: null, reward: null, rewardSaya: null, rules: null, punishment: null, pelanggaranSaya: null
 };
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -734,7 +745,7 @@ async function muatSemuaDataLatarBelakang(namaTarget) {
     if(loadEl) loadEl.style.display = "block";
 
     try {
-        const [resAbsen, resJual, resUC, resPerolehan, resDendaLate, resPromo, resReward, resRules, resPunishment, resPelanggaran] = await Promise.all([
+        const [resAbsen, resJual, resUC, resPerolehan, resDendaLate, resPromo, resReward, resRewardSaya, resRules, resPunishment, resPelanggaran] = await Promise.all([
             fetch(WEBAPP_URL + "?nama=" + encodeURIComponent(namaTarget)).then(r => r.json()),
             fetch(WEBAPP_URL + "?action=penjualan&nama=" + encodeURIComponent(namaTarget)).then(r => r.json()),
             fetch(WEBAPP_URL + "?action=uc&nama=" + encodeURIComponent(namaTarget)).then(r => r.json()),
@@ -742,6 +753,7 @@ async function muatSemuaDataLatarBelakang(namaTarget) {
             fetch(WEBAPP_URL + "?action=rekap_terlambat").then(r => r.json()),
             fetch(WEBAPP_URL + "?action=promo").then(r => r.json()),
             fetch(WEBAPP_URL + "?action=reward").then(r => r.json()).catch(() => ({data: []})),
+            fetch(WEBAPP_URL + "?action=reward_saya&nama=" + encodeURIComponent(namaTarget)).then(r => r.json()).catch(() => ({data: []})),
             fetch(WEBAPP_URL + "?action=rules").then(r => r.json()),
             fetch(WEBAPP_URL + "?action=punishment").then(r => r.json()).catch(() => ({data: []})),
             fetch(WEBAPP_URL + "?action=pelanggaran_saya&nama=" + encodeURIComponent(namaTarget)).then(r => r.json()).catch(() => ({data: []}))
@@ -754,6 +766,7 @@ async function muatSemuaDataLatarBelakang(namaTarget) {
         cacheData.denda = { perolehan: resPerolehan, late: resDendaLate };
         cacheData.promo = resPromo;
         cacheData.reward = resReward;
+        cacheData.rewardSaya = resRewardSaya;
         cacheData.rules = resRules;
         cacheData.punishment = resPunishment;
         cacheData.pelanggaranSaya = resPelanggaran;
@@ -798,7 +811,13 @@ async function pindahMenu(namaMenu) {
     activeTab = namaMenu;
     document.getElementById("menuGridContainer").style.display = "none";
     document.getElementById("detailViewSection").style.display = "block";
-    document.getElementById("currentMenuTitle").innerText = "Menu: " + (namaMenu === "Punishment" ? "Punishment (Sanksi)" : namaMenu === "Reward" ? "Reward Promotor" : namaMenu === "PelanggaranSaya" ? "Catatan Pelanggaran" : namaMenu);
+    
+    let judulMenuText = namaMenu;
+    if (namaMenu === "Punishment") judulMenuText = "Punishment (Sanksi)";
+    else if (namaMenu === "Reward") judulMenuText = "Daftar Reward Promotor";
+    else if (namaMenu === "RewardSaya") judulMenuText = "Reward Saya";
+    else if (namaMenu === "PelanggaranSaya") judulMenuText = "Catatan Pelanggaran";
+    document.getElementById("currentMenuTitle").innerText = "Menu: " + judulMenuText;
     
     document.getElementById("hasil").innerHTML = `<div style="text-align:center; padding:30px; color:#d4af37; font-weight:600;"><span class="spinner" style="margin-right:8px;"></span>Memuat data ${namaMenu}, mohon tunggu...</div>`;
     document.getElementById("summary").innerHTML = "";
@@ -820,6 +839,9 @@ async function pastikanDataMenuSiap(namaMenu) {
         } else if (namaMenu === "PelanggaranSaya") {
             let cekNama = (currentRole === "ADMIN") ? targetNama : currentUser;
             cacheData.pelanggaranSaya = await fetch(WEBAPP_URL + "?action=pelanggaran_saya&nama=" + encodeURIComponent(cekNama)).then(r => r.json()).catch(() => ({data: []}));
+        } else if (namaMenu === "RewardSaya") {
+            let cekNama = (currentRole === "ADMIN") ? targetNama : currentUser;
+            cacheData.rewardSaya = await fetch(WEBAPP_URL + "?action=reward_saya&nama=" + encodeURIComponent(cekNama)).then(r => r.json()).catch(() => ({data: []}));
         } else if ((namaMenu === "Perolehan" || namaMenu === "DendaUC") && !cacheData.perolehan) {
             const [resP, resL] = await Promise.all([
                 fetch(WEBAPP_URL + "?action=perolehan").then(r => r.json()),
@@ -860,7 +882,7 @@ function jalankanRenderMenu(namaMenu) {
         if (currentRole === "USER") {
             searchBoxEl.style.display = "none"; 
         } else {
-            searchBoxEl.style.display = (isGlobal && namaMenu !== "PelanggaranSaya") ? "none" : "block"; 
+            searchBoxEl.style.display = (isGlobal && namaMenu !== "PelanggaranSaya" && namaMenu !== "RewardSaya") ? "none" : "block"; 
         }
     }
 
@@ -868,6 +890,7 @@ function jalankanRenderMenu(namaMenu) {
     else if (namaMenu === "Penjualan") renderPenjualan(cacheData.penjualan);
     else if (namaMenu === "UC") renderUC(cacheData.uc);
     else if (namaMenu === "PelanggaranSaya") renderPelanggaranSaya(cacheData.pelanggaranSaya);
+    else if (namaMenu === "RewardSaya") renderRewardSaya(cacheData.rewardSaya);
     else if (namaMenu === "Perolehan") renderPerolehan(cacheData.perolehan);
     else if (namaMenu === "DendaUC") renderDendaUC(cacheData.denda);
     else if (namaMenu === "Promo") renderPromo(cacheData.promo);
@@ -924,7 +947,7 @@ function renderAbsensi(result) {
             <h2>🏆 ${data[0].nama}</h2>
             <p>Total Hari Absen : <b>${data.length}</b></p>
             <p>Datang Terlambat : <b>${terlambat}</b></p>
-            <p style="color:#f87171; margin-top:6px;">⚠️ Tidak Absen Masuk : <b>${tidakAbsenMasuk}x</b></p>
+            <p style="color:#f87171; margin-top:4px;">⚠️ Tidak Absen Masuk : <b>${tidakAbsenMasuk}x</b></p>
             <p style="color:#f87171;">⚠️ Tidak Absen Pulang : <b>${tidakAbsenPulang}x</b></p>
         </div>`;
         if(currentRole === "ADMIN") document.getElementById("exportArea").style.display = "flex";
@@ -991,8 +1014,8 @@ function renderPenjualan(data) {
         grupTanggal[tanggal].forEach(item => {
             totalHari += Number(item.omzet);
             isiProduk += `
-                <div style="margin-bottom:10px; padding-bottom:6px; border-bottom:1px solid rgba(255,255,255,0.05);">
-                    <div style="font-size:12px; font-weight:600; line-height:1.3; margin-bottom:4px; color:#e5e7eb;">${item.produk}</div>
+                <div style="margin-bottom:8px; padding-bottom:6px; border-bottom:1px solid rgba(255,255,255,0.05);">
+                    <div style="font-size:12px; font-weight:600; line-height:1.3; margin-bottom:3px; color:#e5e7eb;">${item.produk}</div>
                     <div class="row"><span>Qty</span><span>${item.qty}</span></div>
                     <div class="row"><span>Omzet</span><span>Rp ${Number(item.omzet).toLocaleString("id-ID")}</span></div>
                 </div>`;
@@ -1025,7 +1048,7 @@ function renderUC(data) {
         html += `
         <div class="card success">
             <div class="tanggal">📅 ${x.tanggal}</div>
-            <div style="font-size:12px; font-weight:600; line-height:1.3; margin:10px 0; color:#e5e7eb;">${x.produk}</div>
+            <div style="font-size:12px; font-weight:600; line-height:1.3; margin:8px 0; color:#e5e7eb;">${x.produk}</div>
             <div class="row"><span>Qty</span><span>${x.qty}</span></div>
         </div>`;
     });
@@ -1043,7 +1066,8 @@ function renderPelanggaranSaya(result) {
 
     document.getElementById("summary").innerHTML = `
     <div class="summary-card">
-        <h2>🚨 Catatan Pelanggaran (${targetNama})</h2>
+        <h2>🚨 Catatan Pelanggaran</h2>
+        <p>Promotor : <b>${targetNama}</b></p>
         <p>Total Tercatat : <b>${list.length} Kasus Pelanggaran</b></p>
     </div>`;
 
@@ -1069,6 +1093,50 @@ function renderPelanggaranSaya(result) {
                 <div class="mobile-list-content">
                     <div style="margin-bottom: 4px;"><b>Keterangan:</b> ${item.keterangan}</div>
                     <div style="color: #f87171; font-weight: 600;"><b>Sanksi / Denda:</b> ${item.denda}</div>
+                </div>
+            </div>`;
+        });
+    }
+    html += `</div>`;
+
+    document.getElementById("hasil").className = "";
+    document.getElementById("hasil").innerHTML = html;
+}
+
+// RENDER REWARD SAYA
+function renderRewardSaya(result) {
+    if(!result) return;
+    const list = result.data || [];
+    let targetNama = (currentRole === "ADMIN") ? (document.getElementById("nama").value.trim() || currentUser) : currentUser;
+
+    document.getElementById("summary").innerHTML = `
+    <div class="summary-card">
+        <h2>🎁 Reward Saya</h2>
+        <p>Promotor : <b>${targetNama}</b></p>
+        <p>Total Reward Didapat : <b>${list.length} Hadiah / Bonus</b></p>
+    </div>`;
+
+    let html = `<div class="mobile-list-container">`;
+    if (list.length === 0) {
+        let pesanKosong = (currentRole === "ADMIN") 
+            ? "Belum ada catatan reward yang diinput untuk promotor ini." 
+            : "Belum ada reward atau bonus yang tercatat untuk Anda. Terus semangat mengejar target!";
+
+        html += `<div class="card" style="text-align:center; padding:25px; border-left: 4px solid #d4af37;">
+            <div style="font-size:24px; margin-bottom:6px;">🎯</div>
+            <div style="font-weight:700; color:#d4af37; font-size:15px;">Belum Ada Reward</div>
+            <div style="font-size:12.5px; color:#9ca3af; margin-top:4px;">${pesanKosong}</div>
+        </div>`;
+    } else {
+        list.forEach(item => {
+            html += `
+            <div class="mobile-list-card" style="border-left: 4px solid #10b981;">
+                <div class="mobile-list-header">
+                    <div class="mobile-list-title"><span>🎁</span> ${item.judul || item.Judul || "Bonus Reward"}</div>
+                    <span class="mobile-list-badge" style="background:rgba(16, 185, 129, 0.15); color:#34d399; border-color:rgba(16, 185, 129, 0.4);">${item.tanggal || item.Periode || "Berhasil"}</span>
+                </div>
+                <div class="mobile-list-content">
+                    <div style="color: #ffffff; font-weight: 500;">${item.detail || item.Detail || item.keterangan || "-"}</div>
                 </div>
             </div>`;
         });
@@ -1109,7 +1177,7 @@ function renderPerolehan(data) {
         const warnaOmzet = omzetVal >= 100000000 ? '#34d399' : omzetVal >= 80000000 ? '#f59e0b' : '#ef4444';
 
         html += `
-            <div class="row-perolehan-export" style="display:flex; align-items:center; justify-content:space-between; padding:10px 0; border-bottom:1px solid rgba(255,255,255,0.05); gap:10px;">
+            <div class="row-perolehan-export" style="display:flex; align-items:center; justify-content:space-between; padding:9px 0; border-bottom:1px solid rgba(255,255,255,0.05); gap:10px;">
                 <div style="display:flex; align-items:center; gap:10px; min-width:0; flex:1;">
                     <div style="width:26px; height:26px; border-radius:50%; background:#1f2937; border:1px solid rgba(212,175,55,0.3); display:flex; align-items:center; justify-content:center; font-weight:700; font-size:12px; flex-shrink:0; color:#d4af37;">${i + 1}</div>
                     <div class="nama-p" style="font-weight:600; font-size:13px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${x.nama}</div>
@@ -1142,14 +1210,14 @@ function renderDendaUC(dendaObj) {
 
     document.getElementById("summary").innerHTML = `
     <div class="summary-card">
-        <h2 style="margin-bottom:12px;">⚖️ Rekap Denda & Keterlambatan</h2>
+        <h2>⚖️ Rekap Denda & Keterlambatan</h2>
         <div style="display:flex; flex-wrap:wrap; gap:10px; margin-top:8px;">
             <div style="flex:1; min-width:180px; background:#1a2234; padding:10px 12px; border-radius:10px; border:1px solid #374151;">
-                <div style="font-size:10.5px; color:#9ca3af; font-weight:700; text-transform:uppercase;">Denda Target UC</div>
+                <div style="font-size:10px; color:#9ca3af; font-weight:700; text-transform:uppercase;">Denda Target UC</div>
                 <div style="font-size:12.5px; color:#f87171; font-weight:700; margin-top:2px;">Rp 5.000 / Unit Kurang</div>
             </div>
             <div style="flex:1; min-width:180px; background:#1a2234; padding:10px 12px; border-radius:10px; border:1px solid #374151;">
-                <div style="font-size:10.5px; color:#9ca3af; font-weight:700; text-transform:uppercase;">Denda Keterlambatan</div>
+                <div style="font-size:10px; color:#9ca3af; font-weight:700; text-transform:uppercase;">Denda Keterlambatan</div>
                 <div style="font-size:12.5px; color:#facc15; font-weight:700; margin-top:2px;">Rp 10.000 / Kali Terlambat</div>
             </div>
         </div>
@@ -1255,11 +1323,11 @@ function renderRules(result) {
 function renderReward(result) {
     if(!result) return;
     const list = result.data || [];
-    document.getElementById("summary").innerHTML = `<div class="summary-card"><h2>🏆 Daftar Reward & Bonus Promotor</h2></div>`;
+    document.getElementById("summary").innerHTML = `<div class="summary-card"><h2>🏆 Daftar Reward & Bonus Toko</h2></div>`;
 
     let html = `<div class="mobile-list-container">`;
     if (list.length === 0) {
-        html += `<div class="card card-reward">Data reward belum tersedia</div>`;
+        html += `<div class="card card-reward">Data daftar reward belum tersedia</div>`;
     } else {
         list.forEach(r => {
             const judul = r.judul || r.Judul || r.poin || "Bonus Reward";
