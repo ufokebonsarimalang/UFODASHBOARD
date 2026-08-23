@@ -550,13 +550,13 @@
             <span class="admin-badge" data-badge="menu">Pribadi</span>
             <div class="icon">📅</div>
             <h3>Absensi</h3>
-            <p>Rekap kehadiran dan status finger harian</p>
+            <p>Daftar kehadiran dan status finger harian</p>
         </div>
         <div class="menu-card-item" onclick="pindahMenu('Penjualan')">
             <span class="admin-badge" data-badge="menu">Pribadi</span>
             <div class="icon">💼</div>
             <h3>Penjualan</h3>
-            <p>Omzet produk harian dan perolehan unit</p>
+            <p>Omzet perolehan harian dan perolehan unit</p>
         </div>
         <div class="menu-card-item" onclick="pindahMenu('UC')">
             <span class="admin-badge" data-badge="menu">Pribadi</span>
@@ -601,13 +601,13 @@
         <div class="menu-card-item" onclick="pindahMenu('Reward')">
             <div class="icon">🏆</div>
             <h3>Daftar Reward</h3>
-            <p>Daftar hadiah & bonus pencapaian toko</p>
+            <p>Daftar Reward pencapaian toko</p>
         </div>
         <div class="menu-card-item" onclick="pindahMenu('RewardSaya')">
             <span class="admin-badge" data-badge="admin">Monitor Admin</span>
             <div class="icon">🎁</div>
             <h3>Reward Saya</h3>
-            <p>Riwayat hadiah & bonus yang Anda dapatkan</p>
+            <p>Riwayat Reward yang Anda dapatkan</p>
         </div>
     </div>
 
@@ -1113,7 +1113,7 @@ function renderRewardSaya(result) {
     <div class="summary-card">
         <h2>🎁 Reward Saya</h2>
         <p>Promotor : <b>${targetNama}</b></p>
-        <p>Total Reward Didapat : <b>${list.length} Hadiah / Bonus</b></p>
+        <p>Total Reward Didapat : <b>${list.length} Rewards</b></p>
     </div>`;
 
     let html = `<div class="mobile-list-container">`;
@@ -1160,7 +1160,7 @@ function renderPerolehan(data) {
 
     document.getElementById("summary").innerHTML = `
     <div class="summary-card">
-    <h2>📊 Perolehan & Rekap Toko</h2>
+    <h2>📊 Perolehan All Promotor</h2>
     ${currentRole === "ADMIN" ? 
         `<p>👥 Jumlah Promotor : <b>${data.list.length}</b></p>
          <p>💰 Total Omzet Toko : <span style="font-weight:bold;color:#34d399">Rp ${totalOmzet.toLocaleString("id-ID")}</span></p>
