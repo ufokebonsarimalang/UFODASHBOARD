@@ -1141,7 +1141,7 @@ function renderRules(result) {
     document.getElementById("hasil").innerHTML = html;
 }
 
-// FUNGSI RENDER PUNISHMENT (SANKSI)
+// FUNGSI RENDER PUNISHMENT (SANKSI) - TAMPILAN LEBIH RAPI & FONT PUTIH BERSIH
 function renderPunishment(result) {
     if(!result) return;
     const list = result.data || [];
@@ -1156,12 +1156,14 @@ function renderPunishment(result) {
             const detail = p.detail || p.Detail || p.pesan || p.Pesan || "";
             const level = p.level || p.Level || "Peringatan";
 
-            html += `<div class="card card-punishment" style="margin-bottom: 15px;">
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
-                    <div style="font-weight: 700; font-size: 15px; color: #f87171;">⚠️ ${judul}</div>
-                    <span style="background: rgba(239, 68, 68, 0.15); color: #f87171; border: 1px solid rgba(239, 68, 68, 0.3); padding: 3px 10px; border-radius: 6px; font-size: 11px; font-weight: 700;">${level}</span>
+            html += `<div class="card card-punishment" style="margin-bottom: 15px; background: #151d2e; border: 1px solid rgba(212, 175, 55, 0.25); border-radius: 16px; padding: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.2);">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; border-bottom: 1px solid rgba(255,255,255,0.08); padding-bottom: 10px; gap: 10px;">
+                    <div style="font-weight: 700; font-size: 15px; color: #ffffff; display: flex; align-items: center; gap: 8px;">
+                        <span style="color: #d4af37;">⚠️</span> ${judul}
+                    </div>
+                    <span style="background: rgba(212, 175, 55, 0.15); color: #d4af37; border: 1px solid rgba(212, 175, 55, 0.35); padding: 4px 12px; border-radius: 8px; font-size: 11px; font-weight: 700; white-space: nowrap;">${level}</span>
                 </div>
-                <div style="font-size: 13px; line-height: 1.5; color: #d1d5db; border-top: 1px solid rgba(255,255,255,0.05); padding-top: 8px;">${detail}</div>
+                <div style="font-size: 13.5px; line-height: 1.6; color: #ffffff; font-weight: 400; letter-spacing: 0.2px;">${detail}</div>
             </div>`;
         });
     }
