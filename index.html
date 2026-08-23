@@ -1216,6 +1216,7 @@ function prosesEkspor(format) {
 
     if (format === 'excel') {
         let rowsArr = [];
+        
         if (activeTab === "Absensi") {
             rowsArr.push(["LAPORAN ABSENSI PROMOTOR: " + namaKaryawan.toUpperCase()], []);
             rowsArr.push(["Tanggal", "Status", "Masuk", "Istirahat 1", "Kembali 1", "Istirahat 2", "Kembali 2", "Pulang"]);
@@ -1226,14 +1227,32 @@ function prosesEkspor(format) {
                 let rowsData = card.querySelectorAll(".row");
                 rowsArr.push([tglText, status, rowsData[0]?.querySelector(".ok, .kosong")?.innerText || "-", rowsData[1]?.querySelector(".ok, .kosong")?.innerText || "-", rowsData[2]?.querySelector(".ok, .kosong")?.innerText || "-", rowsData[3]?.querySelector(".ok, .kosong")?.innerText || "-", rowsData[4]?.querySelector(".ok, .kosong")?.innerText || "-", rowsData[5]?.querySelector(".ok, .kosong")?.innerText || "-"]);
             });
+        } 
+        else if (activeTab === "Perolehan") {
+            rowsArr.push(["REKAP PEROLEHAN & OMZET PROMOTOR"], []);
+            rowsArr.push(["Peringkat", "Nama Promotor", "Omzet (Rp)", "UC"]);
+            
+            // Mengambil data dari cacheData.perolehan jika tersedia, atau dari elemen DOM
+            if (cacheData.perolehan && cacheData.perolehan.list) {
+                cacheData.perolehan.list.forEach((x, i) => {
+                    rowsArr.push([i + 1, x.nama, Number(x.omzet || 0), Number(x.uc || 0)]);
+                });
+            }
         }
-        const ws = XLSX.utils.aoa_to_sheet(rowsArr);
-        const wb = XLSX.utils.book_new();
-        XLSX.utils.book_append_sheet(wb, ws, activeTab);
-        XLSX.writeFile(wb, `${namaFile}.xlsx`);
+
+        if (rowsArr.length > 0) {
+            const ws = XLSX.utils.aoa_to_sheet(rowsArr);
+            const wb = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(wb, ws, activeTab);
+            XLSX.writeFile(wb, `${namaFile}.xlsx`);
+        } else {
+            showPopup("Tidak ada data untuk diekspor.");
+        }
     } else if (format === 'pdf') {
         const elemenPrint = targetElement.cloneNode(true);
-        elemenPrint.style.color = "#000"; elemenPrint.style.background = "#fff"; elemenPrint.style.padding = "20px";
+        elemenPrint.style.color = "#000"; 
+        elemenPrint.style.background = "#fff"; 
+        elemenPrint.style.padding = "20px";
         html2pdf().set({ margin: 10, filename: `${namaFile}.pdf`, html2canvas: { scale: 2 }, jsPDF: { format: 'a4' } }).from(elemenPrint).save();
     }
 }
