@@ -300,6 +300,25 @@
         .card.late { border: 2px solid #d4af37; background: #151922; }
         .card-notice, .card-rules, .card-punishment, .card-reward, .card-pelanggaran { border-left: 5px solid #ef4444; }
 
+        /* KELAS KHUSUS LIST FULL WIDTH YANG RESPONSIF */
+        .full-width-container {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            width: 100%;
+        }
+
+        .full-width-card {
+            background: #151d2e;
+            border: 1px solid rgba(212, 175, 55, 0.25);
+            border-radius: 16px;
+            padding: 20px;
+            width: 100%;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            word-wrap: break-word;
+            overflow-wrap: break-word;
+        }
+
         .tanggal {
             text-align: center;
             font-weight: 700;
@@ -486,7 +505,7 @@
         <button class="btn-logout-main" onclick="logout()">🚪 Keluar</button>
     </div>
 
-    <!-- TAMPILAN 1: HALAMAN UTAMA BERUPA KARTU MENU (URUTAN SESUAI PERMINTAAN) -->
+    <!-- TAMPILAN 1: HALAMAN UTAMA BERUPA KARTU MENU -->
     <div id="menuGridContainer">
         <div class="menu-card-item" onclick="pindahMenu('Absensi')">
             <span class="admin-badge" data-badge="menu">Pribadi</span>
@@ -523,7 +542,7 @@
             <h3>Promo Toko</h3>
             <p>Daftar promo produk & program toko aktif</p>
         </div>
-        <!-- 4 MENU UTAMA KHUSUS (SOP, PUNISHMENT, PELANGGARAN SAYA, REWARD) -->
+        <!-- 4 MENU UTAMA KHUSUS -->
         <div class="menu-card-item" onclick="pindahMenu('Rules')">
             <div class="icon">✨</div>
             <h3>SOP Promotor</h3>
@@ -982,7 +1001,7 @@ function renderUC(data) {
     document.getElementById("hasil").innerHTML = html;
 }
 
-// RENDER PELANGGARAN SAYA
+// RENDER PELANGGARAN SAYA (PESAN DINAMIS UNTUK USER & ADMIN)
 function renderPelanggaranSaya(result) {
     if(!result) return;
     const list = result.data || [];
@@ -994,27 +1013,32 @@ function renderPelanggaranSaya(result) {
         <p>Total Tercatat : <b>${list.length} Kasus Pelanggaran</b></p>
     </div>`;
 
-    let html = "";
+    let html = `<div class="full-width-container">`;
     if (list.length === 0) {
-        html = `<div class="card success" style="text-align:center; padding:30px;">
+        let pesanBersih = (currentRole === "ADMIN") 
+            ? "Tidak ada catatan sanksi yang diinput untuk promotor ini." 
+            : "Selamat, Anda tidak ada pelanggaran sama sekali.";
+
+        html += `<div class="card success" style="text-align:center; padding:30px;">
             <div style="font-size:28px; margin-bottom:8px;">🎉</div>
             <div style="font-weight:700; color:#34d399; font-size:16px;">Bersih dari Pelanggaran!</div>
-            <div style="font-size:13px; color:#9ca3af; margin-top:4px;">Tidak ada catatan sanksi yang diinput untuk promotor ini.</div>
+            <div style="font-size:13px; color:#9ca3af; margin-top:4px;">${pesanBersih}</div>
         </div>`;
     } else {
         list.forEach(item => {
-            html += `<div class="card card-pelanggaran" style="margin-bottom: 15px; background: #151d2e; border: 1px solid rgba(239, 68, 68, 0.3); border-radius: 16px; padding: 18px;">
+            html += `<div class="full-width-card card-pelanggaran">
                 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; border-bottom: 1px solid rgba(255,255,255,0.08); padding-bottom: 8px;">
                     <div style="font-weight: 700; font-size: 14px; color: #ffffff; display: flex; align-items: center; gap: 8px;">
                         <span>📅</span> ${item.tanggal}
                     </div>
                     <span style="background: rgba(239, 68, 68, 0.15); color: #f87171; border: 1px solid rgba(239, 68, 68, 0.4); padding: 3px 10px; border-radius: 6px; font-size: 11px; font-weight: 700;">Pelanggaran</span>
                 </div>
-                <div style="font-size: 13.5px; color: #f3f4f6; margin-bottom: 6px;"><b>Keterangan:</b> ${item.keterangan}</div>
+                <div style="font-size: 13.5px; color: #f3f4f6; margin-bottom: 6px; line-height: 1.5;"><b>Keterangan:</b> ${item.keterangan}</div>
                 <div style="font-size: 13px; color: #f87171; font-weight: 600;"><b>Sanksi / Denda:</b> ${item.denda}</div>
             </div>`;
         });
     }
+    html += `</div>`;
 
     document.getElementById("hasil").className = "";
     document.getElementById("hasil").innerHTML = html;
@@ -1157,9 +1181,9 @@ function renderRules(result) {
     const list = result.data || [];
     document.getElementById("summary").innerHTML = `<div class="summary-card"><h2>✨ Panduan SOP & Peraturan Toko</h2></div>`;
 
-    let html = "";
+    let html = `<div class="full-width-container">`;
     if (list.length === 0) {
-        html = `<div class="card">Data SOP tidak ditemukan</div>`;
+        html += `<div class="card">Data SOP tidak ditemukan</div>`;
     } else {
         list.forEach(a => {
             const judul = a.poin || a.Poin || "SOP Promotor";
@@ -1171,8 +1195,8 @@ function renderRules(result) {
             }
 
             html += `
-            <div class="card card-rules" style="margin-bottom: 15px; display: flex; flex-direction: row; align-items: center; justify-content: space-between; gap: 15px; cursor: pointer;" onclick="bukaModalSOP('${pathGambar}', '${judul.replace(/'/g, "\\'")}')">
-                <div style="flex: 1;">
+            <div class="full-width-card card-rules" style="display: flex; flex-direction: row; align-items: center; justify-content: space-between; gap: 15px; cursor: pointer;" onclick="bukaModalSOP('${pathGambar}', '${judul.replace(/'/g, "\\'")}')">
+                <div style="flex: 1; min-width: 0;">
                     <div style="font-size: 15px; color: #d4af37; font-weight: 700; margin-bottom: 4px;">📌 ${judul}</div>
                     <div style="font-size: 12px; color: #9ca3af;">Ketuk untuk memperbesar gambar</div>
                 </div>`;
@@ -1187,6 +1211,7 @@ function renderRules(result) {
             html += `</div>`;
         });
     }
+    html += `</div>`;
     
     document.getElementById("hasil").className = ""; 
     document.getElementById("hasil").innerHTML = html;
@@ -1197,26 +1222,27 @@ function renderReward(result) {
     const list = result.data || [];
     document.getElementById("summary").innerHTML = `<div class="summary-card"><h2>🏆 Daftar Reward & Bonus Promotor</h2></div>`;
 
-    let html = "";
+    let html = `<div class="full-width-container">`;
     if (list.length === 0) {
-        html = `<div class="card card-reward">Data reward belum tersedia</div>`;
+        html += `<div class="card card-reward">Data reward belum tersedia</div>`;
     } else {
         list.forEach(r => {
             const judul = r.judul || r.Judul || r.poin || "Bonus Reward";
             const periode = r.periode || r.Periode || r.level || "Aktif";
             const detail = r.detail || r.Detail || r.pesan || "-";
 
-            html += `<div class="card card-reward" style="margin-bottom: 15px; background: #151d2e; border: 1px solid rgba(212, 175, 55, 0.25); border-radius: 16px; padding: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.2);">
+            html += `<div class="full-width-card card-reward">
                 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; border-bottom: 1px solid rgba(255,255,255,0.08); padding-bottom: 10px; gap: 10px;">
-                    <div style="font-weight: 700; font-size: 15px; color: #ffffff; display: flex; align-items: center; gap: 8px;">
-                        <span style="color: #d4af37;">🏆</span> ${judul}
+                    <div style="font-weight: 700; font-size: 15px; color: #ffffff; display: flex; align-items: center; gap: 8px; min-width: 0; overflow: hidden;">
+                        <span style="color: #d4af37; flex-shrink: 0;">🏆</span> <span style="overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">${judul}</span>
                     </div>
-                    <span style="background: rgba(212, 175, 55, 0.15); color: #d4af37; border: 1px solid rgba(212, 175, 55, 0.35); padding: 4px 12px; border-radius: 8px; font-size: 11px; font-weight: 700; white-space: nowrap;">${periode}</span>
+                    <span style="background: rgba(212, 175, 55, 0.15); color: #d4af37; border: 1px solid rgba(212, 175, 55, 0.35); padding: 4px 12px; border-radius: 8px; font-size: 11px; font-weight: 700; white-space: nowrap; flex-shrink: 0;">${periode}</span>
                 </div>
                 <div style="font-size: 13.5px; line-height: 1.6; color: #ffffff; font-weight: 400; letter-spacing: 0.2px;">${detail}</div>
             </div>`;
         });
     }
+    html += `</div>`;
     document.getElementById("hasil").className = "";
     document.getElementById("hasil").innerHTML = html;
 }
@@ -1226,26 +1252,27 @@ function renderPunishment(result) {
     const list = result.data || [];
     document.getElementById("summary").innerHTML = `<div class="summary-card"><h2>⚠️ Daftar Punishment & Sanksi Toko</h2></div>`;
 
-    let html = "";
+    let html = `<div class="full-width-container">`;
     if (list.length === 0) {
-        html = `<div class="card card-punishment">Data punishment tidak ditemukan</div>`;
+        html += `<div class="card card-punishment">Data punishment tidak ditemukan</div>`;
     } else {
         list.forEach(p => {
             const judul = p.judul || p.Judul || p.poin || "Sanksi Pelanggaran";
             const detail = p.detail || p.Detail || p.pesan || p.Pesan || "";
             const level = p.level || p.Level || "Peringatan";
 
-            html += `<div class="card card-punishment" style="margin-bottom: 15px; background: #151d2e; border: 1px solid rgba(212, 175, 55, 0.25); border-radius: 16px; padding: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.2);">
+            html += `<div class="full-width-card card-punishment">
                 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; border-bottom: 1px solid rgba(255,255,255,0.08); padding-bottom: 10px; gap: 10px;">
-                    <div style="font-weight: 700; font-size: 15px; color: #ffffff; display: flex; align-items: center; gap: 8px;">
-                        <span style="color: #d4af37;">⚠️</span> ${judul}
+                    <div style="font-weight: 700; font-size: 15px; color: #ffffff; display: flex; align-items: center; gap: 8px; min-width: 0; overflow: hidden;">
+                        <span style="color: #d4af37; flex-shrink: 0;">⚠️</span> <span style="overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">${judul}</span>
                     </div>
-                    <span style="background: rgba(212, 175, 55, 0.15); color: #d4af37; border: 1px solid rgba(212, 175, 55, 0.35); padding: 4px 12px; border-radius: 8px; font-size: 11px; font-weight: 700; white-space: nowrap;">${level}</span>
+                    <span style="background: rgba(212, 175, 55, 0.15); color: #d4af37; border: 1px solid rgba(212, 175, 55, 0.35); padding: 4px 12px; border-radius: 8px; font-size: 11px; font-weight: 700; white-space: nowrap; flex-shrink: 0;">${level}</span>
                 </div>
                 <div style="font-size: 13.5px; line-height: 1.6; color: #ffffff; font-weight: 400; letter-spacing: 0.2px;">${detail}</div>
             </div>`;
         });
     }
+    html += `</div>`;
     document.getElementById("hasil").className = "";
     document.getElementById("hasil").innerHTML = html;
 }
