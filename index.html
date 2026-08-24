@@ -855,8 +855,14 @@ async function pastikanDataMenuSiap(namaMenu) {
         } else if (namaMenu === "RewardSaya") {
             let cekNama = (currentRole === "ADMIN") ? targetNama : currentUser;
             cacheData.rewardSaya = await fetch(WEBAPP_URL + "?action=reward_saya&nama=" + encodeURIComponent(cekNama)).then(r => r.json()).catch(() => ({data: []}));
-        } else if ((namaMenu === "Perolehan" || namaMenu === "DendaUC") && !cacheData.perolehan) {
+      } else if (namaMenu === "DendaUC") {
+            let targetNama = (currentRole === "ADMIN") ? (document.getElementById("nama").value.trim() || currentUser) : currentUser;
             const [resP, resL] = await Promise.all([
+                fetch(WEBAPP_URL + "?action=perolehan").then(r => r.json()),
+                fetch(WEBAPP_URL + "?action=rekap_terlambat&nama=" + encodeURIComponent(targetNama)).then(r => r.json())
+            ]);
+            cacheData.denda = { perolehan: resP, late: resL };
+        }
                 fetch(WEBAPP_URL + "?action=perolehan").then(r => r.json()),
                 fetch(WEBAPP_URL + "?action=rekap_terlambat").then(r => r.json())
             ]);
@@ -1268,9 +1274,58 @@ function renderDendaUC(dendaObj) {
         resLate.list.forEach(x => { lateMap[x.nama.toUpperCase()] = x.terlambat; });
     }
 
+    // --- JIKA PROMOTOR BIASA (USER), HANYA TAMPILKAN DATA MILIKNYA SENDIRI ---
+    if (currentRole === "USER") {
+        const dataUserPerolehan = (resPerolehan && resPerolehan.list) ? resPerolehan.list.find(x => x.nama.toUpperCase() === currentUser.toUpperCase()) : null;
+        
+        const totalUC = Number(dataUserPerolehan ? dataUserPerolehan.uc : 0);
+        const isIkutUC = (dataUserPerolehan && dataUserPerolehan.ikutUC) ? (dataUserPerolehan.ikutUC.toString().toUpperCase() !== "TIDAK") : true;
+        const targetMinUC = isIkutUC ? Number(dataUserPerolehan ? dataUserPerolehan.targetUC : 16) : 0;
+        
+        const kurangUC = (isIkutUC && totalUC < targetMinUC) ? (targetMinUC - totalUC) : 0;
+        const dendaUC = kurangUC * DENDA_UC_PER_UNIT;
+        
+        const totalTerlambat = lateMap[currentUser.toUpperCase()] || 0;
+        const dendaLate = totalTerlambat * DENDA_LATE_PER_KALI;
+        
+        const totalDenda = dendaUC + dendaLate;
+
+        document.getElementById("summary").innerHTML = `
+        <div class="summary-card">
+            <h2>⚡ Rekap Denda & Keterlambatan Saya</h2>
+            <p>Promotor : <b>${currentUser}</b></p>
+            <p>Total Estimasi Denda : <span style="font-weight:bold; color:${totalDenda > 0 ? '#f87171' : '#34d399'};">Rp ${totalDenda.toLocaleString("id-ID")}</span></p>
+        </div>`;
+
+        let html = `
+        <div class="card" style="border-left: 4px solid ${totalDenda > 0 ? '#ef4444' : '#10b981'}; padding: 20px;">
+            <div style="font-size: 14px; font-weight: 700; color: #ffffff; margin-bottom: 12px; border-bottom: 1px solid rgba(255,255,255,0.08); padding-bottom: 8px;">
+                Rincian Perhitungan Denda Anda
+            </div>
+            <div class="row">
+                <span>Denda Target UC (${isIkutUC ? `Kurang ${kurangUC} unit` : 'Tidak ikut UC'})</span>
+                <span style="font-weight:700; color:${dendaUC > 0 ? '#f87171' : '#34d399'};">Rp ${dendaUC.toLocaleString("id-ID")}</span>
+            </div>
+            <div class="row">
+                <span>Denda Keterlambatan (${totalTerlambat}x Terlambat)</span>
+                <span style="font-weight:700; color:${dendaLate > 0 ? '#facc15' : '#34d399'};">Rp ${dendaLate.toLocaleString("id-ID")}</span>
+            </div>
+            <div class="row" style="margin-top: 10px; border-top: 1px solid rgba(255,255,255,0.08); padding-top: 10px; font-weight: 800; font-size: 14px;">
+                <span>Total Yang Harus Dibayar</span>
+                <span style="color:${totalDenda > 0 ? '#f87171' : '#34d399'};">Rp ${totalDenda.toLocaleString("id-ID")}</span>
+            </div>
+        </div>`;
+
+        document.getElementById("exportArea").style.display = "none";
+        document.getElementById("hasil").className = "";
+        document.getElementById("hasil").innerHTML = html;
+        return;
+    }
+
+    // --- JIKA ADMIN, TAMPILKAN LIST SELURUH PROMOTOR SEPERTI SEMULA ---
     document.getElementById("summary").innerHTML = `
     <div class="summary-card">
-        <h2>⚖️ Rekap Denda & Keterlambatan</h2>
+        <h2>⚖️ Rekap Denda & Keterlambatan Seluruh Promotor</h2>
         <div style="display:flex; flex-wrap:wrap; gap:10px; margin-top:8px;">
             <div style="flex:1; min-width:180px; background:#1a2234; padding:10px 12px; border-radius:10px; border:1px solid #374151;">
                 <div style="font-size:10px; color:#9ca3af; font-weight:700; text-transform:uppercase;">Denda Target UC</div>
