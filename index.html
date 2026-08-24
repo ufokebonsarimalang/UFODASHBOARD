@@ -1488,7 +1488,7 @@ function renderPunishment(result) {
                     <div class="mobile-list-title"><span style="color: #ef4444;">⚠️</span> ${judul}</div>
                     <span class="mobile-list-badge" style="background: rgba(239, 68, 68, 0.15); color: #f87171; border-color: rgba(239, 68, 68, 0.35);">${level}</span>
                 </div>
-                <div class="mobile-list-content">${detail}</div>
+                <div class="mobile-list-content" style="color: #34d399; font-size: 14px; line-height: 1.6;">${detail}</div>
             </div>`;
         });
     }
@@ -1496,7 +1496,6 @@ function renderPunishment(result) {
     document.getElementById("hasil").className = "";
     document.getElementById("hasil").innerHTML = html;
 }
-
 function bukaModalSOP(urlGambar, judulSop) {
     let modal = document.getElementById("sopModal");
     if (!modal) {
