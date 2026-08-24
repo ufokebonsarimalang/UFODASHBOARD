@@ -1054,21 +1054,76 @@ function renderPenjualan(data) {
     document.getElementById("hasil").innerHTML = html;
 }
 
-// RENDER PEROLEHAN BRAND SAYA
+// RENDER PEROLEHAN BRAND (SUPORT ADMIN LIST & USER DETAIL)
 function renderPerolehanBrand(data) {
     if(!data) return;
+    
+    // Jika ADMIN, tampilkan list peringkat keseluruhan brand promotor
+    if (currentRole === "ADMIN") {
+        const list = data.list || [];
+        let totalOmzetSemua = 0;
+        let totalUnitSemua = 0;
+        
+        list.forEach(x => {
+            totalOmzetSemua += Number(x.totalOmzet || 0);
+            totalUnitSemua += Number(x.totalUnit || 0);
+        });
+
+        document.getElementById("summary").innerHTML = `
+        <div class="summary-card">
+            <h2>📈 Rekap Perolehan Brand Seluruh Promotor</h2>
+            <p>👥 Total Promotor : <b>${list.length} Orang</b></p>
+            <p>📦 Total Unit Brand : <b>${totalUnitSemua} Unit</b></p>
+            <p>💰 Total Omzet Brand : <span style="font-weight:bold; color:#34d399">Rp ${totalOmzetSemua.toLocaleString("id-ID")}</span></p>
+        </div>`;
+
+        let html = `<div class="summary-card">`;
+        list.forEach((x, i) => {
+            const omzetVal = Number(x.totalOmzet || 0);
+            const warnaOmzet = omzetVal >= 50000000 ? '#34d399' : omzetVal >= 20000000 ? '#f59e0b' : '#ef4444';
+
+            html += `
+                <div class="row-perolehan-export" style="display:flex; align-items:center; justify-content:space-between; padding:10px 0; border-bottom:1px solid rgba(255,255,255,0.05); gap:10px;">
+                    <div style="display:flex; align-items:center; gap:10px; min-width:0; flex:1;">
+                        <div style="width:26px; height:26px; border-radius:50%; background:#1f2937; border:1px solid rgba(212,175,55,0.3); display:flex; align-items:center; justify-content:center; font-weight:700; font-size:12px; flex-shrink:0; color:#d4af37;">${i + 1}</div>
+                        <div>
+                            <div style="font-weight:700; font-size:13.5px; color:#ffffff;">${x.nama}</div>
+                            <div style="font-size:11px; color:#d4af37; font-weight:600;">Brand: ${x.brand} | ID: ${x.idSales}</div>
+                        </div>
+                    </div>
+                    <div style="text-align:right; white-space:nowrap; flex-shrink:0;">
+                        <div style="font-weight:700; font-size:13px; color:${warnaOmzet};">Rp ${omzetVal.toLocaleString("id-ID")}</div>
+                        <div style="font-size:11.5px; font-weight:600; color:#9ca3af; margin-top:1px;">Unit: ${x.totalUnit}</div>
+                    </div>
+                </div>`;
+        });
+        html += `</div>`;
+
+        if(list.length > 0 && currentRole === "ADMIN") {
+            document.getElementById("exportArea").style.display = "flex";
+        } else {
+            document.getElementById("exportArea").style.display = "none";
+        }
+
+        document.getElementById("hasil").className = "";
+        document.getElementById("hasil").innerHTML = html;
+        return;
+    }
+
+    // Jika USER (Promotor biasa), tampilkan detail rincian penjualannya sendiri
+    const userDa = data.single || {};
     document.getElementById("summary").innerHTML = `
     <div class="summary-card">
         <h2>🏷️ Perolehan Brand Saya</h2>
-        <p>Promotor : <b>${data.nama}</b></p>
-        <p>ID Sales : <b>${data.idSales || '-'}</b></p>
-        <p>Total Unit Brand : <b>${data.totalUnit || 0} Unit</b></p>
-        <p>Total Omzet Brand : <span style="font-weight:bold; color:#34d399;">Rp ${Number(data.totalOmzet || 0).toLocaleString("id-ID")}</span></p>
+        <p>Promotor : <b>${userDa.nama || currentUser}</b></p>
+        <p>Brand Pegangan : <b style="color:#d4af37;">${userDa.brand || '-'}</b></p>
+        <p>Total Unit Brand : <b>${userDa.totalUnit || 0} Unit</b></p>
+        <p>Total Omzet Brand : <span style="font-weight:bold; color:#34d399;">Rp ${Number(userDa.totalOmzet || 0).toLocaleString("id-ID")}</span></p>
     </div>`;
 
     let html = "";
     const grupTanggal = {};
-    (data.detail || []).forEach(x => {
+    (userDa.detail || []).forEach(x => {
         if (!grupTanggal[x.tanggal]) grupTanggal[x.tanggal] = [];
         grupTanggal[x.tanggal].push(x);
     });
@@ -1095,11 +1150,12 @@ function renderPerolehanBrand(data) {
         </div>`;
     }
 
-    if(data.detail && data.detail.length > 0) document.getElementById("exportArea").style.display = "flex";
+    // Tombol ekspor dipastikan MATI/SEMBUNYI untuk promotor biasa
+    document.getElementById("exportArea").style.display = "none";
+
     document.getElementById("hasil").className = "grid";
     document.getElementById("hasil").innerHTML = html;
 }
-
 function renderUC(data) {
     if(!data) return;
     document.getElementById("summary").innerHTML = `
