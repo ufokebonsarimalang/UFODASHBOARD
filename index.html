@@ -855,14 +855,15 @@ async function pastikanDataMenuSiap(namaMenu) {
         } else if (namaMenu === "RewardSaya") {
             let cekNama = (currentRole === "ADMIN") ? targetNama : currentUser;
             cacheData.rewardSaya = await fetch(WEBAPP_URL + "?action=reward_saya&nama=" + encodeURIComponent(cekNama)).then(r => r.json()).catch(() => ({data: []}));
-      } else if (namaMenu === "DendaUC") {
-            let targetNama = (currentRole === "ADMIN") ? (document.getElementById("nama").value.trim() || currentUser) : currentUser;
+        } else if (namaMenu === "DendaUC") {
+            let targetNamaDenda = (currentRole === "ADMIN") ? (document.getElementById("nama").value.trim() || currentUser) : currentUser;
             const [resP, resL] = await Promise.all([
                 fetch(WEBAPP_URL + "?action=perolehan").then(r => r.json()),
-                fetch(WEBAPP_URL + "?action=rekap_terlambat&nama=" + encodeURIComponent(targetNama)).then(r => r.json())
+                fetch(WEBAPP_URL + "?action=rekap_terlambat&nama=" + encodeURIComponent(targetNamaDenda)).then(r => r.json())
             ]);
             cacheData.denda = { perolehan: resP, late: resL };
-        }
+        } else if (namaMenu === "Perolehan" && !cacheData.perolehan) {
+            const [resP, resL] = await Promise.all([
                 fetch(WEBAPP_URL + "?action=perolehan").then(r => r.json()),
                 fetch(WEBAPP_URL + "?action=rekap_terlambat").then(r => r.json())
             ]);
@@ -881,7 +882,6 @@ async function pastikanDataMenuSiap(namaMenu) {
         console.error("Gagal memuat data menu:", e);
     }
 }
-
 function kembaliKeMenuUtama() {
     document.getElementById("detailViewSection").style.display = "none";
     document.getElementById("menuGridContainer").style.display = "grid";
