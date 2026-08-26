@@ -752,7 +752,7 @@ async function muatSemuaDataLatarBelakang(namaTarget) {
     if(loadEl) loadEl.style.display = "block";
 
     try {
-        console.log("🔥 MEMUAT DATA FIREBASE DENGAN PENJEMBATAN NAMA & ID UNTUK:", namaTarget);
+        console.log("🔥 MEMUAT DATA LANGSUNG BERDASARKAN NAMA:", namaTarget);
 
         // 1. Ambil absensi
         const absenSnap = await window.getDocs(window.collection(window.db, "absensi_finger"));
@@ -767,23 +767,7 @@ async function muatSemuaDataLatarBelakang(namaTarget) {
         });
         cacheData.absensi = { data: hasilAbsen, terlambat: jumlahTerlambat };
 
-        // 2. AMBIL ID SALES & DATA MASTER DARI MASTER_SALES
-        let idSalesMaster = "";
-        try {
-            const masterSnap = await window.getDocs(window.collection(window.db, "master_sales"));
-            masterSnap.forEach(docSnap => {
-                const md = docSnap.data();
-                const dbNamaAbsen = String(md.nama || md.NamaAbsen || "").trim().toUpperCase();
-                // Jika nama di web sama dengan Nama Absen di Master, ambil ID Sales-nya
-                if (dbNamaAbsen === namaTarget.trim().toUpperCase()) {
-                    idSalesMaster = String(md.idSales || md.id || "").trim().toUpperCase();
-                }
-            });
-        } catch(e) { console.log("Gagal ambil master sales:", e); }
-
-        console.log("🎯 Nama Tampil di Web:", namaTarget, "| ID Sales Terhubung:", idSalesMaster);
-
-        // 3. Rentang Tanggal UC (Tanggal 25 s.d 24)
+        // 2. Rentang Tanggal UC (Tanggal 25 s.d 24)
         const sekarang = new Date();
         let tglAwalObj, tglAkhirObj;
         if (sekarang.getDate() >= 25) {
@@ -798,7 +782,7 @@ async function muatSemuaDataLatarBelakang(namaTarget) {
         const strTanggalPertamaUC = formatTglStr(tglAwalObj);
         const strTanggalTerakhirUC = formatTglStr(tglAkhirObj);
 
-        // 4. Ambil data penjualan dari Firebase
+        // 3. Ambil data penjualan dari Firebase dan cocokan namanya secara fleksibel
         let detailPenjualan = [];
         let detailUC = [];
         let tanggalPertamaGlobal = "01/08/2026";
@@ -807,36 +791,38 @@ async function muatSemuaDataLatarBelakang(namaTarget) {
 
         try {
             const jualSnapshot = await window.getDocs(window.collection(window.db, "laporan_penjualan"));
-            
+            console.log("📦 Total baris penjualan di Firebase:", jualSnapshot.size);
+
             jualSnapshot.forEach(docSnap => {
                 const dataDoc = docSnap.data();
                 const r = dataDoc.row || {};
                 const cols = Object.values(r);
 
-                // Indeks kolom mutlak file Excel Anda
+                // Indeks kolom mutlak sesuai struktur Excel Anda
                 const tglText   = String(cols[2] || "").trim();                     // Kolom C (Index 2) - Tanggal
                 const produk    = String(cols[5] || "").trim();                     // Kolom F (Index 5) - Produk
                 const qty       = Number(cols[6]) || 0;                             // Kolom G (Index 6) - Qty
                 const omzet     = Number(String(cols[10] || 0).replace(/,/g, "")) || 0; // Kolom K (Index 10) - Omzet
-                const salesExcel = String(cols[15] || "").trim().toUpperCase();     // Kolom P (Index 15) - Sales di Excel
+                const salesExcel = String(cols[15] || "").trim().toUpperCase();     // Kolom P (Index 15) - Sales
                 const kategori  = String(cols[17] || "").trim().toUpperCase();      // Kolom R (Index 17) - Kategori
 
                 if (tglText) tanggalTerakhirGlobal = tglText;
                 if (!salesExcel) return;
 
-                // Rekap Omzet Toko Keseluruhan
                 mapOmzetToko[salesExcel] = (mapOmzetToko[salesExcel] || 0) + omzet;
 
-                // --- PENCATATAN & PENCARIAN GANDA (Nama Web / ID Sales) ---
+                // --- PENCARIAN FLEKSIBEL (Cocokkan nama target web dengan kolom sales Excel) ---
+                let targetClean = namaTarget.trim().toUpperCase();
                 let isMatch = false;
+
+                if (salesExcel === targetClean) isMatch = true;
+                if (salesExcel.includes(targetClean) || targetClean.includes(salesExcel)) isMatch = true;
                 
-                // Cek 1: Apakah kolom sales di Excel sama persis dengan ID Sales Promotor?
-                if (idSalesMaster && salesExcel === idSalesMaster) isMatch = true;
-                
-                // Cek 2: Apakah kolom sales di Excel mengandung nama promotor yang tampil di web?
-                if (salesExcel === namaTarget.trim().toUpperCase()) isMatch = true;
-                if (salesExcel.includes(namaTarget.trim().toUpperCase())) isMatch = true;
-                if (idSalesMaster && salesExcel.includes(idSalesMaster)) isMatch = true;
+                // Tambahan: Tangani singkatan nama jika ada (misal ADHE MIDEA -> ADHE)
+                const kata PertamaTarget = targetClean.split(" ")[0];
+                if (kataPertamaTarget.length > 3 && salesExcel.includes(kataPertamaTarget)) {
+                    isMatch = true;
+                }
 
                 if (!isMatch) return;
 
