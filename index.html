@@ -747,40 +747,15 @@ async function login() {
     }
 }
 
+// OPTIMASI: Hanya memuat data utama awal (Absensi) agar aplikasi langsung responsif
 async function muatSemuaDataLatarBelakang(namaTarget) {
     const loadEl = document.getElementById("globalLoading");
     if(loadEl) loadEl.style.display = "block";
 
     try {
-        const [resAbsen, resJual, resUC, resPerolehan, resPerolehanBrand, resDendaLate, resPromo, resReward, resRewardSaya, resRules, resPunishment, resPelanggaran] = await Promise.all([
-            fetch(WEBAPP_URL + "?nama=" + encodeURIComponent(namaTarget)).then(r => r.json()),
-            fetch(WEBAPP_URL + "?action=penjualan&nama=" + encodeURIComponent(namaTarget)).then(r => r.json()),
-            fetch(WEBAPP_URL + "?action=uc&nama=" + encodeURIComponent(namaTarget)).then(r => r.json()),
-            fetch(WEBAPP_URL + "?action=perolehan").then(r => r.json()),
-            fetch(WEBAPP_URL + "?action=perolehan_brand&nama=" + encodeURIComponent(namaTarget)).then(r => r.json()).catch(() => ({})),
-            fetch(WEBAPP_URL + "?action=rekap_terlambat").then(r => r.json()),
-            fetch(WEBAPP_URL + "?action=promo").then(r => r.json()),
-            fetch(WEBAPP_URL + "?action=reward").then(r => r.json()).catch(() => ({data: []})),
-            fetch(WEBAPP_URL + "?action=reward_saya&nama=" + encodeURIComponent(namaTarget)).then(r => r.json()).catch(() => ({data: []})),
-            fetch(WEBAPP_URL + "?action=rules").then(r => r.json()),
-            fetch(WEBAPP_URL + "?action=punishment").then(r => r.json()).catch(() => ({data: []})),
-            fetch(WEBAPP_URL + "?action=pelanggaran_saya&nama=" + encodeURIComponent(namaTarget)).then(r => r.json()).catch(() => ({data: []}))
-        ]);
-
-        cacheData.absensi = resAbsen;
-        cacheData.penjualan = resJual;
-        cacheData.uc = resUC;
-        cacheData.perolehan = resPerolehan;
-        cacheData.perolehanBrand = resPerolehanBrand;
-        cacheData.denda = { perolehan: resPerolehan, late: resDendaLate };
-        cacheData.promo = resPromo;
-        cacheData.reward = resReward;
-        cacheData.rewardSaya = resRewardSaya;
-        cacheData.rules = resRules;
-        cacheData.punishment = resPunishment;
-        cacheData.pelanggaranSaya = resPelanggaran;
+        cacheData.absensi = await fetch(WEBAPP_URL + "?nama=" + encodeURIComponent(namaTarget)).then(r => r.json());
     } catch(e) {
-        console.error("Gagal sinkronisasi data cache", e);
+        console.error("Gagal sinkronisasi data awal", e);
     } finally {
         if(loadEl) loadEl.style.display = "none";
     }
@@ -812,7 +787,15 @@ async function loadNama(){
 async function gantiNamaAdmin() {
     let namaTerpilih = document.getElementById("nama").value.trim();
     if(!namaTerpilih) return;
-    await muatSemuaDataLatarBelakang(namaTerpilih);
+
+    // Reset cache agar mengambil data promotor baru
+    cacheData = {
+        absensi: null, penjualan: null, uc: null, perolehan: null, perolehanBrand: null,
+        denda: null, promo: null, reward: null, rewardSaya: null, rules: null, punishment: null, pelanggaranSaya: null
+    };
+
+    document.getElementById("hasil").innerHTML = `<div style="text-align:center; padding:30px; color:#d4af37; font-weight:600;"><span class="spinner" style="margin-right:8px;"></span>Memuat data...</div>`;
+    await pastikanDataMenuSiap(activeTab);
     jalankanRenderMenu(activeTab);
 }
 
@@ -836,6 +819,7 @@ async function pindahMenu(namaMenu) {
     jalankanRenderMenu(namaMenu);
 }
 
+// OPTIMASI: On-Demand Fetch (Hanya request ke Apps Script saat menu diklik)
 async function pastikanDataMenuSiap(namaMenu) {
     try {
         let targetNama = (currentRole === "ADMIN") ? (document.getElementById("nama").value.trim() || currentUser) : currentUser;
@@ -846,16 +830,16 @@ async function pastikanDataMenuSiap(namaMenu) {
             cacheData.penjualan = await fetch(WEBAPP_URL + "?action=penjualan&nama=" + encodeURIComponent(targetNama)).then(r => r.json());
         } else if (namaMenu === "UC" && !cacheData.uc) {
             cacheData.uc = await fetch(WEBAPP_URL + "?action=uc&nama=" + encodeURIComponent(targetNama)).then(r => r.json());
-        } else if (namaMenu === "PerolehanBrand") {
+        } else if (namaMenu === "PerolehanBrand" && !cacheData.perolehanBrand) {
             let cekNama = (currentRole === "ADMIN") ? targetNama : currentUser;
             cacheData.perolehanBrand = await fetch(WEBAPP_URL + "?action=perolehan_brand&nama=" + encodeURIComponent(cekNama)).then(r => r.json()).catch(() => ({}));
-        } else if (namaMenu === "PelanggaranSaya") {
+        } else if (namaMenu === "PelanggaranSaya" && !cacheData.pelanggaranSaya) {
             let cekNama = (currentRole === "ADMIN") ? targetNama : currentUser;
             cacheData.pelanggaranSaya = await fetch(WEBAPP_URL + "?action=pelanggaran_saya&nama=" + encodeURIComponent(cekNama)).then(r => r.json()).catch(() => ({data: []}));
-        } else if (namaMenu === "RewardSaya") {
+        } else if (namaMenu === "RewardSaya" && !cacheData.rewardSaya) {
             let cekNama = (currentRole === "ADMIN") ? targetNama : currentUser;
             cacheData.rewardSaya = await fetch(WEBAPP_URL + "?action=reward_saya&nama=" + encodeURIComponent(cekNama)).then(r => r.json()).catch(() => ({data: []}));
-        } else if (namaMenu === "DendaUC") {
+        } else if (namaMenu === "DendaUC" && !cacheData.denda) {
             let targetNamaDenda = (currentRole === "ADMIN") ? (document.getElementById("nama").value.trim() || currentUser) : currentUser;
             const [resP, resL] = await Promise.all([
                 fetch(WEBAPP_URL + "?action=perolehan").then(r => r.json()),
@@ -863,12 +847,8 @@ async function pastikanDataMenuSiap(namaMenu) {
             ]);
             cacheData.denda = { perolehan: resP, late: resL };
         } else if (namaMenu === "Perolehan" && !cacheData.perolehan) {
-            const [resP, resL] = await Promise.all([
-                fetch(WEBAPP_URL + "?action=perolehan").then(r => r.json()),
-                fetch(WEBAPP_URL + "?action=rekap_terlambat").then(r => r.json())
-            ]);
+            const resP = await fetch(WEBAPP_URL + "?action=perolehan").then(r => r.json());
             cacheData.perolehan = resP;
-            cacheData.denda = { perolehan: resP, late: resL };
         } else if (namaMenu === "Promo" && !cacheData.promo) {
             cacheData.promo = await fetch(WEBAPP_URL + "?action=promo").then(r => r.json());
         } else if (namaMenu === "Reward" && !cacheData.reward) {
@@ -882,6 +862,7 @@ async function pastikanDataMenuSiap(namaMenu) {
         console.error("Gagal memuat data menu:", e);
     }
 }
+
 function kembaliKeMenuUtama() {
     document.getElementById("detailViewSection").style.display = "none";
     document.getElementById("menuGridContainer").style.display = "grid";
@@ -1054,7 +1035,6 @@ function renderPenjualan(data) {
     document.getElementById("hasil").innerHTML = html;
 }
 
-// RENDER PEROLEHAN BRAND SAYA
 function renderPerolehanBrand(data) {
     if(!data) return;
     document.getElementById("summary").innerHTML = `
@@ -1104,6 +1084,7 @@ function renderPerolehanBrand(data) {
     document.getElementById("hasil").className = "grid";
     document.getElementById("hasil").innerHTML = html;
 }
+
 function renderUC(data) {
     if(!data) return;
     document.getElementById("summary").innerHTML = `
@@ -1128,7 +1109,6 @@ function renderUC(data) {
     document.getElementById("hasil").innerHTML = html;
 }
 
-// RENDER PELANGGARAN SAYA
 function renderPelanggaranSaya(result) {
     if(!result) return;
     const list = result.data || [];
@@ -1173,7 +1153,6 @@ function renderPelanggaranSaya(result) {
     document.getElementById("hasil").innerHTML = html;
 }
 
-// RENDER REWARD SAYA
 function renderRewardSaya(result) {
     if(!result) return;
     const list = result.data || [];
@@ -1278,7 +1257,6 @@ function renderDendaUC(dendaObj) {
         resLate.list.forEach(x => { lateMap[x.nama.toUpperCase()] = x.terlambat; });
     }
 
-    // --- JIKA PROMOTOR BIASA (USER), HANYA TAMPILKAN DATA MILIKNYA SENDIRI ---
     if (currentRole === "USER") {
         const dataUserPerolehan = (resPerolehan && resPerolehan.list) ? resPerolehan.list.find(x => x.nama.toUpperCase() === currentUser.toUpperCase()) : null;
         
@@ -1326,7 +1304,6 @@ function renderDendaUC(dendaObj) {
         return;
     }
 
-    // --- JIKA ADMIN, TAMPILKAN LIST SELURUH PROMOTOR SEPERTI SEMULA ---
     document.getElementById("summary").innerHTML = `
     <div class="summary-card">
         <h2>⚖️ Rekap Denda & Keterlambatan Seluruh Promotor</h2>
@@ -1496,6 +1473,7 @@ function renderPunishment(result) {
     document.getElementById("hasil").className = "";
     document.getElementById("hasil").innerHTML = html;
 }
+
 function bukaModalSOP(urlGambar, judulSop) {
     let modal = document.getElementById("sopModal");
     if (!modal) {
