@@ -327,7 +327,7 @@
         }
         #nama option { background: #0b0f19; color: #ffffff; }
 
-        /* KARTU MENU UTAMA (STABIL, IKON KIRI, TEKS KANAN) */
+        /* KARTU MENU UTAMA (STABIL, IKON KIRI, TEKS KANAN SEJAJAR) */
         #menuGridContainer {
             max-width: 1100px;
             margin: 0 auto;
@@ -341,7 +341,7 @@
             background: rgba(18, 26, 43, 0.70);
             border: 1px solid rgba(212, 175, 55, 0.22);
             border-radius: 20px;
-            padding: 20px;
+            padding: 16px 18px;
             cursor: pointer;
             transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
             box-shadow: 0 10px 25px rgba(0, 0, 0, 0.35);
@@ -351,8 +351,8 @@
             display: flex;
             flex-direction: row;
             align-items: center;
-            gap: 16px;
-            min-height: 90px;
+            gap: 14px;
+            min-height: 85px;
         }
 
         .menu-card-item::before {
@@ -376,9 +376,9 @@
         }
 
         .menu-card-item .icon-wrapper {
-            width: 46px;
-            height: 46px;
-            border-radius: 14px;
+            width: 42px;
+            height: 42px;
+            border-radius: 12px;
             background: rgba(245, 197, 24, 0.12);
             border: 1px solid rgba(245, 197, 24, 0.3);
             display: flex;
@@ -397,15 +397,16 @@
 
         .menu-card-item h3 {
             margin: 0;
-            font-size: 14.5px;
+            font-size: 14px;
             color: #ffffff;
             font-weight: 800;
             letter-spacing: -0.2px;
-            line-height: 1.35;
+            line-height: 1.3;
             text-align: left;
             flex: 1;
             min-width: 0;
-            word-break: break-word;
+            word-break: normal;
+            overflow-wrap: break-word;
         }
 
         #detailViewSection {
@@ -721,51 +722,51 @@
     <!-- KARTU MENU UTAMA -->
     <div id="menuGridContainer">
         <div class="menu-card-item" onclick="pindahMenu('Absensi')">
-            <div class="icon-wrapper"><i data-lucide="calendar-check" style="width:22px; height:22px;"></i></div>
+            <div class="icon-wrapper"><i data-lucide="calendar-check" style="width:20px; height:20px;"></i></div>
             <h3>Absensi</h3>
         </div>
         <div class="menu-card-item" onclick="pindahMenu('Penjualan')">
-            <div class="icon-wrapper"><i data-lucide="shopping-bag" style="width:22px; height:22px;"></i></div>
+            <div class="icon-wrapper"><i data-lucide="shopping-bag" style="width:20px; height:20px;"></i></div>
             <h3>Penjualan</h3>
         </div>
         <div class="menu-card-item" onclick="pindahMenu('UC')">
-            <div class="icon-wrapper"><i data-lucide="star" style="width:22px; height:22px;"></i></div>
+            <div class="icon-wrapper"><i data-lucide="star" style="width:20px; height:20px;"></i></div>
             <h3>UC</h3>
         </div>
         <div class="menu-card-item" id="menuPerolehanCard" onclick="pindahMenu('Perolehan')">
-            <div class="icon-wrapper"><i data-lucide="trending-up" style="width:22px; height:22px;"></i></div>
+            <div class="icon-wrapper"><i data-lucide="trending-up" style="width:20px; height:20px;"></i></div>
             <h3>Perolehan Omzet Toko</h3>
         </div>
         <div class="menu-card-item" onclick="pindahMenu('PerolehanBrand')">
-            <div class="icon-wrapper"><i data-lucide="tag" style="width:22px; height:22px;"></i></div>
+            <div class="icon-wrapper"><i data-lucide="tag" style="width:20px; height:20px;"></i></div>
             <h3>Perolehan Brand</h3>
         </div>
         <div class="menu-card-item" onclick="pindahMenu('DendaUC')">
-            <div class="icon-wrapper"><i data-lucide="zap" style="width:22px; height:22px;"></i></div>
+            <div class="icon-wrapper"><i data-lucide="zap" style="width:20px; height:20px;"></i></div>
             <h3>Denda & Late</h3>
         </div>
         <div class="menu-card-item" onclick="pindahMenu('Promo')">
-            <div class="icon-wrapper"><i data-lucide="percent" style="width:22px; height:22px;"></i></div>
+            <div class="icon-wrapper"><i data-lucide="percent" style="width:20px; height:20px;"></i></div>
             <h3>Promo Toko</h3>
         </div>
         <div class="menu-card-item" onclick="pindahMenu('Rules')">
-            <div class="icon-wrapper"><i data-lucide="file-text" style="width:22px; height:22px;"></i></div>
+            <div class="icon-wrapper"><i data-lucide="file-text" style="width:20px; height:20px;"></i></div>
             <h3>SOP Promotor</h3>
         </div>
         <div class="menu-card-item" onclick="pindahMenu('Punishment')">
-            <div class="icon-wrapper"><i data-lucide="alert-triangle" style="width:22px; height:22px;"></i></div>
+            <div class="icon-wrapper"><i data-lucide="alert-triangle" style="width:20px; height:20px;"></i></div>
             <h3>Punishment</h3>
         </div>
         <div class="menu-card-item" onclick="pindahMenu('PelanggaranSaya')">
-            <div class="icon-wrapper"><i data-lucide="shield-alert" style="width:22px; height:22px;"></i></div>
+            <div class="icon-wrapper"><i data-lucide="shield-alert" style="width:20px; height:20px;"></i></div>
             <h3>Pelanggaran Saya</h3>
         </div>
         <div class="menu-card-item" onclick="pindahMenu('Reward')">
-            <div class="icon-wrapper"><i data-lucide="award" style="width:22px; height:22px;"></i></div>
+            <div class="icon-wrapper"><i data-lucide="award" style="width:20px; height:20px;"></i></div>
             <h3>Daftar Rewards</h3>
         </div>
         <div class="menu-card-item" onclick="pindahMenu('RewardSaya')">
-            <div class="icon-wrapper"><i data-lucide="gift" style="width:22px; height:22px;"></i></div>
+            <div class="icon-wrapper"><i data-lucide="gift" style="width:20px; height:20px;"></i></div>
             <h3>Rewards Saya</h3>
         </div>
     </div>
