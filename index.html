@@ -75,21 +75,29 @@
                         await batchMaster.commit();
                     }
 
-                    if (workbook.Sheets["PENJUALAN"]) {
-                        statusEl.innerHTML = "⏳ Menyimpan PENJUALAN ke Firebase...";
-                        const jualData = XLSX.utils.sheet_to_json(workbook.Sheets["PENJUALAN"], { header: 1, defval: "" });
-                        for (let i = 1; i < jualData.length; i += 400) {
-                            const batchJual = writeBatch(window.db);
-                            const chunk = jualData.slice(i, i + 400);
-                            chunk.forEach((row, idx) => {
-                                if (row && row.length > 0) {
-                                    const docRef = doc(window.db, "laporan_penjualan", `pj_${i + idx}`);
-                                    batchJual.set(docRef, { row: cleanArray(row) });
-                                }
-                            });
-                            await batchJual.commit();
-                        }
-                    }
+                  if (workbook.Sheets["PENJUALAN"]) {
+    statusEl.innerHTML = "⏳ Menambahkan data penjualan terbaru ke Firebase...";
+    const jualData = XLSX.utils.sheet_to_json(workbook.Sheets["PENJUALAN"], { header: 1, defval: "" });
+    
+    // Ambil total data lama di Firebase dulu untuk melanjutkan nomor index-nya (misal: pj_1500, dst)
+    const existingJualSnap = await getDocs(collection(window.db, "laporan_penjualan"));
+    let currentIndex = existingJualSnap.size + 1;
+
+    // Mulai dari baris data baru (misal baris setelah header)
+    for (let i = 1; i < jualData.length; i += 400) {
+        const batchJual = writeBatch(window.db);
+        const chunk = jualData.slice(i, i + 400);
+        
+        chunk.forEach((row) => {
+            if (row && row.length > 0) {
+                // Buat ID unik berdasarkan index agar data lama tidak tertimpa
+                const docRef = doc(window.db, "laporan_penjualan", `pj_${currentIndex++}`);
+                batchJual.set(docRef, { row: cleanArray(row) });
+            }
+        });
+        await batchJual.commit();
+    }
+}
 
                     if (workbook.Sheets["ABSENFINGER"]) {
                         statusEl.innerHTML = "⏳ Membersihkan data ABSENFINGER lama di Firebase...";
