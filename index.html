@@ -1036,52 +1036,57 @@ function renderPenjualan(data) {
 }
 
 function renderPerolehanBrand(data) {
-    if(!data) return;
-    document.getElementById("summary").innerHTML = `
-    <div class="summary-card">
-        <h2>🏷️ Perolehan Brand Saya</h2>
-        <p>Promotor : <b>${data.nama}</b></p>
-        <p>ID Sales : <b>${data.idSales || '-'}</b></p>
-        <p>Total Unit Brand : <b>${data.totalUnit || 0} Unit</b></p>
-        <p>Total Omzet Brand : <span style="font-weight:bold; color:#34d399;">Rp ${Number(data.totalOmzet || 0).toLocaleString("id-ID")}</span></p>
-    </div>`;
+    if(!data || !data.list) return;
+    
+    let totalOmzetBrandToko = 0;
+    let totalUnitBrandToko = 0;
 
-    let html = "";
-    const grupTanggal = {};
-    (data.detail || []).forEach(x => {
-        if (!grupTanggal[x.tanggal]) grupTanggal[x.tanggal] = [];
-        grupTanggal[x.tanggal].push(x);
+    data.list.forEach(x => {
+        totalOmzetBrandToko += Number(x.omzet || 0);
+        totalUnitBrandToko += Number(x.unit || 0);
     });
 
-    for (const tanggal in grupTanggal) {
-        let isiProduk = "";
-        let totalHari = 0;
-        grupTanggal[tanggal].forEach(item => {
-            totalHari += Number(item.omzet);
-            isiProduk += `
-                <div style="margin-bottom:8px; padding-bottom:6px; border-bottom:1px solid rgba(255,255,255,0.05);">
-                    <div style="font-size:12px; font-weight:600; line-height:1.3; margin-bottom:3px; color:#e5e7eb;">${item.produk}</div>
-                    <div style="font-size:11px; color:#d4af37; margin-bottom:3px;">Brand: ${item.brand || '-'}</div>
-                    <div class="row"><span>Qty</span><span>${item.qty}</span></div>
-                    <div class="row"><span>Omzet</span><span>Rp ${Number(item.omzet).toLocaleString("id-ID")}</span></div>
-                </div>`;
-        });
+    const user = data.list.find(x => (x.nama || "").toUpperCase() === (currentUser || "").toUpperCase());
+    const posisi = user ? data.list.findIndex(x => (x.nama || "").toUpperCase() === (currentUser || "").toUpperCase()) + 1 : 0;
+
+    document.getElementById("summary").innerHTML = `
+    <div class="summary-card">
+    <h2>🏷️ Perolehan Brand Promotor</h2>
+    ${currentRole === "ADMIN" ? 
+        `<p>👥 Jumlah Promotor : <b>${data.list.length}</b></p>
+         <p>💰 Total Omzet Brand Toko : <span style="font-weight:bold;color:#34d399">Rp ${totalOmzetBrandToko.toLocaleString("id-ID")}</span></p>
+         <p>📦 Total Unit Brand : <b>${totalUnitBrandToko} Unit</b></p>` :
+        `<p>👤 ${currentUser}</p>
+         <p>🏷️ Brand : <b>${user ? user.brand : '-'}</b></p>
+         <p>💰 Total Omzet Brand : <span style="font-weight:bold; color:#34d399;">Rp ${Number(user ? user.omzet : 0).toLocaleString("id-ID")}</span> (${user ? user.unit : 0} Unit)</p>
+         <p>🏅 Peringkat Brand : <b>${posisi} dari ${data.list.length} Promotor</b></p>`
+    }
+    </div>`;
+
+    let html = `<div class="summary-card">`;
+    data.list.forEach((x, i) => {
+        const omzetVal = Number(x.omzet || 0);
+        const warnaOmzet = omzetVal >= 100000000 ? '#34d399' : omzetVal >= 80000000 ? '#f59e0b' : '#ef4444';
 
         html += `
-        <div class="card success">
-            <div class="tanggal">📅 ${tanggal}</div>
-            ${isiProduk}
-            <div class="row" style="font-weight:700; font-size:12.5px;"><span>Total Hari Ini</span><span>Rp ${totalHari.toLocaleString("id-ID")}</span></div>
-        </div>`;
-    }
+            <div class="row-perolehan-export" style="display:flex; align-items:center; justify-content:space-between; padding:9px 0; border-bottom:1px solid rgba(255,255,255,0.05); gap:10px;">
+                <div style="display:flex; align-items:center; gap:10px; min-width:0; flex:1;">
+                    <div style="width:26px; height:26px; border-radius:50%; background:#1f2937; border:1px solid rgba(212,175,55,0.3); display:flex; align-items:center; justify-content:center; font-weight:700; font-size:12px; flex-shrink:0; color:#d4af37;">${i + 1}</div>
+                    <div class="nama-p" style="font-weight:600; font-size:13px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">
+                        ${x.nama}
+                        <div style="font-size:10.5px; color:#d4af37; font-weight:500;">Brand: ${x.brand}</div>
+                    </div>
+                </div>
+                <div style="text-align:right; white-space:nowrap; flex-shrink:0;">
+                    <div class="omzet-p" style="font-weight:700; font-size:13px; color:${warnaOmzet};">Rp ${omzetVal.toLocaleString("id-ID")}</div>
+                    <div class="uc-p" style="font-size:11.5px; font-weight:600; color:#9ca3af; margin-top:1px;">📦 ${x.unit || 0} Unit</div>
+                </div>
+            </div>`;
+    });
+    html += `</div>`;
 
-    if(data.detail && data.detail.length > 0 && currentRole === "ADMIN") {
-        document.getElementById("exportArea").style.display = "flex";
-    } else {
-        document.getElementById("exportArea").style.display = "none";
-    }
-    
-    document.getElementById("hasil").className = "grid";
+    if(data.list && data.list.length > 0 && currentRole === "ADMIN") document.getElementById("exportArea").style.display = "flex";
+    document.getElementById("hasil").className = "";
     document.getElementById("hasil").innerHTML = html;
 }
 
