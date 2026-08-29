@@ -46,76 +46,94 @@
         window.getDocs = getDocs;
         window.firebaseReady = true;
 
-        // FUNGSI KHUSUS ADMIN: IMPOR FILE EXCEL KE FIREBASE FIRESTORE
-        window.importSeluruhExcelKeFirebase = async function(fileInput) {
-            const statusEl = document.getElementById("statusUploadExcel");
-            if (!fileInput.files.length) {
-                alert("Pilih file Excel 'ABSEN FINGER(2).xlsx' terlebih dahulu!");
-                return;
-            }
+       // FUNGSI KHUSUS ADMIN: IMPOR FILE EXCEL KE FIREBASE FIRESTORE (DENGAN CLEANING DATA UNDEFINED)
+window.importSeluruhExcelKeFirebase = async function(fileInput) {
+    const statusEl = document.getElementById("statusUploadExcel");
+    if (!fileInput.files.length) {
+        alert("Pilih file Excel 'ABSEN FINGER(2).xlsx' terlebih dahulu!");
+        return;
+    }
 
-            statusEl.innerHTML = "⏳ Membaca file Excel...";
-            const file = fileInput.files[0];
-            const reader = new FileReader();
+    statusEl.innerHTML = "⏳ Membaca file Excel...";
+    const file = fileInput.files[0];
+    const reader = new FileReader();
 
-            reader.onload = async (e) => {
-                try {
-                    const data = new Uint8Array(e.target.result);
-                    const workbook = XLSX.read(data, { type: 'array' });
+    reader.onload = async (e) => {
+        try {
+            const data = new Uint8Array(e.target.result);
+            const workbook = XLSX.read(data, { type: 'array' });
 
-                    // 1. IMPORT SHEET MASTER_SALES
-                    if (workbook.Sheets["MASTER_SALES"]) {
-                        statusEl.innerHTML = "⏳ Menyimpan MASTER_SALES ke Firebase...";
-                        const masterData = XLSX.utils.sheet_to_json(workbook.Sheets["MASTER_SALES"]);
-                        const batchMaster = writeBatch(window.db);
-                        masterData.forEach((row, idx) => {
-                            const docRef = doc(window.db, "master_sales", `ms_${idx}`);
-                            batchMaster.set(docRef, row);
-                        });
-                        await batchMaster.commit();
+            // Fungsi pembantu untuk membersihkan 'undefined' menjadi string kosong ""
+            const cleanObj = (obj) => {
+                const cleaned = {};
+                for (const key in obj) {
+                    if (obj[key] === undefined) {
+                        cleaned[key] = "";
+                    } else {
+                        cleaned[key] = obj[key];
                     }
-
-                    // 2. IMPORT SHEET PENJUALAN (Chunk Batch Per 400 Baris)
-                    if (workbook.Sheets["PENJUALAN"]) {
-                        statusEl.innerHTML = "⏳ Menyimpan PENJUALAN ke Firebase...";
-                        const jualData = XLSX.utils.sheet_to_json(workbook.Sheets["PENJUALAN"], { header: 1 });
-                        for (let i = 1; i < jualData.length; i += 400) {
-                            const batchJual = writeBatch(window.db);
-                            const chunk = jualData.slice(i, i + 400);
-                            chunk.forEach((row, idx) => {
-                                if (row && row.length > 0) {
-                                    const docRef = doc(window.db, "laporan_penjualan", `pj_${i + idx}`);
-                                    batchJual.set(docRef, { row: row });
-                                }
-                            });
-                            await batchJual.commit();
-                        }
-                    }
-
-                    // 3. IMPORT SHEET ABSENFINGER
-                    if (workbook.Sheets["ABSENFINGER"]) {
-                        statusEl.innerHTML = "⏳ Menyimpan ABSENFINGER ke Firebase...";
-                        const absenData = XLSX.utils.sheet_to_json(workbook.Sheets["ABSENFINGER"]);
-                        const batchAbsen = writeBatch(window.db);
-                        absenData.forEach((row, idx) => {
-                            const docRef = doc(window.db, "absensi_finger", `ab_${idx}`);
-                            batchAbsen.set(docRef, row);
-                        });
-                        await batchAbsen.commit();
-                    }
-
-                    statusEl.innerHTML = "<span style='color:#34d399;'>✅ Berhasil! Seluruh data Excel telah diperbarui di Firebase.</span>";
-                    alert("Seluruh data Excel berhasil diimpor ke Firebase Firestore!");
-                    location.reload();
-
-                } catch (err) {
-                    console.error("Gagal impor Excel:", err);
-                    statusEl.innerHTML = "<span style='color:#f87171;'>❌ Gagal mengunggah: " + err.message + "</span>";
                 }
+                return cleaned;
             };
 
-            reader.readAsArrayBuffer(file);
-        };
+            const cleanArray = (arr) => {
+                return arr.map(val => (val === undefined ? "" : val));
+            };
+
+            // 1. IMPORT SHEET MASTER_SALES
+            if (workbook.Sheets["MASTER_SALES"]) {
+                statusEl.innerHTML = "⏳ Menyimpan MASTER_SALES ke Firebase...";
+                const masterData = XLSX.utils.sheet_to_json(workbook.Sheets["MASTER_SALES"]);
+                const batchMaster = writeBatch(window.db);
+                masterData.forEach((row, idx) => {
+                    const docRef = doc(window.db, "master_sales", `ms_${idx}`);
+                    batchMaster.set(docRef, cleanObj(row));
+                });
+                await batchMaster.commit();
+            }
+
+            // 2. IMPORT SHEET PENJUALAN (Chunk Batch Per 400 Baris)
+            if (workbook.Sheets["PENJUALAN"]) {
+                statusEl.innerHTML = "⏳ Menyimpan PENJUALAN ke Firebase...";
+                // Gunakan defval: "" agar sel kosong langsung diisi string kosong oleh XLSX
+                const jualData = XLSX.utils.sheet_to_json(workbook.Sheets["PENJUALAN"], { header: 1, defval: "" });
+                for (let i = 1; i < jualData.length; i += 400) {
+                    const batchJual = writeBatch(window.db);
+                    const chunk = jualData.slice(i, i + 400);
+                    chunk.forEach((row, idx) => {
+                        if (row && row.length > 0) {
+                            const docRef = doc(window.db, "laporan_penjualan", `pj_${i + idx}`);
+                            batchJual.set(docRef, { row: cleanArray(row) });
+                        }
+                    });
+                    await batchJual.commit();
+                }
+            }
+
+            // 3. IMPORT SHEET ABSENFINGER
+            if (workbook.Sheets["ABSENFINGER"]) {
+                statusEl.innerHTML = "⏳ Menyimpan ABSENFINGER ke Firebase...";
+                const absenData = XLSX.utils.sheet_to_json(workbook.Sheets["ABSENFINGER"]);
+                const batchAbsen = writeBatch(window.db);
+                absenData.forEach((row, idx) => {
+                    const docRef = doc(window.db, "absensi_finger", `ab_${idx}`);
+                    batchAbsen.set(docRef, cleanObj(row));
+                });
+                await batchAbsen.commit();
+            }
+
+            statusEl.innerHTML = "<span style='color:#34d399;'>✅ Berhasil! Seluruh data Excel telah diperbarui di Firebase.</span>";
+            alert("Seluruh data Excel berhasil diimpor ke Firebase Firestore!");
+            location.reload();
+
+        } catch (err) {
+            console.error("Gagal impor Excel:", err);
+            statusEl.innerHTML = "<span style='color:#f87171;'>❌ Gagal mengunggah: " + err.message + "</span>";
+        }
+    };
+
+    reader.readAsArrayBuffer(file);
+};
     </script>
 
     <style>
