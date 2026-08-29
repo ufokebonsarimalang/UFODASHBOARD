@@ -946,18 +946,23 @@ async function muatSemuaDataLatarBelakang(namaTarget) {
         let jumlahTerlambat = 0;
         absenSnap.forEach(d => {
             const data = d.data();
-            if (String(data.Nama || data.nama || "").trim().toUpperCase() === namaTarget.trim().toUpperCase()) {
-                if (String(data.Terlambat || data.terlambat || "").toUpperCase() === "YA") jumlahTerlambat++;
+            const namaAbsenDb = String(data.Nama || data.nama || "").trim();
+            
+            if (namaAbsenDb.toUpperCase() === namaTarget.trim().toUpperCase()) {
+                const isLate = String(data.Terlambat || data.terlambat || "").trim().toUpperCase();
+                if (isLate === "YA") jumlahTerlambat++;
+
+                // Konversi seluruh nilai ke String untuk mencegah error .trim()
                 hasilAbsen.push({
-                    nama: data.Nama || data.nama,
-                    tanggal: data.Tanggal || data.tanggal,
-                    masuk: data.Masuk || data.masuk || "",
-                    istirahat1: data.Istirahat1 || data.istirahat1 || "",
-                    kembali1: data.Kembali1 || data.kembali1 || "",
-                    istirahat2: data.Istirahat2 || data.istirahat2 || "",
-                    kembali2: data.Kembali2 || data.kembali2 || "",
-                    pulang: data.Pulang || data.pulang || "",
-                    terlambat: data.Terlambat || data.terlambat || ""
+                    nama: namaAbsenDb,
+                    tanggal: String(data.Tanggal || data.tanggal || "").trim(),
+                    masuk: String(data.Masuk || data.masuk || "").trim(),
+                    istirahat1: String(data.Istirahat1 || data.istirahat1 || "").trim(),
+                    kembali1: String(data.Kembali1 || data.kembali1 || "").trim(),
+                    istirahat2: String(data.Istirahat2 || data.istirahat2 || "").trim(),
+                    kembali2: String(data.Kembali2 || data.kembali2 || "").trim(),
+                    pulang: String(data.Pulang || data.pulang || "").trim(),
+                    terlambat: String(data.Terlambat || data.terlambat || "").trim()
                 });
             }
         });
@@ -1110,11 +1115,10 @@ async function muatSemuaDataLatarBelakang(namaTarget) {
     } catch(e) {
         console.error("Gagal sinkronisasi data dari Firebase", e);
     } finally {
-        // MATIKAN SPINNER BEGTIU PROSES SELESAI
+        // MATIKAN SPINNER BEGITU PROSES SELESAI
         if(loadEl) loadEl.style.display = "none";
     }
 }
-
 async function loadNama(){
     try {
         const masterSnap = await window.getDocs(window.collection(window.db, "master_sales"));
