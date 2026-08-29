@@ -335,7 +335,7 @@
         }
         #nama option { background: #0b0f19; color: #ffffff; }
 
-        /* KARTU MENU UTAMA (PERBAIKAN RESPONSIVE LAYOUT HP) */
+        /* KARTU MENU UTAMA */
         #menuGridContainer {
             max-width: 1100px;
             margin: 0 auto;
@@ -361,7 +361,7 @@
             flex-direction: column;
             align-items: center;
             justify-content: flex-start;
-            height: auto; /* Memastikan kartu menyesuaikan tinggi konten */
+            height: auto;
         }
 
         .menu-card-item::before {
@@ -420,7 +420,7 @@
             color: var(--text-sub);
             line-height: 1.5;
             font-weight: 500;
-            word-break: break-word; /* Mencegah teks meluap/menumpuk */
+            word-break: break-word;
         }
 
         .admin-badge {
@@ -686,7 +686,6 @@
             body { padding: 16px 12px; }
             .header h1 { font-size: 26px; }
 
-            /* Menjadikan Menu Kartu 1 Kolom Rapi di HP */
             #menuGridContainer { 
                 grid-template-columns: 1fr !important; 
                 gap: 14px !important;
@@ -694,7 +693,7 @@
 
             .menu-card-item {
                 padding: 18px 16px;
-                text-align: left; /* Tampilan baris horizontal modern di HP */
+                text-align: left;
                 display: grid;
                 grid-template-columns: auto 1fr;
                 gap: 14px;
@@ -823,7 +822,7 @@
             <div class="menu-text-content">
                 <span class="admin-badge" data-badge="menu">Pribadi</span>
                 <h3>UC</h3>
-                <p>Pencapaian poin UC (Tanggal 1-30/31)</p>
+                <p>Pencapaian poin UC promotor akumulatif</p>
             </div>
         </div>
         <div class="menu-card-item" id="menuPerolehanCard" onclick="pindahMenu('Perolehan')">
@@ -1194,9 +1193,16 @@ async function muatSemuaDataLatarBelakang(namaTarget) {
         let detailPenjualan = [];
         let detailUC = [];
 
+        // PENENTUAN TANGGAL DINAMIS (TANGGAL 1 SAMPAI HARI INI DI BULAN BERJALAN)
         const sekarang = new Date();
         const thnSekarang = sekarang.getFullYear();
         const blnSekarang = sekarang.getMonth();
+        const tglHariIni = sekarang.getDate();
+
+        const namaBulanIndo = ["Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"];
+        const teksPeriodeUC = (tglHariIni === 1) 
+            ? `1 ${namaBulanIndo[blnSekarang]} ${thnSekarang}` 
+            : `1 - ${tglHariIni} ${namaBulanIndo[blnSekarang]} ${thnSekarang}`;
 
         cacheData.jualGlobal.forEach(dataDoc => {
             const r = dataDoc.row || dataDoc;
@@ -1259,10 +1265,15 @@ async function muatSemuaDataLatarBelakang(namaTarget) {
                     detailPenjualan.push({ tanggal: tglText, produk: namaProduk, qty: qty, omzet: omzet });
                 }
 
+                // FILTERING UC: DINAMIS DARI TANGGAL 1 SAMPAI TANGGAL HARI INI PADA BULAN BERJALAN
                 if (kategori === "GARANSI") {
                     let dateObj = parseTanggalLaporan(tglText);
                     if (dateObj) {
-                        if (dateObj.getFullYear() === thnSekarang && dateObj.getMonth() === blnSekarang) {
+                        if (
+                            dateObj.getFullYear() === thnSekarang && 
+                            dateObj.getMonth() === blnSekarang && 
+                            dateObj.getDate() <= tglHariIni
+                        ) {
                             detailUC.push({ tanggal: tglText, produk: namaProduk, qty: qty, omzet: omzet });
                         }
                     } else {
@@ -1281,6 +1292,7 @@ async function muatSemuaDataLatarBelakang(namaTarget) {
 
         cacheData.uc = {
             nama: namaTarget,
+            periodeStr: teksPeriodeUC,
             totalUC: detailUC.reduce((a, b) => a + b.qty, 0),
             detail: detailUC
         };
@@ -1357,7 +1369,10 @@ async function pindahMenu(namaMenu) {
     else if (namaMenu === "RewardSaya") judulMenuText = "Reward Saya";
     else if (namaMenu === "PelanggaranSaya") judulMenuText = "Catatan Pelanggaran";
     else if (namaMenu === "PerolehanBrand") judulMenuText = "Perolehan Brand Saya";
-    else if (namaMenu === "UC") judulMenuText = "Poin UC (Tanggal 1 - 30/31)";
+    else if (namaMenu === "UC") {
+        const pStr = (cacheData.uc && cacheData.uc.periodeStr) ? cacheData.uc.periodeStr : "Bulan Ini";
+        judulMenuText = `Poin UC (Periode ${pStr})`;
+    }
     document.getElementById("currentMenuTitle").innerText = "Menu: " + judulMenuText;
 
     jalankanRenderMenu(namaMenu);
@@ -1516,13 +1531,13 @@ function renderUC(data) {
     document.getElementById("summary").innerHTML = `
     <div class="summary-card">
         <h2><i data-lucide="star" style="width:20px; height:20px;"></i> ${data.nama}</h2>
-        <p>Periode Perhitungan : <b>Tanggal 1 s/d 30/31 Bulan Ini</b></p>
+        <p>Periode Perhitungan UC : <b>Tanggal ${data.periodeStr || '1 Bulan Ini'}</b></p>
         <p>Total UC Terkumpul : <b style="font-family:var(--font-num); color:var(--gold-main); font-size:16px;">${data.totalUC} Poin</b></p>
     </div>`;
 
     let html = "";
     if (!data.detail || data.detail.length === 0) {
-        html = `<div class="card" style="text-align:center; padding:24px; color:var(--text-sub);">Tidak ada perolehan UC pada tanggal 1 - 30/31 bulan ini</div>`;
+        html = `<div class="card" style="text-align:center; padding:24px; color:var(--text-sub);">Tidak ada perolehan UC pada periode ${data.periodeStr || 'bulan ini'}</div>`;
     } else {
         data.detail.forEach(x => {
             html += `
