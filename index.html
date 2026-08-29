@@ -8,10 +8,10 @@
     <!-- Mencegah Error Favicon 404 -->
     <link rel="icon" href="data:,">
 
-    <!-- Google Font: Outfit & Inter -->
+    <!-- Google Fonts: Plus Jakarta Sans & Inter -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 
     <!-- Library Ekspor Excel & PDF -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
@@ -144,6 +144,8 @@
 
     <style>
         :root {
+            --font-main: 'Plus Jakarta Sans', sans-serif;
+            --font-num: 'Inter', sans-serif;
             --bg-dark: #07090e;
             --card-bg: rgba(18, 26, 43, 0.65);
             --card-border: rgba(212, 175, 55, 0.2);
@@ -157,7 +159,7 @@
 
         * {
             box-sizing: border-box;
-            font-family: 'Outfit', sans-serif !important;
+            font-family: var(--font-main);
             -webkit-tap-highlight-color: transparent;
         }
 
@@ -168,6 +170,8 @@
             background: radial-gradient(circle at 50% -20%, #1a2542 0%, #07090e 80%);
             color: var(--text-main);
             background-attachment: fixed;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
         }
 
         /* GLASSMORPHISM CARD STYLE */
@@ -222,6 +226,7 @@
             font-size: 13.5px;
             color: var(--text-sub);
             font-weight: 500;
+            letter-spacing: 0.2px;
         }
 
         .input-group {
@@ -234,7 +239,8 @@
             font-weight: 800;
             color: var(--gold-main);
             margin-bottom: 8px;
-            letter-spacing: 1px;
+            letter-spacing: 1.2px;
+            text-transform: uppercase;
         }
 
         .input-group input {
@@ -245,6 +251,7 @@
             background: rgba(10, 15, 26, 0.6);
             color: #ffffff;
             font-size: 15px;
+            font-weight: 600;
             outline: none;
             transition: all 0.3s ease;
         }
@@ -263,6 +270,7 @@
             cursor: pointer;
             font-weight: 800;
             font-size: 15px;
+            letter-spacing: 0.5px;
             color: #05070a;
             background: var(--gold-gradient);
             box-shadow: 0 10px 25px rgba(212, 175, 55, 0.35);
@@ -282,7 +290,7 @@
 
         .header h1 {
             font-size: 36px;
-            font-weight: 900;
+            font-weight: 800;
             margin: 0;
             letter-spacing: -1px;
             background: var(--gold-gradient);
@@ -295,6 +303,7 @@
             font-size: 14px;
             margin-top: 6px;
             font-weight: 500;
+            letter-spacing: 0.3px;
         }
 
         /* DROPDOWN NAMA */
@@ -384,13 +393,15 @@
             font-size: 18px;
             color: #ffffff;
             font-weight: 800;
+            letter-spacing: -0.3px;
         }
 
         .menu-card-item p {
             margin: 0;
             font-size: 12.5px;
             color: var(--text-sub);
-            line-height: 1.45;
+            line-height: 1.5;
+            font-weight: 500;
         }
 
         .admin-badge {
@@ -405,7 +416,8 @@
             border-radius: 20px;
             border: 1px solid rgba(245, 197, 24, 0.3);
             display: none;
-            letter-spacing: 0.5px;
+            letter-spacing: 0.8px;
+            text-transform: uppercase;
         }
 
         /* DETAIL VIEW SECTION */
@@ -462,12 +474,14 @@
             display: flex;
             align-items: center;
             gap: 10px;
+            letter-spacing: -0.3px;
         }
 
         .summary-card p {
             margin: 8px 0;
             color: #e2e8f0;
             font-size: 14px;
+            font-weight: 500;
         }
 
         .grid {
@@ -496,6 +510,7 @@
             margin-bottom: 14px;
             color: #ffffff;
             font-size: 14.5px;
+            font-family: var(--font-num);
         }
 
         .row {
@@ -506,10 +521,11 @@
             border-bottom: 1px solid rgba(255, 255, 255, 0.06);
             color: var(--text-sub);
             font-size: 13.5px;
+            font-weight: 500;
         }
         .row:last-child { border-bottom: none; }
 
-        .ok { font-weight: 700; color: #ffffff; }
+        .ok { font-weight: 700; color: #ffffff; font-family: var(--font-num); }
         .kosong { color: var(--accent-red); font-weight: 700; }
         .status-ok { color: var(--accent-green); font-weight: 700; }
         .status-warning { color: var(--accent-red); font-weight: 700; }
@@ -688,7 +704,7 @@
             <h3 style="margin:0; color:var(--gold-main); font-size:16px; font-weight:800; display:flex; align-items:center; gap:8px;">
                 <span>📂</span> Form Update Data Excel (Admin Only)
             </h3>
-            <span style="font-size:11.5px; color:var(--text-sub); background:rgba(15,23,42,0.8); padding:5px 12px; border-radius:10px; border:1px solid rgba(212,175,55,0.2);">
+            <span style="font-size:11.5px; color:var(--text-sub); background:rgba(15,23,42,0.8); padding:5px 12px; border-radius:10px; border:1px solid rgba(212,175,55,0.2); font-weight:600;">
                 File: ABSEN FINGER(2).xlsx
             </span>
         </div>
@@ -1292,10 +1308,10 @@ function renderAbsensi(result) {
         document.getElementById("summary").innerHTML = `
         <div class="summary-card">
             <h2>🏆 ${data[0].nama}</h2>
-            <p>Total Hari Absen : <b>${data.length}</b></p>
-            <p>Datang Terlambat : <b>${terlambat}</b></p>
-            <p style="color:var(--accent-red); margin-top:4px;">⚠️ Tidak Absen Masuk : <b>${tidakAbsenMasuk}x</b></p>
-            <p style="color:var(--accent-red);">⚠️ Tidak Absen Pulang : <b>${tidakAbsenPulang}x</b></p>
+            <p>Total Hari Absen : <b style="font-family:var(--font-num);">${data.length}</b></p>
+            <p>Datang Terlambat : <b style="font-family:var(--font-num);">${terlambat}</b></p>
+            <p style="color:var(--accent-red); margin-top:4px;">⚠️ Tidak Absen Masuk : <b style="font-family:var(--font-num);">${tidakAbsenMasuk}x</b></p>
+            <p style="color:var(--accent-red);">⚠️ Tidak Absen Pulang : <b style="font-family:var(--font-num);">${tidakAbsenPulang}x</b></p>
         </div>`;
         if(currentRole === "ADMIN") document.getElementById("exportArea").style.display = "flex";
     } else {
@@ -1343,8 +1359,8 @@ function renderPenjualan(data) {
     document.getElementById("summary").innerHTML = `
     <div class="summary-card">
         <h2>💰 ${data.nama}</h2>
-        <p>Total Unit : <b>${data.totalUnit} Unit</b></p>
-        <p>Total Omzet Toko : <span style="font-weight:bold; color:var(--accent-green);">Rp ${Number(data.totalOmzet).toLocaleString("id-ID")}</span></p>
+        <p>Total Unit : <b style="font-family:var(--font-num);">${data.totalUnit} Unit</b></p>
+        <p>Total Omzet Toko : <span style="font-weight:bold; color:var(--accent-green); font-family:var(--font-num);">Rp ${Number(data.totalOmzet).toLocaleString("id-ID")}</span></p>
     </div>`;
 
     let html = "";
@@ -1353,8 +1369,8 @@ function renderPenjualan(data) {
         <div class="card success">
             <div class="tanggal">📅 ${x.tanggal}</div>
             <div style="font-size:13.5px; font-weight:700; margin-bottom:8px; color:#ffffff;">${x.produk}</div>
-            <div class="row"><span>Qty</span><span>${x.qty}</span></div>
-            <div class="row"><span>Omzet</span><span>Rp ${Number(x.omzet).toLocaleString("id-ID")}</span></div>
+            <div class="row"><span>Qty</span><span style="font-family:var(--font-num); font-weight:700; color:#fff;">${x.qty}</span></div>
+            <div class="row"><span>Omzet</span><span style="font-family:var(--font-num); font-weight:700; color:#fff;">Rp ${Number(x.omzet).toLocaleString("id-ID")}</span></div>
         </div>`;
     });
 
@@ -1368,7 +1384,7 @@ function renderUC(data) {
     document.getElementById("summary").innerHTML = `
     <div class="summary-card">
         <h2>⭐ ${data.nama}</h2>
-        <p>Total UC : <b>${data.totalUC} Poin</b></p>
+        <p>Total UC : <b style="font-family:var(--font-num);">${data.totalUC} Poin</b></p>
     </div>`;
 
     let html = "";
@@ -1377,7 +1393,7 @@ function renderUC(data) {
         <div class="card success">
             <div class="tanggal">📅 ${x.tanggal}</div>
             <div style="font-size:13.5px; font-weight:700; margin-bottom:8px; color:#ffffff;">${x.produk}</div>
-            <div class="row"><span>Qty UC</span><span>${x.qty}</span></div>
+            <div class="row"><span>Qty UC</span><span style="font-family:var(--font-num); font-weight:700; color:#fff;">${x.qty}</span></div>
         </div>`;
     });
 
@@ -1403,13 +1419,13 @@ function renderPerolehanBrand(data) {
     <div class="summary-card">
     <h2>🏷️ Perolehan Khusus Brand Toko</h2>
     ${currentRole === "ADMIN" ? 
-        `<p>👥 Jumlah Promotor : <b>${data.list.length}</b></p>
-         <p>💰 Total Omzet Khusus Brand : <span style="font-weight:bold;color:var(--accent-green)">Rp ${totalOmzetBrandToko.toLocaleString("id-ID")}</span></p>
-         <p>📦 Total Unit Khusus Brand : <b>${totalUnitBrandToko} Unit</b></p>` :
+        `<p>👥 Jumlah Promotor : <b style="font-family:var(--font-num);">${data.list.length}</b></p>
+         <p>💰 Total Omzet Khusus Brand : <span style="font-weight:bold;color:var(--accent-green);font-family:var(--font-num);">Rp ${totalOmzetBrandToko.toLocaleString("id-ID")}</span></p>
+         <p>📦 Total Unit Khusus Brand : <b style="font-family:var(--font-num);">${totalUnitBrandToko} Unit</b></p>` :
         `<p>👤 <b>${currentUser}</b></p>
          <p>🏷️ Brand Saya : <b>${user ? user.brandMaster : '-'}</b></p>
-         <p>💰 Omzet Brand Saya : <span style="font-weight:bold; color:var(--accent-green);">Rp ${Number(user ? user.omzetBrand : 0).toLocaleString("id-ID")}</span> (${user ? user.unitBrand : 0} Unit)</p>
-         <p>🏅 Peringkat Brand : <b>${posisi > 0 ? posisi : '-'} dari ${data.list.length} Promotor</b></p>`
+         <p>💰 Omzet Brand Saya : <span style="font-weight:bold; color:var(--accent-green); font-family:var(--font-num);">Rp ${Number(user ? user.omzetBrand : 0).toLocaleString("id-ID")}</span> (<span style="font-family:var(--font-num);">${user ? user.unitBrand : 0}</span> Unit)</p>
+         <p>🏅 Peringkat Brand : <b><span style="font-family:var(--font-num);">${posisi > 0 ? posisi : '-'}</span> dari <span style="font-family:var(--font-num);">${data.list.length}</span> Promotor</b></p>`
     }
     </div>`;
 
@@ -1422,15 +1438,15 @@ function renderPerolehanBrand(data) {
         html += `
             <div style="display:flex; align-items:center; justify-content:space-between; padding:12px 0; border-bottom:1px solid rgba(255,255,255,0.06); gap:10px;">
                 <div style="display:flex; align-items:center; gap:12px; min-width:0; flex:1;">
-                    <div style="width:30px; height:30px; border-radius:50%; background:rgba(245,197,24,0.15); border:1px solid rgba(245,197,24,0.4); display:flex; align-items:center; justify-content:center; font-weight:800; font-size:12px; flex-shrink:0; color:var(--gold-main);">${i + 1}</div>
+                    <div style="width:30px; height:30px; border-radius:50%; background:rgba(245,197,24,0.15); border:1px solid rgba(245,197,24,0.4); display:flex; align-items:center; justify-content:center; font-weight:800; font-size:12px; flex-shrink:0; color:var(--gold-main); font-family:var(--font-num);">${i + 1}</div>
                     <div style="font-weight:700; font-size:14px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">
                         ${x.nama}
                         <div style="font-size:11px; color:var(--gold-main); font-weight:600;">Brand: ${x.brandMaster}</div>
                     </div>
                 </div>
                 <div style="text-align:right; white-space:nowrap; flex-shrink:0;">
-                    <div style="font-weight:800; font-size:14px; color:${warnaOmzet};">Rp ${omzetVal.toLocaleString("id-ID")}</div>
-                    <div style="font-size:11.5px; font-weight:600; color:var(--text-sub); margin-top:2px;">📦 ${unitVal} Unit</div>
+                    <div style="font-weight:800; font-size:14px; color:${warnaOmzet}; font-family:var(--font-num);">Rp ${omzetVal.toLocaleString("id-ID")}</div>
+                    <div style="font-size:11.5px; font-weight:600; color:var(--text-sub); margin-top:2px;">📦 <span style="font-family:var(--font-num);">${unitVal}</span> Unit</div>
                 </div>
             </div>`;
     });
@@ -1449,8 +1465,8 @@ function renderPerolehan(data) {
     document.getElementById("summary").innerHTML = `
     <div class="summary-card">
         <h2>📊 Perolehan & Rekap Toko</h2>
-        <p>👥 Jumlah Promotor : <b>${data.list.length}</b></p>
-        <p>💰 Total Omzet Toko : <span style="font-weight:bold;color:var(--accent-green)">Rp ${totalOmzet.toLocaleString("id-ID")}</span></p>
+        <p>👥 Jumlah Promotor : <b style="font-family:var(--font-num);">${data.list.length}</b></p>
+        <p>💰 Total Omzet Toko : <span style="font-weight:bold;color:var(--accent-green);font-family:var(--font-num);">Rp ${totalOmzet.toLocaleString("id-ID")}</span></p>
     </div>`;
 
     let html = `<div class="summary-card">`;
@@ -1459,11 +1475,11 @@ function renderPerolehan(data) {
         html += `
             <div style="display:flex; align-items:center; justify-content:space-between; padding:12px 0; border-bottom:1px solid rgba(255,255,255,0.06); gap:10px;">
                 <div style="display:flex; align-items:center; gap:12px; min-width:0; flex:1;">
-                    <div style="width:30px; height:30px; border-radius:50%; background:rgba(245,197,24,0.15); border:1px solid rgba(245,197,24,0.4); display:flex; align-items:center; justify-content:center; font-weight:800; font-size:12px; flex-shrink:0; color:var(--gold-main);">${i + 1}</div>
+                    <div style="width:30px; height:30px; border-radius:50%; background:rgba(245,197,24,0.15); border:1px solid rgba(245,197,24,0.4); display:flex; align-items:center; justify-content:center; font-weight:800; font-size:12px; flex-shrink:0; color:var(--gold-main); font-family:var(--font-num);">${i + 1}</div>
                     <div style="font-weight:700; font-size:14px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${x.nama}</div>
                 </div>
                 <div style="text-align:right; white-space:nowrap; flex-shrink:0;">
-                    <div style="font-weight:800; font-size:14px; color:var(--accent-green);">Rp ${omzetVal.toLocaleString("id-ID")}</div>
+                    <div style="font-weight:800; font-size:14px; color:var(--accent-green); font-family:var(--font-num);">Rp ${omzetVal.toLocaleString("id-ID")}</div>
                 </div>
             </div>`;
     });
@@ -1481,14 +1497,14 @@ function renderDendaUC(dataPerolehan) {
     document.getElementById("summary").innerHTML = `
     <div class="summary-card">
         <h2>⚡ Rekapitulasi Denda & Keterlambatan</h2>
-        <p>Keterlambatan Finger : <b>${terlambat} Kali</b></p>
-        <p>Estimasi Denda Late : <span style="color:var(--accent-red); font-weight:800;">Rp ${dendaLate.toLocaleString("id-ID")}</span></p>
+        <p>Keterlambatan Finger : <b style="font-family:var(--font-num);">${terlambat} Kali</b></p>
+        <p>Estimasi Denda Late : <span style="color:var(--accent-red); font-weight:800; font-family:var(--font-num);">Rp ${dendaLate.toLocaleString("id-ID")}</span></p>
     </div>`;
 
     let html = `
     <div class="card warning" style="padding:22px;">
         <div style="font-weight:800; color:#ffffff; font-size:14.5px; margin-bottom:12px;">Rincian Aturan Denda Toko:</div>
-        <div class="row"><span>Keterlambatan Finger</span><span style="color:var(--accent-red); font-weight:700;">Rp 10.000 / kali</span></div>
+        <div class="row"><span>Keterlambatan Finger</span><span style="color:var(--accent-red); font-weight:700; font-family:var(--font-num);">Rp 10.000 / kali</span></div>
         <div class="row"><span>Keterlambatan SOP</span><span style="color:var(--accent-red); font-weight:700;">Sesuai Jenis Pelanggaran</span></div>
     </div>`;
 
