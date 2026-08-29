@@ -1036,8 +1036,11 @@ function renderPenjualan(data) {
 }
 
 function renderPerolehanBrand(data) {
-    if(!data || !data.list) return;
-    
+    if (!data || !Array.isArray(data.list)) {
+        document.getElementById("hasil").innerHTML = `<div class="card warning" style="text-align:center; padding:20px;">Data perolehan brand tidak ditemukan.</div>`;
+        return;
+    }
+
     let totalOmzetBrandToko = 0;
     let totalUnitBrandToko = 0;
 
@@ -1046,26 +1049,35 @@ function renderPerolehanBrand(data) {
         totalUnitBrandToko += Number(x.unit || 0);
     });
 
+    // Cari data promotor berdasarkan Nama Absen
     const user = data.list.find(x => (x.nama || "").toUpperCase() === (currentUser || "").toUpperCase());
     const posisi = user ? data.list.findIndex(x => (x.nama || "").toUpperCase() === (currentUser || "").toUpperCase()) + 1 : 0;
 
+    const brandUser = (user && user.brandMaster) ? user.brandMaster : '-';
+    const omzetUser = user ? Number(user.omzet || 0) : 0;
+    const unitUser  = user ? Number(user.unit || 0) : 0;
+
     document.getElementById("summary").innerHTML = `
     <div class="summary-card">
-    <h2>🏷️ Perolehan Brand Promotor</h2>
+    <h2>🏷️ Perolehan Brand Saya & Toko</h2>
     ${currentRole === "ADMIN" ? 
         `<p>👥 Jumlah Promotor : <b>${data.list.length}</b></p>
-         <p>💰 Total Omzet Brand Toko : <span style="font-weight:bold;color:#34d399">Rp ${totalOmzetBrandToko.toLocaleString("id-ID")}</span></p>
-         <p>📦 Total Unit Brand : <b>${totalUnitBrandToko} Unit</b></p>` :
-        `<p>👤 ${currentUser}</p>
-         <p>🏷️ Brand : <b>${user ? user.brand : '-'}</b></p>
-         <p>💰 Total Omzet Brand : <span style="font-weight:bold; color:#34d399;">Rp ${Number(user ? user.omzet : 0).toLocaleString("id-ID")}</span> (${user ? user.unit : 0} Unit)</p>
-         <p>🏅 Peringkat Brand : <b>${posisi} dari ${data.list.length} Promotor</b></p>`
+         <p>💰 Total Omzet Khusus Brand : <span style="font-weight:bold;color:#34d399">Rp ${totalOmzetBrandToko.toLocaleString("id-ID")}</span></p>
+         <p>📦 Total Unit Khusus Brand : <b>${totalUnitBrandToko} Unit</b></p>` :
+        `<p>👤 <b>${currentUser}</b></p>
+         <p>🏷️ Brand Saya : <b>${brandUser}</b></p>
+         <p>💰 Omzet Brand Saya : <span style="font-weight:bold; color:#34d399;">Rp ${omzetUser.toLocaleString("id-ID")}</span> (${unitUser} Unit)</p>
+         <p>🏅 Peringkat Omzet Brand : <b>${posisi > 0 ? posisi : '-'} dari ${data.list.length} Promotor</b></p>`
     }
     </div>`;
 
     let html = `<div class="summary-card">`;
     data.list.forEach((x, i) => {
+        const namaAbsen = x.nama || "Promotor";
+        const brandPromotor = x.brandMaster || "UMUM";
         const omzetVal = Number(x.omzet || 0);
+        const unitVal = Number(x.unit || 0);
+        
         const warnaOmzet = omzetVal >= 100000000 ? '#34d399' : omzetVal >= 80000000 ? '#f59e0b' : '#ef4444';
 
         html += `
@@ -1073,19 +1085,21 @@ function renderPerolehanBrand(data) {
                 <div style="display:flex; align-items:center; gap:10px; min-width:0; flex:1;">
                     <div style="width:26px; height:26px; border-radius:50%; background:#1f2937; border:1px solid rgba(212,175,55,0.3); display:flex; align-items:center; justify-content:center; font-weight:700; font-size:12px; flex-shrink:0; color:#d4af37;">${i + 1}</div>
                     <div class="nama-p" style="font-weight:600; font-size:13px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">
-                        ${x.nama}
-                        <div style="font-size:10.5px; color:#d4af37; font-weight:500;">Brand: ${x.brand}</div>
+                        ${namaAbsen}
+                        <div style="font-size:10.5px; color:#d4af37; font-weight:500;">Brand: ${brandPromotor}</div>
                     </div>
                 </div>
                 <div style="text-align:right; white-space:nowrap; flex-shrink:0;">
                     <div class="omzet-p" style="font-weight:700; font-size:13px; color:${warnaOmzet};">Rp ${omzetVal.toLocaleString("id-ID")}</div>
-                    <div class="uc-p" style="font-size:11.5px; font-weight:600; color:#9ca3af; margin-top:1px;">📦 ${x.unit || 0} Unit</div>
+                    <div class="uc-p" style="font-size:11.5px; font-weight:600; color:#9ca3af; margin-top:1px;">📦 ${unitVal} Unit</div>
                 </div>
             </div>`;
     });
     html += `</div>`;
 
-    if(data.list && data.list.length > 0 && currentRole === "ADMIN") document.getElementById("exportArea").style.display = "flex";
+    if (data.list.length > 0 && currentRole === "ADMIN") {
+        document.getElementById("exportArea").style.display = "flex";
+    }
     document.getElementById("hasil").className = "";
     document.getElementById("hasil").innerHTML = html;
 }
