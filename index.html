@@ -67,7 +67,7 @@
                         await batchMaster.commit();
                     }
 
-                    // 2. IMPORT SHEET PENJUALAN (Chunk Per 400 Baris)
+                    // 2. IMPORT SHEET PENJUALAN (Chunk Batch Per 400 Baris)
                     if (workbook.Sheets["PENJUALAN"]) {
                         statusEl.innerHTML = "⏳ Menyimpan PENJUALAN ke Firebase...";
                         const jualData = XLSX.utils.sheet_to_json(workbook.Sheets["PENJUALAN"], { header: 1 });
@@ -243,7 +243,7 @@
             margin-top: 4px;
         }
 
-        /* KOTAK PENCARIAN / DROPDOWN NAMA */
+        /* DROPDOWN NAMA */
         .search-box {
             max-width: 1100px;
             margin: 0 auto 15px;
@@ -316,7 +316,7 @@
             display: none;
         }
 
-        /* AREA KONTEN DETAIL */
+        /* DETAIL VIEW */
         #detailViewSection {
             display: none;
             max-width: 1100px;
@@ -628,7 +628,7 @@
         <p id="roleSubtitle">Dashboard Promotor</p>
     </div>
 
-    <!-- PANEL UPDATE EXCEL KHUSUS ROLE ADMIN -->
+    <!-- PANEL UPLOAD EXCEL KHUSUS ADMIN -->
     <div id="adminUploadCard" style="display:none; max-width:1100px; margin:0 auto 20px; background:#111827; border:1px solid #d4af37; padding:18px 20px; border-radius:16px; box-shadow:0 10px 25px rgba(0,0,0,0.5);">
         <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; margin-bottom:12px;">
             <h3 style="margin:0; color:#d4af37; font-size:16px; font-weight:800; display:flex; align-items:center; gap:8px;">
@@ -642,14 +642,13 @@
         <div style="display:flex; flex-wrap:wrap; gap:12px; align-items:center;">
             <input type="file" id="inputFileAbsenExcel" accept=".xlsx, .xls" style="color:#d1d5db; font-size:13px; background:#1f2937; padding:8px 12px; border-radius:8px; border:1px solid #374151; flex:1; min-width:240px;">
             <button onclick="importSeluruhExcelKeFirebase(document.getElementById('inputFileAbsenExcel'))" 
-                    style="padding:10px 20px; background:linear-gradient(135deg, #10b981 0%, #059669 100%); color:white; border:none; border-radius:99px; font-weight:700; font-size:13px; cursor:pointer; box-shadow:0 4px 12px rgba(16,185,129,0.3); display:flex; align-items:center; gap:6px;">
+                    style="padding:10px 20px; background:linear-gradient(135deg, #10b981 0%, #059669 100%); color:white; border:none; border-radius:9px; font-weight:700; font-size:13px; cursor:pointer; box-shadow:0 4px 12px rgba(16,185,129,0.3); display:flex; align-items:center; gap:6px;">
                 <span>🚀</span> Import & Simpan Ke Firebase
             </button>
         </div>
         <div id="statusUploadExcel" style="margin-top:10px; font-size:12.5px; color:#9ca3af; font-weight:600;"></div>
     </div>
 
-    <!-- INDIKATOR LOADING -->
     <div id="globalLoading" style="display:none; text-align:center; margin:15px 0; color:#d4af37; font-weight:600; font-size:13.5px;">
         <span class="spinner" style="margin-right:6px;"></span>
         Sedang menyiapkan data dari Firebase, mohon tunggu...
@@ -660,7 +659,7 @@
         <button class="btn-logout-main" onclick="logout()">🚪 Keluar</button>
     </div>
 
-    <!-- HALAMAN UTAMA BERUPA KARTU MENU -->
+    <!-- KARTU MENU UTAMA -->
     <div id="menuGridContainer">
         <div class="menu-card-item" onclick="pindahMenu('Absensi')">
             <span class="admin-badge" data-badge="menu">Pribadi</span>
@@ -690,7 +689,7 @@
             <span class="admin-badge" data-badge="menu">Brand Saya</span>
             <div class="icon">🏷️</div>
             <h3>Perolehan Brand</h3>
-            <p>Rekap penjualan khusus brand/ID Anda sendiri</p>
+            <p>Rekap penjualan khusus brand Anda sendiri</p>
         </div>
         <div class="menu-card-item" onclick="pindahMenu('DendaUC')">
             <span class="admin-badge" data-badge="admin">Admin / Info</span>
@@ -732,7 +731,7 @@
         </div>
     </div>
 
-    <!-- HALAMAN DETAIL DATA -->
+    <!-- TAMPILAN DETAIL -->
     <div id="detailViewSection" style="display:none;">
         <div class="nav-back-bar">
             <button class="btn-back-menu" onclick="kembaliKeMenuUtama()">⬅ Kembali ke Menu</button>
@@ -813,6 +812,7 @@ function aturTampilanBerdasarkanRole() {
     }
 }
 
+// FUNGSI LOGIN DENGAN BYPASS ADMIN DAN LOGIKA FIRESTORE
 async function login() {
     const btn = document.getElementById("btnLogin");
     btn.disabled = true;
@@ -828,37 +828,59 @@ async function login() {
         return;
     }
 
+    // 1. MASTER BYPASS ADMIN KHUSUS
+    if (namaInput === "ADMIN" && pinInput === "1234") {
+        currentUser = "ADMIN";
+        currentRole = "ADMIN";
+        localStorage.setItem("loginNama", currentUser);
+        localStorage.setItem("loginRole", currentRole);
+
+        aturTampilanBerdasarkanRole();
+        document.getElementById("loginInfo").innerHTML = "⭕ <b>" + currentUser + "</b> (ADMIN)";
+        document.getElementById("loginBox").style.display = "none";
+        document.getElementById("dashboard").style.display = "block";
+
+        showPopup("Selamat Datang ADMIN");
+        document.getElementById("menuPerolehanCard").style.display = "block";
+        await loadNama();
+        btn.disabled = false;
+        btn.innerHTML = "MASUK";
+        return;
+    }
+
     try {
-        const usersSnap = await window.getDocs(window.collection(window.db, "users"));
         let validUser = false;
         let roleUser = "USER";
 
-        usersSnap.forEach(docSnap => {
-            const u = docSnap.data();
-            const dbNama = String(u.nama || u.username || "").trim().toUpperCase();
-            const dbPin = String(u.pin || u.password || "").trim();
-            const dbRole = String(u.role || "USER").trim().toUpperCase();
+        // 2. CEK DALAM FIRESTORE (COLLECTION: MASTER_SALES)
+        const masterSnap = await window.getDocs(window.collection(window.db, "master_sales"));
+        masterSnap.forEach(docSnap => {
+            const m = docSnap.data();
+            const namaAbsen = String(m["Nama Absen"] || m.nama || m.username || "").trim().toUpperCase();
+            const namaSales = String(m["Nama Sales"] || "").trim().toUpperCase();
+            const pinDb     = String(m.PIN || m.pin || m.password || "123").trim();
+            const roleDb    = String(m.ROLE || m.role || "USER").trim().toUpperCase();
 
-            if (dbNama === namaInput && dbPin === pinInput) {
+            if ((namaAbsen === namaInput || namaSales === namaInput) && pinInput === pinDb) {
                 validUser = true;
-                roleUser = dbRole;
+                roleUser = roleDb;
+                currentUser = String(m["Nama Absen"] || namaInput).trim().toUpperCase();
             }
         });
 
-        if (!validUser && namaInput === "ADMIN" && pinInput === "1234") {
-            validUser = true;
-            roleUser = "ADMIN";
-        } else if (!validUser) {
-            const masterSnap = await window.getDocs(window.collection(window.db, "master_sales"));
-            masterSnap.forEach(docSnap => {
-                const m = docSnap.data();
-                const mNama = String(m["Nama Absen"] || m.nama || "").trim().toUpperCase();
-                const mPin = String(m.PIN || m.pin || "123").trim();
-                const mRole = String(m.ROLE || m.role || "USER").trim().toUpperCase();
+        // 3. CEK DALAM FIRESTORE (COLLECTION: USERS)
+        if (!validUser) {
+            const usersSnap = await window.getDocs(window.collection(window.db, "users"));
+            usersSnap.forEach(docSnap => {
+                const u = docSnap.data();
+                const dbNama = String(u.nama || u.username || "").trim().toUpperCase();
+                const dbPin  = String(u.pin || u.password || "").trim();
+                const dbRole = String(u.role || "USER").trim().toUpperCase();
 
-                if (mNama === namaInput && pinInput === mPin) {
+                if (dbNama === namaInput && dbPin === pinInput) {
                     validUser = true;
-                    roleUser = mRole;
+                    roleUser = dbRole;
+                    currentUser = dbNama;
                 }
             });
         }
@@ -866,11 +888,10 @@ async function login() {
         if (!validUser) {
             btn.disabled = false;
             btn.innerHTML = "MASUK";
-            showPopup("Username atau Password salah!");
+            showPopup("Username '" + namaInput + "' atau Password salah! Jika ini promotor baru, mohon impor file Excel 'ABSEN FINGER(2).xlsx' terlebih dahulu lewat Admin.");
             return;
         }
 
-        currentUser = namaInput;
         currentRole = roleUser;
         localStorage.setItem("loginNama", currentUser);
         localStorage.setItem("loginRole", currentRole);
@@ -896,7 +917,7 @@ async function login() {
     }
 }
 
-// ---------------- SINKRONISASI UTAMA DARI FIREBASE FIRESTORE ----------------
+// MEMUAT SELURUH DATA DARI FIRESTORE
 async function muatSemuaDataLatarBelakang(namaTarget) {
     const loadEl = document.getElementById("globalLoading");
     if(loadEl) loadEl.style.display = "block";
@@ -925,7 +946,7 @@ async function muatSemuaDataLatarBelakang(namaTarget) {
         });
         cacheData.absensi = { data: hasilAbsen, terlambat: jumlahTerlambat };
 
-        // 2. MASTER SALES & PEMETAAN BRAND
+        // 2. MASTER SALES & BRAND
         let mapMasterPromotor = [];
         let daftarIdSalesSaya = [];
 
@@ -983,20 +1004,7 @@ async function muatSemuaDataLatarBelakang(namaTarget) {
             mapMasterPromotor.forEach(p => {
                 if (p.idSales === idSalesExcel) {
                     p.omzetTotal += omzet;
-
-                    let isBrandMatch = false;
-                    if (p.brandKeywords.length > 0) {
-                        for (let k = 0; k < p.brandKeywords.length; k++) {
-                            let kw = p.brandKeywords[k];
-                            if (brandPenjualan.includes(kw) || namaProduk.includes(kw)) {
-                                isBrandMatch = true;
-                                break;
-                            }
-                        }
-                    } else {
-                        isBrandMatch = true;
-                    }
-
+                    let isBrandMatch = p.brandKeywords.some(kw => brandPenjualan.includes(kw) || namaProduk.includes(kw));
                     if (isBrandMatch && kategori !== "GARANSI" && kategori !== "ONGKOS") {
                         p.omzetBrand += omzet;
                         p.unitBrand  += qty;
@@ -1030,7 +1038,7 @@ async function muatSemuaDataLatarBelakang(namaTarget) {
         cacheData.perolehan = { list: [...mapMasterPromotor].sort((a, b) => b.omzetTotal - a.omzetTotal) };
         cacheData.perolehanBrand = { list: [...mapMasterPromotor].sort((a, b) => b.omzetBrand - a.omzetBrand) };
 
-        // 4. ATURAN, PROMO, REWARD & PUNISHMENT FIREBASE
+        // 4. ATURAN, REWARD, PUNISHMENT, PROMO
         const rulesSnap = await window.getDocs(window.collection(window.db, "rules_sop"));
         let listRules = [];
         rulesSnap.forEach(d => listRules.push(d.data()));
@@ -1210,7 +1218,7 @@ function renderAbsensi(result) {
 
         html += `
         <div class="card ${kelasCard} ${kelasTambahan}">
-            <div class="tanggal">📅 ${x.tanggal}<br>${status}
+            <div class="tanggal">📅 TANGGAL ${x.tanggal}<br>${status}
                 ${isTerlambat ? '<div style="color:#d4af37;font-weight:700;margin-top:4px;">TERLAMBAT</div>' : ''}
             </div>
             <div class="row"><span>Masuk</span>${isNoMasuk ? '<span class="kosong">TIDAK FINGER</span>' : tampil(x.masuk)}</div>
