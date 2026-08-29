@@ -1100,13 +1100,11 @@ cacheData.jualGlobal.forEach(dataDoc => {
 
                 if (!idSalesExcel) return;
 
-                mapMasterPromotor.forEach(p => {
+               mapMasterPromotor.forEach(p => {
                     if (p.idSales === idSalesExcel) {
                         
-                        // 1. PEROLEHAN TOKO: Kategori ONGKOS saja yang tidak dihitung (Garansi/UC ikut masuk)
-                        if (kategori !== "ONGKOS") {
-                            p.omzetTotal += omzet;
-                        }
+                        // 1. PEROLEHAN TOKO: Semua kategori (Reguler, Garansi/UC, dan Ongkos) MASUK dihitung
+                        p.omzetTotal += omzet;
 
                         // 2. PEROLEHAN BRAND: Kategori GARANSI (UC) dan ONGKOS tidak ikut dihitung
                         let isBrandMatch = false;
@@ -1128,7 +1126,6 @@ cacheData.jualGlobal.forEach(dataDoc => {
                         }
                     }
                 });
-
                 if (daftarIdSalesSaya.includes(idSalesExcel)) {
                     if (kategori !== "GARANSI" && kategori !== "ONGKOS") {
                         detailPenjualan.push({ tanggal: tglText, produk: namaProduk, qty: qty, omzet: omzet });
