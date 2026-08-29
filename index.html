@@ -5,22 +5,16 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>UFO Kebonsari - Dashboard Promotor Modern</title>
 
-    <!-- Mencegah Error Favicon 404 -->
     <link rel="icon" href="data:,">
 
-    <!-- Google Fonts: Plus Jakarta Sans & Inter -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 
-    <!-- Library Icon Lucide (Modern Vector Icons) -->
     <script src="https://unpkg.com/lucide@latest"></script>
-
-    <!-- Library Ekspor Excel & PDF -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 
-    <!-- Firebase SDK (Modular v10) -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { getFirestore, collection, getDocs, doc, writeBatch } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
@@ -177,7 +171,6 @@
             -moz-osx-font-smoothing: grayscale;
         }
 
-        /* GLASSMORPHISM CARD STYLE */
         .glass-panel {
             background: var(--card-bg);
             backdrop-filter: blur(20px);
@@ -187,7 +180,6 @@
             box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6);
         }
 
-        /* KOTAK LOGIN MODERN */
         #loginBox {
             max-width: 400px;
             margin: 50px auto;
@@ -285,7 +277,6 @@
             box-shadow: 0 14px 30px rgba(212, 175, 55, 0.5);
         }
 
-        /* HEADER DASHBOARD */
         .header {
             text-align: center;
             margin-bottom: 30px;
@@ -309,7 +300,6 @@
             letter-spacing: 0.3px;
         }
 
-        /* DROPDOWN NAMA */
         .search-box {
             max-width: 1100px;
             margin: 0 auto 20px;
@@ -335,13 +325,13 @@
         }
         #nama option { background: #0b0f19; color: #ffffff; }
 
-        /* KARTU MENU UTAMA */
+        /* KARTU MENU UTAMA (TANPA DESKRIPSI DI BAWAH JUDUL) */
         #menuGridContainer {
             max-width: 1100px;
             margin: 0 auto;
             display: grid;
             grid-template-columns: repeat(3, 1fr);
-            gap: 20px;
+            gap: 16px;
             animation: fadeIn 0.4s ease;
         }
 
@@ -349,7 +339,7 @@
             background: rgba(18, 26, 43, 0.65);
             border: 1px solid rgba(255, 255, 255, 0.08);
             border-radius: 20px;
-            padding: 24px 20px;
+            padding: 20px 18px;
             text-align: center;
             cursor: pointer;
             transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
@@ -360,8 +350,7 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            justify-content: flex-start;
-            height: auto;
+            justify-content: center;
         }
 
         .menu-card-item::before {
@@ -374,7 +363,7 @@
         }
 
         .menu-card-item:hover {
-            transform: translateY(-6px);
+            transform: translateY(-5px);
             border-color: rgba(212, 175, 55, 0.4);
             background: rgba(26, 38, 64, 0.85);
             box-shadow: 0 18px 35px rgba(0, 0, 0, 0.5), 0 0 20px rgba(212, 175, 55, 0.15);
@@ -385,10 +374,10 @@
         }
 
         .menu-card-item .icon-wrapper {
-            width: 56px;
-            height: 56px;
-            margin-bottom: 14px;
-            border-radius: 16px;
+            width: 50px;
+            height: 50px;
+            margin-bottom: 10px;
+            border-radius: 14px;
             background: rgba(245, 197, 24, 0.1);
             border: 1px solid rgba(245, 197, 24, 0.25);
             display: flex;
@@ -406,40 +395,14 @@
         }
 
         .menu-card-item h3 {
-            margin: 0 0 8px;
-            font-size: 17px;
+            margin: 0;
+            font-size: 16px;
             color: #ffffff;
             font-weight: 800;
             letter-spacing: -0.3px;
             line-height: 1.3;
         }
 
-        .menu-card-item p {
-            margin: 0;
-            font-size: 13px;
-            color: var(--text-sub);
-            line-height: 1.5;
-            font-weight: 500;
-            word-break: break-word;
-        }
-
-        .admin-badge {
-            position: absolute;
-            top: 12px;
-            right: 12px;
-            background: rgba(245, 197, 24, 0.12);
-            color: var(--gold-main);
-            font-size: 9.5px;
-            font-weight: 800;
-            padding: 3px 10px;
-            border-radius: 20px;
-            border: 1px solid rgba(245, 197, 24, 0.3);
-            display: none;
-            letter-spacing: 0.6px;
-            text-transform: uppercase;
-        }
-
-        /* DETAIL VIEW SECTION */
         #detailViewSection {
             display: none;
             max-width: 1100px;
@@ -606,7 +569,6 @@
         .btn-pdf { background: #881337; border: 1px solid #f43f5e; }
         .btn-export:hover { transform: translateY(-2px); filter: brightness(1.15); }
 
-        /* POPUP & MODAL ZOOM */
         #popup, #logoutPopup, #sopModal {
             display: none;
             position: fixed;
@@ -667,7 +629,6 @@
         #btnBatal { background: #334155; }
         #btnLogoutConfirm { background: #9f1239; }
 
-        /* SPINNER ANIMATION */
         .spinner {
             width: 20px; height: 20px; display: inline-block;
             border: 3px solid rgba(255,255,255,.3); border-top: 3px solid var(--gold-main);
@@ -678,7 +639,6 @@
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
         @keyframes slideUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
 
-        /* MEDIA QUERIES UNTUK TAMPILAN HP RAPI DAN TIDAK MENUMPUK */
         @media(max-width: 1024px) { 
             .grid, #menuGridContainer { grid-template-columns: repeat(2, 1fr) !important; } 
         }
@@ -688,47 +648,27 @@
 
             #menuGridContainer { 
                 grid-template-columns: 1fr !important; 
-                gap: 14px !important;
+                gap: 12px !important;
             }
 
             .menu-card-item {
-                padding: 18px 16px;
+                padding: 16px 14px;
                 text-align: left;
-                display: grid;
-                grid-template-columns: auto 1fr;
-                gap: 14px;
+                display: flex;
+                flex-direction: row;
                 align-items: center;
+                gap: 14px;
+                justify-content: flex-start;
             }
 
             .menu-card-item .icon-wrapper {
                 margin-bottom: 0;
-                width: 48px;
-                height: 48px;
-            }
-
-            .menu-card-item .menu-text-content {
-                display: flex;
-                flex-direction: column;
-                justify-content: center;
+                width: 44px;
+                height: 44px;
             }
 
             .menu-card-item h3 {
-                font-size: 16px;
-                margin-bottom: 4px;
-            }
-
-            .menu-card-item p {
-                font-size: 12px;
-                line-height: 1.4;
-            }
-
-            .admin-badge {
-                position: relative;
-                top: auto;
-                right: auto;
-                align-self: flex-start;
-                margin-bottom: 6px;
-                display: inline-block !important;
+                font-size: 15px;
             }
 
             .grid { grid-template-columns: 1fr !important; }
@@ -737,7 +677,6 @@
 </head>
 <body>
 
-<!-- KOTAK LOGIN -->
 <div id="loginBox" class="glass-panel">
     <div class="login-logo-container">
         <img src="logo.png" alt="UFO Logo" onerror="this.style.display='none'">
@@ -760,14 +699,12 @@
     <button id="btnLogin" onclick="login()">MASUK</button>
 </div>
 
-<!-- DASHBOARD UTAMA -->
 <div id="dashboard" style="display:none;">
     <div class="header">
         <h1>UFO KEBONSARI</h1>
         <p id="roleSubtitle">Dashboard Promotor</p>
     </div>
 
-    <!-- PANEL UPLOAD EXCEL KHUSUS ADMIN -->
     <div id="adminUploadCard" class="glass-panel" style="display:none; max-width:1100px; margin:0 auto 24px; padding:24px;">
         <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px; margin-bottom:14px;">
             <h3 style="margin:0; color:var(--gold-main); font-size:16px; font-weight:800; display:flex; align-items:center; gap:8px;">
@@ -788,7 +725,6 @@
         <div id="statusUploadExcel" style="margin-top:12px; font-size:13px; color:var(--text-sub); font-weight:600;"></div>
     </div>
 
-    <!-- SPINNER INDIKATOR GLOBAL -->
     <div id="globalLoading" style="display:none; text-align:center; margin:18px 0; color:var(--gold-main); font-weight:700; font-size:14.5px;">
         <span class="spinner" style="margin-right:10px;"></span>
         Memproses data Firebase, mohon tunggu...
@@ -799,99 +735,55 @@
         <button class="btn-logout-main" onclick="logout()"><i data-lucide="log-out" style="width:16px; height:16px;"></i> Keluar</button>
     </div>
 
-    <!-- KARTU MENU UTAMA -->
+    <!-- KARTU MENU UTAMA (TANPA TEKS DESKRIPSI DI BAWAH JUDUL) -->
     <div id="menuGridContainer">
         <div class="menu-card-item" onclick="pindahMenu('Absensi')">
-            <div class="icon-wrapper"><i data-lucide="calendar-check" style="width:26px; height:26px;"></i></div>
-            <div class="menu-text-content">
-                <span class="admin-badge" data-badge="menu">Pribadi</span>
-                <h3>Absensi</h3>
-                <p>Rekap kehadiran dan status finger harian</p>
-            </div>
+            <div class="icon-wrapper"><i data-lucide="calendar-check" style="width:24px; height:24px;"></i></div>
+            <h3>Absensi</h3>
         </div>
         <div class="menu-card-item" onclick="pindahMenu('Penjualan')">
-            <div class="icon-wrapper"><i data-lucide="shopping-bag" style="width:26px; height:26px;"></i></div>
-            <div class="menu-text-content">
-                <span class="admin-badge" data-badge="menu">Pribadi</span>
-                <h3>Penjualan</h3>
-                <p>Omzet produk harian dan perolehan unit</p>
-            </div>
+            <div class="icon-wrapper"><i data-lucide="shopping-bag" style="width:24px; height:24px;"></i></div>
+            <h3>Penjualan</h3>
         </div>
         <div class="menu-card-item" onclick="pindahMenu('UC')">
-            <div class="icon-wrapper"><i data-lucide="star" style="width:26px; height:26px;"></i></div>
-            <div class="menu-text-content">
-                <span class="admin-badge" data-badge="menu">Pribadi</span>
-                <h3>UC</h3>
-                <p>Pencapaian poin UC promotor akumulatif</p>
-            </div>
+            <div class="icon-wrapper"><i data-lucide="star" style="width:24px; height:24px;"></i></div>
+            <h3>UC</h3>
         </div>
         <div class="menu-card-item" id="menuPerolehanCard" onclick="pindahMenu('Perolehan')">
-            <div class="icon-wrapper"><i data-lucide="trending-up" style="width:26px; height:26px;"></i></div>
-            <div class="menu-text-content">
-                <span class="admin-badge" data-badge="admin">Admin Only</span>
-                <h3>Perolehan</h3>
-                <p>Peringkat & akumulasi omzet seluruh promotor</p>
-            </div>
+            <div class="icon-wrapper"><i data-lucide="trending-up" style="width:24px; height:24px;"></i></div>
+            <h3>Perolehan Omzet Toko</h3>
         </div>
         <div class="menu-card-item" onclick="pindahMenu('PerolehanBrand')">
-            <div class="icon-wrapper"><i data-lucide="tag" style="width:26px; height:26px;"></i></div>
-            <div class="menu-text-content">
-                <span class="admin-badge" data-badge="menu">Brand Saya</span>
-                <h3>Perolehan Brand</h3>
-                <p>Rekap penjualan khusus brand Anda sendiri</p>
-            </div>
+            <div class="icon-wrapper"><i data-lucide="tag" style="width:24px; height:24px;"></i></div>
+            <h3>Perolehan Brand</h3>
         </div>
         <div class="menu-card-item" onclick="pindahMenu('DendaUC')">
-            <div class="icon-wrapper"><i data-lucide="zap" style="width:26px; height:26px;"></i></div>
-            <div class="menu-text-content">
-                <span class="admin-badge" data-badge="admin">Admin / Info</span>
-                <h3>Denda & Late</h3>
-                <p>Rekapitulasi keterlambatan & denda target</p>
-            </div>
+            <div class="icon-wrapper"><i data-lucide="zap" style="width:24px; height:24px;"></i></div>
+            <h3>Denda & Late</h3>
         </div>
         <div class="menu-card-item" onclick="pindahMenu('Promo')">
-            <div class="icon-wrapper"><i data-lucide="percent" style="width:26px; height:26px;"></i></div>
-            <div class="menu-text-content">
-                <h3>Promo Toko</h3>
-                <p>Daftar promo produk & program toko aktif</p>
-            </div>
+            <div class="icon-wrapper"><i data-lucide="percent" style="width:24px; height:24px;"></i></div>
+            <h3>Promo Toko</h3>
         </div>
         <div class="menu-card-item" onclick="pindahMenu('Rules')">
-            <div class="icon-wrapper"><i data-lucide="file-text" style="width:26px; height:26px;"></i></div>
-            <div class="menu-text-content">
-                <h3>SOP Promotor</h3>
-                <p>Aturan kerja & standar operasional</p>
-            </div>
+            <div class="icon-wrapper"><i data-lucide="file-text" style="width:24px; height:24px;"></i></div>
+            <h3>SOP Promotor</h3>
         </div>
         <div class="menu-card-item" onclick="pindahMenu('Punishment')">
-            <div class="icon-wrapper"><i data-lucide="alert-triangle" style="width:26px; height:26px;"></i></div>
-            <div class="menu-text-content">
-                <h3>Punishment</h3>
-                <p>Daftar sanksi & ketentuan pelanggaran</p>
-            </div>
+            <div class="icon-wrapper"><i data-lucide="alert-triangle" style="width:24px; height:24px;"></i></div>
+            <h3>Punishment</h3>
         </div>
         <div class="menu-card-item" onclick="pindahMenu('PelanggaranSaya')">
-            <div class="icon-wrapper"><i data-lucide="shield-alert" style="width:26px; height:26px;"></i></div>
-            <div class="menu-text-content">
-                <span class="admin-badge" data-badge="admin">Monitor Admin</span>
-                <h3>Pelanggaran Saya</h3>
-                <p>Catatan pelanggaran & sanksi promotor</p>
-            </div>
+            <div class="icon-wrapper"><i data-lucide="shield-alert" style="width:24px; height:24px;"></i></div>
+            <h3>Pelanggaran Saya</h3>
         </div>
         <div class="menu-card-item" onclick="pindahMenu('Reward')">
-            <div class="icon-wrapper"><i data-lucide="award" style="width:26px; height:26px;"></i></div>
-            <div class="menu-text-content">
-                <h3>Daftar Rewards</h3>
-                <p>Daftar Rewards pencapaian toko</p>
-            </div>
+            <div class="icon-wrapper"><i data-lucide="award" style="width:24px; height:24px;"></i></div>
+            <h3>Daftar Rewards</h3>
         </div>
         <div class="menu-card-item" onclick="pindahMenu('RewardSaya')">
-            <div class="icon-wrapper"><i data-lucide="gift" style="width:26px; height:26px;"></i></div>
-            <div class="menu-text-content">
-                <span class="admin-badge" data-badge="admin">Monitor Admin</span>
-                <h3>Rewards Saya</h3>
-                <p>Riwayat Rewards yang Anda dapatkan</p>
-            </div>
+            <div class="icon-wrapper"><i data-lucide="gift" style="width:24px; height:24px;"></i></div>
+            <h3>Rewards Saya</h3>
         </div>
     </div>
 
@@ -976,7 +868,7 @@ document.addEventListener("DOMContentLoaded", () => {
         document.getElementById("dashboard").style.display = "block";
 
         if (currentRole === "USER") {
-            document.getElementById("menuPerolehanCard").style.display = "none";
+            document.getElementById("menuPerolehanCard").style.display = "block";
             muatSemuaDataLatarBelakang(currentUser);
         } else {
             document.getElementById("menuPerolehanCard").style.display = "block";
@@ -987,30 +879,15 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 function aturTampilanBerdasarkanRole() {
-    const badges = document.querySelectorAll('.admin-badge');
     const subtitle = document.getElementById("roleSubtitle");
     const uploadCard = document.getElementById("adminUploadCard");
     
     if (currentRole === "ADMIN") {
         if(subtitle) subtitle.innerText = "Dashboard Monitoring & Kontrol Admin";
         if(uploadCard) uploadCard.style.display = "block";
-
-        badges.forEach(b => {
-            if(b.getAttribute("data-badge") === "admin") {
-                b.style.display = "inline-block";
-                b.innerText = "Panel Kontrol";
-            }
-        });
     } else {
         if(subtitle) subtitle.innerText = "Dashboard Mandiri Promotor";
         if(uploadCard) uploadCard.style.display = "none";
-
-        badges.forEach(b => {
-            if(b.getAttribute("data-badge") === "menu") {
-                b.style.display = "inline-block";
-                b.innerText = "Data Saya";
-            }
-        });
     }
 }
 
@@ -1103,7 +980,7 @@ async function login() {
         showPopup("Selamat Datang " + currentUser);
 
         if (currentRole === "USER") {
-            document.getElementById("menuPerolehanCard").style.display = "none";
+            document.getElementById("menuPerolehanCard").style.display = "block";
             await muatSemuaDataLatarBelakang(currentUser);
         } else {
             document.getElementById("menuPerolehanCard").style.display = "block";
@@ -1193,7 +1070,6 @@ async function muatSemuaDataLatarBelakang(namaTarget) {
         let detailPenjualan = [];
         let detailUC = [];
 
-        // PENENTUAN TANGGAL DINAMIS (TANGGAL 1 SAMPAI HARI INI DI BULAN BERJALAN)
         const sekarang = new Date();
         const thnSekarang = sekarang.getFullYear();
         const blnSekarang = sekarang.getMonth();
@@ -1265,7 +1141,6 @@ async function muatSemuaDataLatarBelakang(namaTarget) {
                     detailPenjualan.push({ tanggal: tglText, produk: namaProduk, qty: qty, omzet: omzet });
                 }
 
-                // FILTERING UC: DINAMIS DARI TANGGAL 1 SAMPAI TANGGAL HARI INI PADA BULAN BERJALAN
                 if (kategori === "GARANSI") {
                     let dateObj = parseTanggalLaporan(tglText);
                     if (dateObj) {
@@ -1368,7 +1243,8 @@ async function pindahMenu(namaMenu) {
     else if (namaMenu === "Reward") judulMenuText = "Daftar Reward Promotor";
     else if (namaMenu === "RewardSaya") judulMenuText = "Reward Saya";
     else if (namaMenu === "PelanggaranSaya") judulMenuText = "Catatan Pelanggaran";
-    else if (namaMenu === "PerolehanBrand") judulMenuText = "Perolehan Brand Saya";
+    else if (namaMenu === "PerolehanBrand") judulMenuText = "Perolehan Brand";
+    else if (namaMenu === "Perolehan") judulMenuText = "Perolehan Omzet Toko";
     else if (namaMenu === "UC") {
         const pStr = (cacheData.uc && cacheData.uc.periodeStr) ? cacheData.uc.periodeStr : "Bulan Ini";
         judulMenuText = `Poin UC (Periode ${pStr})`;
@@ -1399,9 +1275,9 @@ function jalankanRenderMenu(namaMenu) {
     const searchBoxEl = document.getElementById("searchBoxWrapper");
     if (searchBoxEl) {
         if (currentRole === "USER") {
-            searchBoxEl.style.display = "none"; 
+            searchBoxEl.style.display = (namaMenu === "PerolehanBrand") ? "none" : "none"; 
         } else {
-            searchBoxEl.style.display = (isGlobal && namaMenu !== "PelanggaranSaya" && namaMenu !== "RewardSaya") ? "none" : "block"; 
+            searchBoxEl.style.display = (isGlobal && namaMenu !== "PelanggaranSaya" && namaMenu !== "RewardSaya" && namaMenu !== "PerolehanBrand") ? "none" : "block"; 
         }
     }
 
@@ -1531,8 +1407,8 @@ function renderUC(data) {
     document.getElementById("summary").innerHTML = `
     <div class="summary-card">
         <h2><i data-lucide="star" style="width:20px; height:20px;"></i> ${data.nama}</h2>
-        <p>Periode Perhitungan UC : <b>Tanggal ${data.periodeStr || '1 Bulan Ini'}</b></p>
-        <p>Total UC Terkumpul : <b style="font-family:var(--font-num); color:var(--gold-main); font-size:16px;">${data.totalUC} Poin</b></p>
+        <p>Periode : <b>${data.periodeStr || '1 - 29 Agustus 2026'}</b></p>
+        <p>Total UC : <b style="font-family:var(--font-num); color:var(--gold-main); font-size:16px;">${data.totalUC} uc</b></p>
     </div>`;
 
     let html = "";
@@ -1544,7 +1420,7 @@ function renderUC(data) {
             <div class="card success">
                 <div class="tanggal">📅 ${x.tanggal}</div>
                 <div style="font-size:13.5px; font-weight:700; margin-bottom:8px; color:#ffffff;">${x.produk}</div>
-                <div class="row"><span>Qty UC</span><span style="font-family:var(--font-num); font-weight:700; color:#fff;">${x.qty}</span></div>
+                <div class="row"><span>Qty UC</span><span style="font-family:var(--font-num); font-weight:700; color:#fff;">${x.qty} uc</span></div>
             </div>`;
         });
     }
@@ -1556,36 +1432,42 @@ function renderUC(data) {
 function renderPerolehanBrand(data) {
     if (!data || !Array.isArray(data.list)) return;
 
+    if (currentRole === "USER") {
+        const userObj = data.list.find(x => (x.nama || "").toUpperCase() === (currentUser || "").toUpperCase());
+        const omzetVal = Number(userObj ? userObj.omzetBrand : 0);
+        const unitVal = Number(userObj ? userObj.unitBrand : 0);
+
+        document.getElementById("summary").innerHTML = `
+        <div class="summary-card">
+            <h2><i data-lucide="tag" style="width:20px; height:20px;"></i> Perolehan Brand Saya</h2>
+            <p>👤 <b>${currentUser}</b></p>
+            <p>🏷️ Brand : <b>${userObj ? userObj.brandMaster : '-'}</b></p>
+            <p>📦 Total Unit : <b style="font-family:var(--font-num);">${unitVal} Unit</b></p>
+            <p>💰 Total Omzet Brand : <span style="font-weight:bold; color:var(--accent-green); font-family:var(--font-num);">Rp ${omzetVal.toLocaleString("id-ID")}</span></p>
+        </div>`;
+        document.getElementById("hasil").innerHTML = "";
+        return;
+    }
+
     let totalOmzetBrandToko = 0;
     let totalUnitBrandToko = 0;
-
     data.list.forEach(x => {
         totalOmzetBrandToko += Number(x.omzetBrand || 0);
         totalUnitBrandToko += Number(x.unitBrand || 0);
     });
 
-    const user = data.list.find(x => (x.nama || "").toUpperCase() === (currentUser || "").toUpperCase());
-    const posisi = user ? data.list.findIndex(x => (x.nama || "").toUpperCase() === (currentUser || "").toUpperCase()) + 1 : 0;
-
     document.getElementById("summary").innerHTML = `
     <div class="summary-card">
-    <h2><i data-lucide="tag" style="width:20px; height:20px;"></i> Perolehan Khusus Brand Toko</h2>
-    ${currentRole === "ADMIN" ? 
-        `<p>👥 Jumlah Promotor : <b style="font-family:var(--font-num);">${data.list.length}</b></p>
-         <p>💰 Total Omzet Khusus Brand : <span style="font-weight:bold;color:var(--accent-green);font-family:var(--font-num);">Rp ${totalOmzetBrandToko.toLocaleString("id-ID")}</span></p>
-         <p>📦 Total Unit Khusus Brand : <b style="font-family:var(--font-num);">${totalUnitBrandToko} Unit</b></p>` :
-        `<p>👤 <b>${currentUser}</b></p>
-         <p>🏷️ Brand Saya : <b>${user ? user.brandMaster : '-'}</b></p>
-         <p>💰 Omzet Brand Saya : <span style="font-weight:bold; color:var(--accent-green); font-family:var(--font-num);">Rp ${Number(user ? user.omzetBrand : 0).toLocaleString("id-ID")}</span> (<span style="font-family:var(--font-num);">${user ? user.unitBrand : 0}</span> Unit)</p>
-         <p>🏅 Peringkat Brand : <b><span style="font-family:var(--font-num);">${posisi > 0 ? posisi : '-'}</span> dari <span style="font-family:var(--font-num);">${data.list.length}</span> Promotor</b></p>`
-    }
+        <h2><i data-lucide="tag" style="width:20px; height:20px;"></i> Perolehan Brand (Semua Promotor)</h2>
+        <p>👥 Jumlah Promotor : <b style="font-family:var(--font-num);">${data.list.length}</b></p>
+        <p>💰 Total Omzet Brand Toko : <span style="font-weight:bold;color:var(--accent-green);font-family:var(--font-num);">Rp ${totalOmzetBrandToko.toLocaleString("id-ID")}</span></p>
+        <p>📦 Total Unit Brand Toko : <b style="font-family:var(--font-num);">${totalUnitBrandToko} Unit</b></p>
     </div>`;
 
     let html = `<div class="summary-card">`;
     data.list.forEach((x, i) => {
         const omzetVal = Number(x.omzetBrand || 0);
         const unitVal = Number(x.unitBrand || 0);
-        const warnaOmzet = omzetVal >= 100000000 ? 'var(--accent-green)' : omzetVal >= 80000000 ? '#f59e0b' : 'var(--accent-red)';
 
         html += `
             <div style="display:flex; align-items:center; justify-content:space-between; padding:12px 0; border-bottom:1px solid rgba(255,255,255,0.06); gap:10px;">
@@ -1597,7 +1479,7 @@ function renderPerolehanBrand(data) {
                     </div>
                 </div>
                 <div style="text-align:right; white-space:nowrap; flex-shrink:0;">
-                    <div style="font-weight:800; font-size:14px; color:${warnaOmzet}; font-family:var(--font-num);">Rp ${omzetVal.toLocaleString("id-ID")}</div>
+                    <div style="font-weight:800; font-size:14px; color:var(--accent-green); font-family:var(--font-num);">Rp ${omzetVal.toLocaleString("id-ID")}</div>
                     <div style="font-size:11.5px; font-weight:600; color:var(--text-sub); margin-top:2px;">📦 <span style="font-family:var(--font-num);">${unitVal}</span> Unit</div>
                 </div>
             </div>`;
@@ -1616,7 +1498,7 @@ function renderPerolehan(data) {
 
     document.getElementById("summary").innerHTML = `
     <div class="summary-card">
-        <h2><i data-lucide="bar-chart-3" style="width:20px; height:20px;"></i> Perolehan & Rekap Toko</h2>
+        <h2><i data-lucide="bar-chart-3" style="width:20px; height:20px;"></i> Perolehan Omzet Toko</h2>
         <p>👥 Jumlah Promotor : <b style="font-family:var(--font-num);">${data.list.length}</b></p>
         <p>💰 Total Omzet Toko : <span style="font-weight:bold;color:var(--accent-green);font-family:var(--font-num);">Rp ${totalOmzet.toLocaleString("id-ID")}</span></p>
     </div>`;
@@ -1829,7 +1711,7 @@ function prosesEkspor(format) {
     if (format === 'excel') {
         let rowsArr = [];
         if (activeTab === "Perolehan") {
-            rowsArr.push(["REKAP PEROLEHAN & OMZET PROMOTOR"], []);
+            rowsArr.push(["REKAP PEROLEHAN OMZET TOKO"], []);
             rowsArr.push(["Peringkat", "Nama Promotor", "Omzet (Rp)"]);
             if (cacheData.perolehan && cacheData.perolehan.list) {
                 cacheData.perolehan.list.forEach((x, i) => {
@@ -1870,7 +1752,6 @@ function showPopup(pesan) {
 function tutupPopup() { document.getElementById("popup").style.display = "none"; }
 </script>
 
-<!-- POPUP INFORMASI -->
 <div id="popup">
   <div class="modern-popup-box">
     <h3 style="margin:0; color:var(--gold-main);">Informasi</h3>
@@ -1879,7 +1760,6 @@ function tutupPopup() { document.getElementById("popup").style.display = "none";
   </div>
 </div>
 
-<!-- POPUP KELUAR -->
 <div id="logoutPopup">
   <div class="modern-popup-box">
     <h3 style="margin:0; color:var(--accent-red);">🚪 Keluar Aplikasi</h3>
