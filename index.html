@@ -335,7 +335,7 @@
         }
         #nama option { background: #0b0f19; color: #ffffff; }
 
-        /* KARTU MENU UTAMA */
+        /* KARTU MENU UTAMA (PERBAIKAN RESPONSIVE LAYOUT HP) */
         #menuGridContainer {
             max-width: 1100px;
             margin: 0 auto;
@@ -349,7 +349,7 @@
             background: rgba(18, 26, 43, 0.65);
             border: 1px solid rgba(255, 255, 255, 0.08);
             border-radius: 20px;
-            padding: 26px 22px;
+            padding: 24px 20px;
             text-align: center;
             cursor: pointer;
             transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
@@ -357,6 +357,11 @@
             position: relative;
             overflow: hidden;
             backdrop-filter: blur(12px);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+            height: auto; /* Memastikan kartu menyesuaikan tinggi konten */
         }
 
         .menu-card-item::before {
@@ -380,10 +385,10 @@
         }
 
         .menu-card-item .icon-wrapper {
-            width: 60px;
-            height: 60px;
-            margin: 0 auto 16px;
-            border-radius: 18px;
+            width: 56px;
+            height: 56px;
+            margin-bottom: 14px;
+            border-radius: 16px;
             background: rgba(245, 197, 24, 0.1);
             border: 1px solid rgba(245, 197, 24, 0.25);
             display: flex;
@@ -391,43 +396,46 @@
             justify-content: center;
             color: var(--gold-main);
             transition: all 0.3s ease;
+            flex-shrink: 0;
         }
 
         .menu-card-item:hover .icon-wrapper {
-            transform: scale(1.1);
+            transform: scale(1.08);
             background: rgba(245, 197, 24, 0.2);
             box-shadow: 0 0 20px rgba(245, 197, 24, 0.3);
         }
 
         .menu-card-item h3 {
-            margin: 0 0 6px;
-            font-size: 18px;
+            margin: 0 0 8px;
+            font-size: 17px;
             color: #ffffff;
             font-weight: 800;
             letter-spacing: -0.3px;
+            line-height: 1.3;
         }
 
         .menu-card-item p {
             margin: 0;
-            font-size: 12.5px;
+            font-size: 13px;
             color: var(--text-sub);
             line-height: 1.5;
             font-weight: 500;
+            word-break: break-word; /* Mencegah teks meluap/menumpuk */
         }
 
         .admin-badge {
             position: absolute;
-            top: 14px;
-            right: 14px;
+            top: 12px;
+            right: 12px;
             background: rgba(245, 197, 24, 0.12);
             color: var(--gold-main);
-            font-size: 10px;
+            font-size: 9.5px;
             font-weight: 800;
-            padding: 4px 12px;
+            padding: 3px 10px;
             border-radius: 20px;
             border: 1px solid rgba(245, 197, 24, 0.3);
             display: none;
-            letter-spacing: 0.8px;
+            letter-spacing: 0.6px;
             text-transform: uppercase;
         }
 
@@ -670,13 +678,61 @@
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
         @keyframes slideUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
 
+        /* MEDIA QUERIES UNTUK TAMPILAN HP RAPI DAN TIDAK MENUMPUK */
         @media(max-width: 1024px) { 
             .grid, #menuGridContainer { grid-template-columns: repeat(2, 1fr) !important; } 
         }
         @media(max-width: 768px) {
-            .grid, #menuGridContainer { grid-template-columns: 1fr !important; }
             body { padding: 16px 12px; }
-            .header h1 { font-size: 28px; }
+            .header h1 { font-size: 26px; }
+
+            /* Menjadikan Menu Kartu 1 Kolom Rapi di HP */
+            #menuGridContainer { 
+                grid-template-columns: 1fr !important; 
+                gap: 14px !important;
+            }
+
+            .menu-card-item {
+                padding: 18px 16px;
+                text-align: left; /* Tampilan baris horizontal modern di HP */
+                display: grid;
+                grid-template-columns: auto 1fr;
+                gap: 14px;
+                align-items: center;
+            }
+
+            .menu-card-item .icon-wrapper {
+                margin-bottom: 0;
+                width: 48px;
+                height: 48px;
+            }
+
+            .menu-card-item .menu-text-content {
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+            }
+
+            .menu-card-item h3 {
+                font-size: 16px;
+                margin-bottom: 4px;
+            }
+
+            .menu-card-item p {
+                font-size: 12px;
+                line-height: 1.4;
+            }
+
+            .admin-badge {
+                position: relative;
+                top: auto;
+                right: auto;
+                align-self: flex-start;
+                margin-bottom: 6px;
+                display: inline-block !important;
+            }
+
+            .grid { grid-template-columns: 1fr !important; }
         }
     </style>
 </head>
@@ -747,72 +803,96 @@
     <!-- KARTU MENU UTAMA -->
     <div id="menuGridContainer">
         <div class="menu-card-item" onclick="pindahMenu('Absensi')">
-            <span class="admin-badge" data-badge="menu">Pribadi</span>
-            <div class="icon-wrapper"><i data-lucide="calendar-check" style="width:28px; height:28px;"></i></div>
-            <h3>Absensi</h3>
-            <p>Rekap kehadiran dan status finger harian</p>
+            <div class="icon-wrapper"><i data-lucide="calendar-check" style="width:26px; height:26px;"></i></div>
+            <div class="menu-text-content">
+                <span class="admin-badge" data-badge="menu">Pribadi</span>
+                <h3>Absensi</h3>
+                <p>Rekap kehadiran dan status finger harian</p>
+            </div>
         </div>
         <div class="menu-card-item" onclick="pindahMenu('Penjualan')">
-            <span class="admin-badge" data-badge="menu">Pribadi</span>
-            <div class="icon-wrapper"><i data-lucide="shopping-bag" style="width:28px; height:28px;"></i></div>
-            <h3>Penjualan</h3>
-            <p>Omzet produk harian dan perolehan unit</p>
+            <div class="icon-wrapper"><i data-lucide="shopping-bag" style="width:26px; height:26px;"></i></div>
+            <div class="menu-text-content">
+                <span class="admin-badge" data-badge="menu">Pribadi</span>
+                <h3>Penjualan</h3>
+                <p>Omzet produk harian dan perolehan unit</p>
+            </div>
         </div>
         <div class="menu-card-item" onclick="pindahMenu('UC')">
-            <span class="admin-badge" data-badge="menu">Pribadi</span>
-            <div class="icon-wrapper"><i data-lucide="star" style="width:28px; height:28px;"></i></div>
-            <h3>UC</h3>
-            <p>Pencapaian poin UC (Tanggal 1-30/31)</p>
+            <div class="icon-wrapper"><i data-lucide="star" style="width:26px; height:26px;"></i></div>
+            <div class="menu-text-content">
+                <span class="admin-badge" data-badge="menu">Pribadi</span>
+                <h3>UC</h3>
+                <p>Pencapaian poin UC (Tanggal 1-30/31)</p>
+            </div>
         </div>
         <div class="menu-card-item" id="menuPerolehanCard" onclick="pindahMenu('Perolehan')">
-            <span class="admin-badge" data-badge="admin">Admin Only</span>
-            <div class="icon-wrapper"><i data-lucide="trending-up" style="width:28px; height:28px;"></i></div>
-            <h3>Perolehan</h3>
-            <p>Peringkat & akumulasi omzet seluruh promotor</p>
+            <div class="icon-wrapper"><i data-lucide="trending-up" style="width:26px; height:26px;"></i></div>
+            <div class="menu-text-content">
+                <span class="admin-badge" data-badge="admin">Admin Only</span>
+                <h3>Perolehan</h3>
+                <p>Peringkat & akumulasi omzet seluruh promotor</p>
+            </div>
         </div>
         <div class="menu-card-item" onclick="pindahMenu('PerolehanBrand')">
-            <span class="admin-badge" data-badge="menu">Brand Saya</span>
-            <div class="icon-wrapper"><i data-lucide="tag" style="width:28px; height:28px;"></i></div>
-            <h3>Perolehan Brand</h3>
-            <p>Rekap penjualan khusus brand Anda sendiri</p>
+            <div class="icon-wrapper"><i data-lucide="tag" style="width:26px; height:26px;"></i></div>
+            <div class="menu-text-content">
+                <span class="admin-badge" data-badge="menu">Brand Saya</span>
+                <h3>Perolehan Brand</h3>
+                <p>Rekap penjualan khusus brand Anda sendiri</p>
+            </div>
         </div>
         <div class="menu-card-item" onclick="pindahMenu('DendaUC')">
-            <span class="admin-badge" data-badge="admin">Admin / Info</span>
-            <div class="icon-wrapper"><i data-lucide="zap" style="width:28px; height:28px;"></i></div>
-            <h3>Denda & Late</h3>
-            <p>Rekapitulasi keterlambatan & denda target</p>
+            <div class="icon-wrapper"><i data-lucide="zap" style="width:26px; height:26px;"></i></div>
+            <div class="menu-text-content">
+                <span class="admin-badge" data-badge="admin">Admin / Info</span>
+                <h3>Denda & Late</h3>
+                <p>Rekapitulasi keterlambatan & denda target</p>
+            </div>
         </div>
         <div class="menu-card-item" onclick="pindahMenu('Promo')">
-            <div class="icon-wrapper"><i data-lucide="percent" style="width:28px; height:28px;"></i></div>
-            <h3>Promo Toko</h3>
-            <p>Daftar promo produk & program toko aktif</p>
+            <div class="icon-wrapper"><i data-lucide="percent" style="width:26px; height:26px;"></i></div>
+            <div class="menu-text-content">
+                <h3>Promo Toko</h3>
+                <p>Daftar promo produk & program toko aktif</p>
+            </div>
         </div>
         <div class="menu-card-item" onclick="pindahMenu('Rules')">
-            <div class="icon-wrapper"><i data-lucide="file-text" style="width:28px; height:28px;"></i></div>
-            <h3>SOP Promotor</h3>
-            <p>Aturan kerja & standar operasional</p>
+            <div class="icon-wrapper"><i data-lucide="file-text" style="width:26px; height:26px;"></i></div>
+            <div class="menu-text-content">
+                <h3>SOP Promotor</h3>
+                <p>Aturan kerja & standar operasional</p>
+            </div>
         </div>
         <div class="menu-card-item" onclick="pindahMenu('Punishment')">
-            <div class="icon-wrapper"><i data-lucide="alert-triangle" style="width:28px; height:28px;"></i></div>
-            <h3>Punishment</h3>
-            <p>Daftar sanksi & ketentuan pelanggaran</p>
+            <div class="icon-wrapper"><i data-lucide="alert-triangle" style="width:26px; height:26px;"></i></div>
+            <div class="menu-text-content">
+                <h3>Punishment</h3>
+                <p>Daftar sanksi & ketentuan pelanggaran</p>
+            </div>
         </div>
         <div class="menu-card-item" onclick="pindahMenu('PelanggaranSaya')">
-            <span class="admin-badge" data-badge="admin">Monitor Admin</span>
-            <div class="icon-wrapper"><i data-lucide="shield-alert" style="width:28px; height:28px;"></i></div>
-            <h3>Pelanggaran Saya</h3>
-            <p>Catatan pelanggaran & sanksi promotor</p>
+            <div class="icon-wrapper"><i data-lucide="shield-alert" style="width:26px; height:26px;"></i></div>
+            <div class="menu-text-content">
+                <span class="admin-badge" data-badge="admin">Monitor Admin</span>
+                <h3>Pelanggaran Saya</h3>
+                <p>Catatan pelanggaran & sanksi promotor</p>
+            </div>
         </div>
         <div class="menu-card-item" onclick="pindahMenu('Reward')">
-            <div class="icon-wrapper"><i data-lucide="award" style="width:28px; height:28px;"></i></div>
-            <h3>Daftar Rewards</h3>
-            <p>Daftar Rewards pencapaian toko</p>
+            <div class="icon-wrapper"><i data-lucide="award" style="width:26px; height:26px;"></i></div>
+            <div class="menu-text-content">
+                <h3>Daftar Rewards</h3>
+                <p>Daftar Rewards pencapaian toko</p>
+            </div>
         </div>
         <div class="menu-card-item" onclick="pindahMenu('RewardSaya')">
-            <span class="admin-badge" data-badge="admin">Monitor Admin</span>
-            <div class="icon-wrapper"><i data-lucide="gift" style="width:28px; height:28px;"></i></div>
-            <h3>Rewards Saya</h3>
-            <p>Riwayat Rewards yang Anda dapatkan</p>
+            <div class="icon-wrapper"><i data-lucide="gift" style="width:26px; height:26px;"></i></div>
+            <div class="menu-text-content">
+                <span class="admin-badge" data-badge="admin">Monitor Admin</span>
+                <h3>Rewards Saya</h3>
+                <p>Riwayat Rewards yang Anda dapatkan</p>
+            </div>
         </div>
     </div>
 
@@ -918,7 +998,7 @@ function aturTampilanBerdasarkanRole() {
 
         badges.forEach(b => {
             if(b.getAttribute("data-badge") === "admin") {
-                b.style.display = "block";
+                b.style.display = "inline-block";
                 b.innerText = "Panel Kontrol";
             }
         });
@@ -928,7 +1008,7 @@ function aturTampilanBerdasarkanRole() {
 
         badges.forEach(b => {
             if(b.getAttribute("data-badge") === "menu") {
-                b.style.display = "block";
+                b.style.display = "inline-block";
                 b.innerText = "Data Saya";
             }
         });
