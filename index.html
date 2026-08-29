@@ -327,7 +327,7 @@
         }
         #nama option { background: #0b0f19; color: #ffffff; }
 
-        /* KARTU MENU UTAMA (DISESUAIKAN AGAR PAS DAN RAPI) */
+        /* KARTU MENU UTAMA (STABIL & SEJAJAR DI HP) */
         #menuGridContainer {
             max-width: 1100px;
             margin: 0 auto;
@@ -656,7 +656,7 @@
             }
 
             .menu-card-item {
-                padding: 16px 16px;
+                padding: 14px 16px;
                 min-height: auto;
                 text-align: left;
                 display: flex;
@@ -668,13 +668,15 @@
 
             .menu-card-item .icon-wrapper {
                 margin-bottom: 0;
-                width: 44px;
-                height: 44px;
+                width: 42px;
+                height: 42px;
+                flex-shrink: 0;
             }
 
             .menu-card-item h3 {
-                font-size: 15px;
+                font-size: 14px;
                 text-align: left;
+                line-height: 1.25;
             }
 
             .grid { grid-template-columns: 1fr !important; }
