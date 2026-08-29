@@ -325,7 +325,7 @@
         }
         #nama option { background: #0b0f19; color: #ffffff; }
 
-        /* KARTU MENU UTAMA (TANPA DESKRIPSI DI BAWAH JUDUL) */
+        /* KARTU MENU UTAMA */
         #menuGridContainer {
             max-width: 1100px;
             margin: 0 auto;
@@ -412,11 +412,9 @@
 
         .nav-back-bar {
             display: flex;
-            justify-content: space-between;
+            justify-content: flex-start;
             align-items: center;
             margin-bottom: 22px;
-            flex-wrap: wrap;
-            gap: 12px;
         }
 
         .btn-back-menu {
@@ -735,7 +733,7 @@
         <button class="btn-logout-main" onclick="logout()"><i data-lucide="log-out" style="width:16px; height:16px;"></i> Keluar</button>
     </div>
 
-    <!-- KARTU MENU UTAMA (TANPA TEKS DESKRIPSI DI BAWAH JUDUL) -->
+    <!-- KARTU MENU UTAMA -->
     <div id="menuGridContainer">
         <div class="menu-card-item" onclick="pindahMenu('Absensi')">
             <div class="icon-wrapper"><i data-lucide="calendar-check" style="width:24px; height:24px;"></i></div>
@@ -787,11 +785,10 @@
         </div>
     </div>
 
-    <!-- TAMPILAN DETAIL -->
+    <!-- TAMPILAN DETAIL (TANPA TEKS JUDUL DI SEBELAH KANAN) -->
     <div id="detailViewSection" style="display:none;">
         <div class="nav-back-bar">
             <button class="btn-back-menu" onclick="kembaliKeMenuUtama()"><i data-lucide="arrow-left" style="width:16px; height:16px;"></i> Kembali ke Menu</button>
-            <div id="currentMenuTitle" style="color:var(--gold-main); font-weight:800; font-size:17px;"></div>
         </div>
 
         <div class="search-box" id="searchBoxWrapper">
@@ -1237,19 +1234,6 @@ async function pindahMenu(namaMenu) {
 
     document.getElementById("menuGridContainer").style.display = "none";
     document.getElementById("detailViewSection").style.display = "block";
-    
-    let judulMenuText = namaMenu;
-    if (namaMenu === "Punishment") judulMenuText = "Punishment (Sanksi)";
-    else if (namaMenu === "Reward") judulMenuText = "Daftar Reward Promotor";
-    else if (namaMenu === "RewardSaya") judulMenuText = "Reward Saya";
-    else if (namaMenu === "PelanggaranSaya") judulMenuText = "Catatan Pelanggaran";
-    else if (namaMenu === "PerolehanBrand") judulMenuText = "Perolehan Brand";
-    else if (namaMenu === "Perolehan") judulMenuText = "Perolehan Omzet Toko";
-    else if (namaMenu === "UC") {
-        const pStr = (cacheData.uc && cacheData.uc.periodeStr) ? cacheData.uc.periodeStr : "Bulan Ini";
-        judulMenuText = `Poin UC (Periode ${pStr})`;
-    }
-    document.getElementById("currentMenuTitle").innerText = "Menu: " + judulMenuText;
 
     jalankanRenderMenu(namaMenu);
 }
@@ -1275,7 +1259,7 @@ function jalankanRenderMenu(namaMenu) {
     const searchBoxEl = document.getElementById("searchBoxWrapper");
     if (searchBoxEl) {
         if (currentRole === "USER") {
-            searchBoxEl.style.display = (namaMenu === "PerolehanBrand") ? "none" : "none"; 
+            searchBoxEl.style.display = "none"; 
         } else {
             searchBoxEl.style.display = (isGlobal && namaMenu !== "PelanggaranSaya" && namaMenu !== "RewardSaya" && namaMenu !== "PerolehanBrand") ? "none" : "block"; 
         }
@@ -1439,7 +1423,7 @@ function renderPerolehanBrand(data) {
 
         document.getElementById("summary").innerHTML = `
         <div class="summary-card">
-            <h2><i data-lucide="tag" style="width:20px; height:20px;"></i> Perolehan Brand Saya</h2>
+            <h2><i data-lucide="tag" style="width:20px; height:20px;"></i> Perolehan Brand</h2>
             <p>👤 <b>${currentUser}</b></p>
             <p>🏷️ Brand : <b>${userObj ? userObj.brandMaster : '-'}</b></p>
             <p>📦 Total Unit : <b style="font-family:var(--font-num);">${unitVal} Unit</b></p>
@@ -1458,7 +1442,7 @@ function renderPerolehanBrand(data) {
 
     document.getElementById("summary").innerHTML = `
     <div class="summary-card">
-        <h2><i data-lucide="tag" style="width:20px; height:20px;"></i> Perolehan Brand (Semua Promotor)</h2>
+        <h2><i data-lucide="tag" style="width:20px; height:20px;"></i> Perolehan Brand</h2>
         <p>👥 Jumlah Promotor : <b style="font-family:var(--font-num);">${data.list.length}</b></p>
         <p>💰 Total Omzet Brand Toko : <span style="font-weight:bold;color:var(--accent-green);font-family:var(--font-num);">Rp ${totalOmzetBrandToko.toLocaleString("id-ID")}</span></p>
         <p>📦 Total Unit Brand Toko : <b style="font-family:var(--font-num);">${totalUnitBrandToko} Unit</b></p>
