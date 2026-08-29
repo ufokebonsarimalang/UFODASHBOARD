@@ -327,7 +327,7 @@
         }
         #nama option { background: #0b0f19; color: #ffffff; }
 
-        /* KARTU MENU UTAMA (PASTI SEJAJAR HORIZONTAL) */
+        /* KARTU MENU UTAMA (FLEX ROW DENGAN SEJAJAR SEMPURNA) */
         #menuGridContainer {
             max-width: 1100px;
             margin: 0 auto;
@@ -348,7 +348,7 @@
             position: relative;
             overflow: hidden;
             backdrop-filter: blur(12px);
-            display: flex;
+            display: flex !important;
             flex-direction: row !important;
             align-items: center !important;
             gap: 16px !important;
@@ -395,7 +395,7 @@
             box-shadow: 0 0 20px rgba(245, 197, 24, 0.35);
         }
 
-        .menu-card-item h3 {
+        .menu-card-item .menu-title {
             margin: 0 !important;
             font-size: 14.5px !important;
             color: #ffffff !important;
@@ -403,8 +403,8 @@
             letter-spacing: -0.2px !important;
             line-height: 1.3 !important;
             text-align: left !important;
+            display: inline-block !important;
             flex: 1 !important;
-            white-space: nowrap !important;
         }
 
         #detailViewSection {
@@ -717,55 +717,55 @@
         <button class="btn-logout-main" onclick="logout()"><i data-lucide="log-out" style="width:16px; height:16px;"></i> Keluar</button>
     </div>
 
-    <!-- KARTU MENU UTAMA -->
+    <!-- KARTU MENU UTAMA (MENGGUNAKAN SPAN / DIV UNTUK TEKS AGAR SEJAJAR DI SAMPING) -->
     <div id="menuGridContainer">
         <div class="menu-card-item" onclick="pindahMenu('Absensi')">
             <div class="icon-wrapper"><i data-lucide="calendar-check" style="width:22px; height:22px;"></i></div>
-            <h3>Absensi</h3>
+            <div class="menu-title">Absensi</div>
         </div>
         <div class="menu-card-item" onclick="pindahMenu('Penjualan')">
             <div class="icon-wrapper"><i data-lucide="shopping-bag" style="width:22px; height:22px;"></i></div>
-            <h3>Penjualan</h3>
+            <div class="menu-title">Penjualan</div>
         </div>
         <div class="menu-card-item" onclick="pindahMenu('UC')">
             <div class="icon-wrapper"><i data-lucide="star" style="width:22px; height:22px;"></i></div>
-            <h3>UC</h3>
+            <div class="menu-title">UC</div>
         </div>
         <div class="menu-card-item" id="menuPerolehanCard" onclick="pindahMenu('Perolehan')">
             <div class="icon-wrapper"><i data-lucide="trending-up" style="width:22px; height:22px;"></i></div>
-            <h3>Perolehan Toko</h3>
+            <div class="menu-title">Perolehan Toko</div>
         </div>
         <div class="menu-card-item" onclick="pindahMenu('PerolehanBrand')">
             <div class="icon-wrapper"><i data-lucide="tag" style="width:22px; height:22px;"></i></div>
-            <h3>Perolehan Brand</h3>
+            <div class="menu-title">Perolehan Brand</div>
         </div>
         <div class="menu-card-item" onclick="pindahMenu('DendaUC')">
             <div class="icon-wrapper"><i data-lucide="zap" style="width:22px; height:22px;"></i></div>
-            <h3>Denda & Late</h3>
+            <div class="menu-title">Denda & Late</div>
         </div>
         <div class="menu-card-item" onclick="pindahMenu('Promo')">
             <div class="icon-wrapper"><i data-lucide="percent" style="width:22px; height:22px;"></i></div>
-            <h3>Promo Toko</h3>
+            <div class="menu-title">Promo Toko</div>
         </div>
         <div class="menu-card-item" onclick="pindahMenu('Rules')">
             <div class="icon-wrapper"><i data-lucide="file-text" style="width:22px; height:22px;"></i></div>
-            <h3>SOP Promotor</h3>
+            <div class="menu-title">SOP Promotor</div>
         </div>
         <div class="menu-card-item" onclick="pindahMenu('Punishment')">
             <div class="icon-wrapper"><i data-lucide="alert-triangle" style="width:22px; height:22px;"></i></div>
-            <h3>Punishment</h3>
+            <div class="menu-title">Punishment</div>
         </div>
         <div class="menu-card-item" onclick="pindahMenu('PelanggaranSaya')">
             <div class="icon-wrapper"><i data-lucide="shield-alert" style="width:22px; height:22px;"></i></div>
-            <h3>Pelanggaran Saya</h3>
+            <div class="menu-title">Pelanggaran Saya</div>
         </div>
         <div class="menu-card-item" onclick="pindahMenu('Reward')">
             <div class="icon-wrapper"><i data-lucide="award" style="width:22px; height:22px;"></i></div>
-            <h3>Daftar Rewards</h3>
+            <div class="menu-title">Daftar Rewards</div>
         </div>
         <div class="menu-card-item" onclick="pindahMenu('RewardSaya')">
             <div class="icon-wrapper"><i data-lucide="gift" style="width:22px; height:22px;"></i></div>
-            <h3>Rewards Saya</h3>
+            <div class="menu-title">Rewards Saya</div>
         </div>
     </div>
 
