@@ -1100,13 +1100,33 @@ cacheData.jualGlobal.forEach(dataDoc => {
 
                 if (!idSalesExcel) return;
 
-            mapMasterPromotor.forEach(p => {
+                // --- VALIDASI BULAN: Hanya pastikan masuk di bulan & tahun berjalan saja ---
+                let isBulanIni = false;
+                let tglParts = String(tglText).split(/[\/\-]/);
+                if (tglParts.length === 3) {
+                    let day = parseInt(tglParts[0]);
+                    let month = parseInt(tglParts[1]);
+                    let year = parseInt(tglParts[2]);
+                    if (year < 1000) { year = parseInt(tglParts[0]); month = parseInt(tglParts[1]); day = parseInt(tglParts[2]); }
+
+                    if (year === thnSekarang && (month - 1) === blnSekarang) {
+                        isBulanIni = true;
+                    }
+                } else {
+                    let dateObj = parseTanggalLaporan(tglText);
+                    if (dateObj && dateObj.getFullYear() === thnSekarang && dateObj.getMonth() === blnSekarang) {
+                        isBulanIni = true;
+                    }
+                }
+
+                // Jika di luar bulan ini (misal bulan lalu atau tahun lain), abaikan
+                if (!isBulanIni) return; 
+
+                // --- PROSES HITUNG (Mengikuti penuh data yang ada di file Excel yang di-upload) ---
+                mapMasterPromotor.forEach(p => {
                     if (p.idSales === idSalesExcel) {
-                        
-                        // 1. PEROLEHAN TOKO: Hitung SEMUA transaksi milik promotor ini tanpa pengecualian kategori
                         p.omzetTotal += omzet;
 
-                        // 2. PEROLEHAN BRAND: Tetap disaring (Kategori GARANSI dan ONGKOS tidak ikut dihitung)
                         let isBrandMatch = false;
                         if (p.brandKeywords.length > 0) {
                             for (let k = 0; k < p.brandKeywords.length; k++) {
@@ -1126,6 +1146,17 @@ cacheData.jualGlobal.forEach(dataDoc => {
                         }
                     }
                 });
+
+                if (daftarIdSalesSaya.includes(idSalesExcel)) {
+                    if (kategori !== "GARANSI" && kategori !== "ONGKOS") {
+                        detailPenjualan.push({ tanggal: tglText, produk: namaProduk, qty: qty, omzet: omzet });
+                    }
+
+                    if (kategori === "GARANSI") {
+                        detailUC.push({ tanggal: tglText, produk: namaProduk, qty: qty, omzet: omzet });
+                    }
+                }
+            });
                 if (daftarIdSalesSaya.includes(idSalesExcel)) {
                     if (kategori !== "GARANSI" && kategori !== "ONGKOS") {
                         detailPenjualan.push({ tanggal: tglText, produk: namaProduk, qty: qty, omzet: omzet });
