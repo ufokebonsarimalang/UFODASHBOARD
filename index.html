@@ -13,6 +13,9 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 
+    <!-- Library Icon Lucide (Modern Vector Icons) -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+
     <!-- Library Ekspor Excel & PDF -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
@@ -376,16 +379,24 @@
             opacity: 1;
         }
 
-        .menu-card-item .icon {
-            font-size: 42px;
-            margin-bottom: 14px;
-            filter: drop-shadow(0 6px 12px rgba(0,0,0,0.5));
-            display: inline-block;
-            transition: transform 0.3s ease;
+        .menu-card-item .icon-wrapper {
+            width: 60px;
+            height: 60px;
+            margin: 0 auto 16px;
+            border-radius: 18px;
+            background: rgba(245, 197, 24, 0.1);
+            border: 1px solid rgba(245, 197, 24, 0.25);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--gold-main);
+            transition: all 0.3s ease;
         }
 
-        .menu-card-item:hover .icon {
+        .menu-card-item:hover .icon-wrapper {
             transform: scale(1.1);
+            background: rgba(245, 197, 24, 0.2);
+            box-shadow: 0 0 20px rgba(245, 197, 24, 0.3);
         }
 
         .menu-card-item h3 {
@@ -557,6 +568,9 @@
             font-weight: 800;
             font-size: 13px;
             transition: all 0.25s ease;
+            display: flex;
+            align-items: center;
+            gap: 6px;
         }
         .btn-logout-main:hover { background: rgba(244, 63, 94, 0.25); transform: translateY(-1px); }
 
@@ -702,7 +716,7 @@
     <div id="adminUploadCard" class="glass-panel" style="display:none; max-width:1100px; margin:0 auto 24px; padding:24px;">
         <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px; margin-bottom:14px;">
             <h3 style="margin:0; color:var(--gold-main); font-size:16px; font-weight:800; display:flex; align-items:center; gap:8px;">
-                <span>📂</span> Form Update Data Excel (Admin Only)
+                <i data-lucide="upload-cloud" style="width:20px; height:20px;"></i> Form Update Data Excel (Admin Only)
             </h3>
             <span style="font-size:11.5px; color:var(--text-sub); background:rgba(15,23,42,0.8); padding:5px 12px; border-radius:10px; border:1px solid rgba(212,175,55,0.2); font-weight:600;">
                 File: ABSEN FINGER(2).xlsx
@@ -713,7 +727,7 @@
             <input type="file" id="inputFileAbsenExcel" accept=".xlsx, .xls" style="color:#cbd5e1; font-size:13px; background:rgba(15,23,42,0.8); padding:11px 16px; border-radius:12px; border:1px solid #334155; flex:1; min-width:240px;">
             <button onclick="importSeluruhExcelKeFirebase(document.getElementById('inputFileAbsenExcel'))" 
                     style="padding:12px 24px; background:linear-gradient(135deg, #10b981 0%, #059669 100%); color:white; border:none; border-radius:12px; font-weight:800; font-size:13px; cursor:pointer; box-shadow:0 6px 20px rgba(16,185,129,0.35); display:flex; align-items:center; gap:8px;">
-                <span>🚀</span> Import & Simpan Ke Firebase
+                <i data-lucide="database" style="width:16px; height:16px;"></i> Import & Simpan Ke Firebase
             </button>
         </div>
         <div id="statusUploadExcel" style="margin-top:12px; font-size:13px; color:var(--text-sub); font-weight:600;"></div>
@@ -726,77 +740,77 @@
     </div>
 
     <div style="max-width:1100px; margin:0 auto 24px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px;">
-        <div id="loginInfo" style="padding:10px 20px; border-radius:99px; background:rgba(18,26,43,0.85); border:1px solid rgba(212, 175, 55, 0.35); color:#f1f5f9; font-size:13.5px; font-weight:700; backdrop-filter:blur(10px);"></div>
-        <button class="btn-logout-main" onclick="logout()">🚪 Keluar</button>
+        <div id="loginInfo" style="padding:10px 20px; border-radius:99px; background:rgba(18,26,43,0.85); border:1px solid rgba(212, 175, 55, 0.35); color:#f1f5f9; font-size:13.5px; font-weight:700; backdrop-filter:blur(10px); display:flex; align-items:center; gap:8px;"></div>
+        <button class="btn-logout-main" onclick="logout()"><i data-lucide="log-out" style="width:16px; height:16px;"></i> Keluar</button>
     </div>
 
     <!-- KARTU MENU UTAMA -->
     <div id="menuGridContainer">
         <div class="menu-card-item" onclick="pindahMenu('Absensi')">
             <span class="admin-badge" data-badge="menu">Pribadi</span>
-            <div class="icon">📅</div>
+            <div class="icon-wrapper"><i data-lucide="calendar-check" style="width:28px; height:28px;"></i></div>
             <h3>Absensi</h3>
             <p>Rekap kehadiran dan status finger harian</p>
         </div>
         <div class="menu-card-item" onclick="pindahMenu('Penjualan')">
             <span class="admin-badge" data-badge="menu">Pribadi</span>
-            <div class="icon">💼</div>
+            <div class="icon-wrapper"><i data-lucide="shopping-bag" style="width:28px; height:28px;"></i></div>
             <h3>Penjualan</h3>
             <p>Omzet produk harian dan perolehan unit</p>
         </div>
         <div class="menu-card-item" onclick="pindahMenu('UC')">
             <span class="admin-badge" data-badge="menu">Pribadi</span>
-            <div class="icon">⭐</div>
+            <div class="icon-wrapper"><i data-lucide="star" style="width:28px; height:28px;"></i></div>
             <h3>UC</h3>
-            <p>Pencapaian poin UC promotor (Tgl 1-30/31)</p>
+            <p>Pencapaian poin UC (Tanggal 1-30/31)</p>
         </div>
         <div class="menu-card-item" id="menuPerolehanCard" onclick="pindahMenu('Perolehan')">
             <span class="admin-badge" data-badge="admin">Admin Only</span>
-            <div class="icon">📈</div>
+            <div class="icon-wrapper"><i data-lucide="trending-up" style="width:28px; height:28px;"></i></div>
             <h3>Perolehan</h3>
             <p>Peringkat & akumulasi omzet seluruh promotor</p>
         </div>
         <div class="menu-card-item" onclick="pindahMenu('PerolehanBrand')">
             <span class="admin-badge" data-badge="menu">Brand Saya</span>
-            <div class="icon">🏷️</div>
+            <div class="icon-wrapper"><i data-lucide="tag" style="width:28px; height:28px;"></i></div>
             <h3>Perolehan Brand</h3>
             <p>Rekap penjualan khusus brand Anda sendiri</p>
         </div>
         <div class="menu-card-item" onclick="pindahMenu('DendaUC')">
             <span class="admin-badge" data-badge="admin">Admin / Info</span>
-            <div class="icon">⚡</div>
+            <div class="icon-wrapper"><i data-lucide="zap" style="width:28px; height:28px;"></i></div>
             <h3>Denda & Late</h3>
             <p>Rekapitulasi keterlambatan & denda target</p>
         </div>
         <div class="menu-card-item" onclick="pindahMenu('Promo')">
-            <div class="icon">🏷️</div>
+            <div class="icon-wrapper"><i data-lucide="percent" style="width:28px; height:28px;"></i></div>
             <h3>Promo Toko</h3>
             <p>Daftar promo produk & program toko aktif</p>
         </div>
         <div class="menu-card-item" onclick="pindahMenu('Rules')">
-            <div class="icon">✨</div>
+            <div class="icon-wrapper"><i data-lucide="file-text" style="width:28px; height:28px;"></i></div>
             <h3>SOP Promotor</h3>
             <p>Aturan kerja & standar operasional</p>
         </div>
         <div class="menu-card-item" onclick="pindahMenu('Punishment')">
-            <div class="icon">⚠️</div>
+            <div class="icon-wrapper"><i data-lucide="alert-triangle" style="width:28px; height:28px;"></i></div>
             <h3>Punishment</h3>
             <p>Daftar sanksi & ketentuan pelanggaran</p>
         </div>
         <div class="menu-card-item" onclick="pindahMenu('PelanggaranSaya')">
             <span class="admin-badge" data-badge="admin">Monitor Admin</span>
-            <div class="icon">🚨</div>
+            <div class="icon-wrapper"><i data-lucide="shield-alert" style="width:28px; height:28px;"></i></div>
             <h3>Pelanggaran Saya</h3>
             <p>Catatan pelanggaran & sanksi promotor</p>
         </div>
         <div class="menu-card-item" onclick="pindahMenu('Reward')">
-            <div class="icon">🏆</div>
+            <div class="icon-wrapper"><i data-lucide="award" style="width:28px; height:28px;"></i></div>
             <h3>Daftar Rewards</h3>
             <p>Daftar Rewards pencapaian toko</p>
         </div>
         <div class="menu-card-item" onclick="pindahMenu('RewardSaya')">
             <span class="admin-badge" data-badge="admin">Monitor Admin</span>
-            <div class="icon">🎁</div>
+            <div class="icon-wrapper"><i data-lucide="gift" style="width:28px; height:28px;"></i></div>
             <h3>Rewards Saya</h3>
             <p>Riwayat Rewards yang Anda dapatkan</p>
         </div>
@@ -805,7 +819,7 @@
     <!-- TAMPILAN DETAIL -->
     <div id="detailViewSection" style="display:none;">
         <div class="nav-back-bar">
-            <button class="btn-back-menu" onclick="kembaliKeMenuUtama()">⬅ Kembali ke Menu</button>
+            <button class="btn-back-menu" onclick="kembaliKeMenuUtama()"><i data-lucide="arrow-left" style="width:16px; height:16px;"></i> Kembali ke Menu</button>
             <div id="currentMenuTitle" style="color:var(--gold-main); font-weight:800; font-size:17px;"></div>
         </div>
 
@@ -816,8 +830,8 @@
         <div id="summary"></div>
 
         <div class="export-container" id="exportArea">
-            <button class="btn-export btn-excel" onclick="prosesEkspor('excel')">📥 Unduh Excel</button>
-            <button class="btn-export btn-pdf" onclick="prosesEkspor('pdf')">📄 Unduh PDF</button>
+            <button class="btn-export btn-excel" onclick="prosesEkspor('excel')"><i data-lucide="file-spreadsheet" style="width:16px; height:16px;"></i> Unduh Excel</button>
+            <button class="btn-export btn-pdf" onclick="prosesEkspor('pdf')"><i data-lucide="file-text" style="width:16px; height:16px;"></i> Unduh PDF</button>
         </div>
 
         <div id="hasil" class="grid"></div>
@@ -846,27 +860,22 @@ let cacheData = {
     pelanggaranSaya: null
 };
 
-// HELPER PARSE TANGGAL UNTUK FILTER PERIODE BULAN (BERLAKU TANGGAL 1 - 30/31)
 function parseTanggalLaporan(tglStr) {
     if (!tglStr) return null;
     tglStr = String(tglStr).trim();
 
-    // Format ISO / Standard Date String (YYYY-MM-DD atau YYYY/MM/DD)
     if (tglStr.includes("-") || tglStr.includes("/")) {
         let parts = tglStr.split(/[-/]/);
         if (parts.length === 3) {
-            // Cek jika format DD-MM-YYYY
             if (parts[0].length === 2 && parts[2].length === 4) {
                 return new Date(parts[2], parts[1] - 1, parts[0]);
             }
-            // Cek jika format YYYY-MM-DD
             if (parts[0].length === 4) {
                 return new Date(parts[0], parts[1] - 1, parts[2]);
             }
         }
     }
 
-    // Format Serial Number Excel
     if (!isNaN(tglStr) && Number(tglStr) > 30000) {
         return new Date((Number(tglStr) - (25567 + 2)) * 86400 * 1000);
     }
@@ -876,13 +885,14 @@ function parseTanggalLaporan(tglStr) {
 }
 
 document.addEventListener("DOMContentLoaded", () => {
+    lucide.createIcons();
     const savedName = localStorage.getItem("loginNama");
     const savedRole = localStorage.getItem("loginRole");
     if (savedName && savedRole) {
         currentUser = savedName;
         currentRole = savedRole;
         aturTampilanBerdasarkanRole();
-        document.getElementById("loginInfo").innerHTML = "⭕ <b>" + currentUser + "</b>" + (currentRole === "ADMIN" ? " (ADMIN)" : " (PROMOTOR)");
+        document.getElementById("loginInfo").innerHTML = "<i data-lucide='user' style='width:16px; height:16px; color:var(--gold-main);'></i> <b>" + currentUser + "</b>" + (currentRole === "ADMIN" ? " (ADMIN)" : " (PROMOTOR)");
         document.getElementById("loginBox").style.display = "none";
         document.getElementById("dashboard").style.display = "block";
 
@@ -893,6 +903,7 @@ document.addEventListener("DOMContentLoaded", () => {
             document.getElementById("menuPerolehanCard").style.display = "block";
             loadNama();
         }
+        lucide.createIcons();
     }
 });
 
@@ -924,7 +935,6 @@ function aturTampilanBerdasarkanRole() {
     }
 }
 
-// LOGIKA LOGIN
 async function login() {
     const btn = document.getElementById("btnLogin");
     btn.disabled = true;
@@ -947,7 +957,7 @@ async function login() {
         localStorage.setItem("loginRole", currentRole);
 
         aturTampilanBerdasarkanRole();
-        document.getElementById("loginInfo").innerHTML = "⭕ <b>" + currentUser + "</b> (ADMIN)";
+        document.getElementById("loginInfo").innerHTML = "<i data-lucide='user' style='width:16px; height:16px; color:var(--gold-main);'></i> <b>" + currentUser + "</b> (ADMIN)";
         document.getElementById("loginBox").style.display = "none";
         document.getElementById("dashboard").style.display = "block";
 
@@ -956,6 +966,7 @@ async function login() {
         await loadNama();
         btn.disabled = false;
         btn.innerHTML = "MASUK";
+        lucide.createIcons();
         return;
     }
 
@@ -1006,7 +1017,7 @@ async function login() {
         localStorage.setItem("loginRole", currentRole);
 
         aturTampilanBerdasarkanRole();
-        document.getElementById("loginInfo").innerHTML = "⭕ <b>" + currentUser + "</b>" + (currentRole === "ADMIN" ? " (ADMIN)" : " (PROMOTOR)");
+        document.getElementById("loginInfo").innerHTML = "<i data-lucide='user' style='width:16px; height:16px; color:var(--gold-main);'></i> <b>" + currentUser + "</b>" + (currentRole === "ADMIN" ? " (ADMIN)" : " (PROMOTOR)");
         document.getElementById("loginBox").style.display = "none";
         document.getElementById("dashboard").style.display = "block";
 
@@ -1019,6 +1030,7 @@ async function login() {
             document.getElementById("menuPerolehanCard").style.display = "block";
             await loadNama();
         }
+        lucide.createIcons();
     } catch(err) {
         showPopup("Gagal login ke Firebase: " + err.message);
         btn.disabled = false;
@@ -1026,13 +1038,11 @@ async function login() {
     }
 }
 
-// SINKRONISASI DATA DARI FIRESTORE
 async function muatSemuaDataLatarBelakang(namaTarget) {
     const loadEl = document.getElementById("globalLoading");
     if(loadEl) loadEl.style.display = "block";
 
     try {
-        // 1. ABSENSI
         const absenSnap = await window.getDocs(window.collection(window.db, "absensi_finger"));
         let hasilAbsen = [];
         let jumlahTerlambat = 0;
@@ -1059,7 +1069,6 @@ async function muatSemuaDataLatarBelakang(namaTarget) {
         });
         cacheData.absensi = { data: hasilAbsen, terlambat: jumlahTerlambat };
 
-        // 2. MASTER SALES & LAPORAN PENJUALAN GLOBAL
         if (!cacheData.masterGlobal || !cacheData.jualGlobal) {
             const [masterSnap, jualSnapshot] = await Promise.all([
                 window.getDocs(window.collection(window.db, "master_sales")),
@@ -1070,7 +1079,6 @@ async function muatSemuaDataLatarBelakang(namaTarget) {
             cacheData.jualGlobal = jualSnapshot.docs.map(d => d.data());
         }
 
-        // 3. OLAH DATA DI MEMORI BROWSER
         let mapMasterPromotor = [];
         let daftarIdSalesSaya = [];
 
@@ -1106,7 +1114,6 @@ async function muatSemuaDataLatarBelakang(namaTarget) {
         let detailPenjualan = [];
         let detailUC = [];
 
-        // PENENTUAN TANGGAL 1 - 30/31 BULAN BERJALAN
         const sekarang = new Date();
         const thnSekarang = sekarang.getFullYear();
         const blnSekarang = sekarang.getMonth();
@@ -1172,7 +1179,6 @@ async function muatSemuaDataLatarBelakang(namaTarget) {
                     detailPenjualan.push({ tanggal: tglText, produk: namaProduk, qty: qty, omzet: omzet });
                 }
 
-                // KHUSUS PERHITUNGAN UC: DISARING TANGGAL 1 SAMPAI 30/31 BULAN BERJALAN
                 if (kategori === "GARANSI") {
                     let dateObj = parseTanggalLaporan(tglText);
                     if (dateObj) {
@@ -1180,7 +1186,6 @@ async function muatSemuaDataLatarBelakang(namaTarget) {
                             detailUC.push({ tanggal: tglText, produk: namaProduk, qty: qty, omzet: omzet });
                         }
                     } else {
-                        // Jika parsing tanggal gagal/tidak dispesifikasikan, tetap dimuat
                         detailUC.push({ tanggal: tglText, produk: namaProduk, qty: qty, omzet: omzet });
                     }
                 }
@@ -1203,7 +1208,6 @@ async function muatSemuaDataLatarBelakang(namaTarget) {
         cacheData.perolehan = { list: [...mapMasterPromotor].sort((a, b) => b.omzetTotal - a.omzetTotal) };
         cacheData.perolehanBrand = { list: [...mapMasterPromotor].sort((a, b) => b.omzetBrand - a.omzetBrand) };
 
-        // 4. ATURAN, REWARD, PUNISHMENT, PROMO
         if (!cacheData.rules) {
             const [rulesSnap, rewardSnap, punishmentSnap, promoSnap] = await Promise.all([
                 window.getDocs(window.collection(window.db, "rules_sop")),
@@ -1288,6 +1292,7 @@ function kembaliKeMenuUtama() {
     document.getElementById("exportArea").style.display = "none";
     document.getElementById("summary").innerHTML = "";
     document.getElementById("hasil").innerHTML = "";
+    lucide.createIcons();
 }
 
 function jalankanRenderMenu(namaMenu) {
@@ -1317,6 +1322,8 @@ function jalankanRenderMenu(namaMenu) {
     else if (namaMenu === "Reward") renderReward(cacheData.reward);
     else if (namaMenu === "Rules") renderRules(cacheData.rules);
     else if (namaMenu === "Punishment") renderPunishment(cacheData.punishment);
+
+    lucide.createIcons();
 }
 
 function logout() { document.getElementById("logoutPopup").style.display = "flex"; }
@@ -1352,7 +1359,7 @@ function renderAbsensi(result) {
     if(data.length){
         document.getElementById("summary").innerHTML = `
         <div class="summary-card">
-            <h2>🏆 ${data[0].nama}</h2>
+            <h2><i data-lucide="user-check" style="width:20px; height:20px;"></i> ${data[0].nama}</h2>
             <p>Total Hari Absen : <b style="font-family:var(--font-num);">${data.length}</b></p>
             <p>Datang Terlambat : <b style="font-family:var(--font-num);">${terlambat}</b></p>
             <p style="color:var(--accent-red); margin-top:4px;">⚠️ Tidak Absen Masuk : <b style="font-family:var(--font-num);">${tidakAbsenMasuk}x</b></p>
@@ -1403,7 +1410,7 @@ function renderPenjualan(data) {
     if(!data) return;
     document.getElementById("summary").innerHTML = `
     <div class="summary-card">
-        <h2>💰 ${data.nama}</h2>
+        <h2><i data-lucide="wallet" style="width:20px; height:20px;"></i> ${data.nama}</h2>
         <p>Total Unit : <b style="font-family:var(--font-num);">${data.totalUnit} Unit</b></p>
         <p>Total Omzet Toko : <span style="font-weight:bold; color:var(--accent-green); font-family:var(--font-num);">Rp ${Number(data.totalOmzet).toLocaleString("id-ID")}</span></p>
     </div>`;
@@ -1428,7 +1435,7 @@ function renderUC(data) {
     if(!data) return;
     document.getElementById("summary").innerHTML = `
     <div class="summary-card">
-        <h2>⭐ ${data.nama}</h2>
+        <h2><i data-lucide="star" style="width:20px; height:20px;"></i> ${data.nama}</h2>
         <p>Periode Perhitungan : <b>Tanggal 1 s/d 30/31 Bulan Ini</b></p>
         <p>Total UC Terkumpul : <b style="font-family:var(--font-num); color:var(--gold-main); font-size:16px;">${data.totalUC} Poin</b></p>
     </div>`;
@@ -1467,7 +1474,7 @@ function renderPerolehanBrand(data) {
 
     document.getElementById("summary").innerHTML = `
     <div class="summary-card">
-    <h2>🏷️ Perolehan Khusus Brand Toko</h2>
+    <h2><i data-lucide="tag" style="width:20px; height:20px;"></i> Perolehan Khusus Brand Toko</h2>
     ${currentRole === "ADMIN" ? 
         `<p>👥 Jumlah Promotor : <b style="font-family:var(--font-num);">${data.list.length}</b></p>
          <p>💰 Total Omzet Khusus Brand : <span style="font-weight:bold;color:var(--accent-green);font-family:var(--font-num);">Rp ${totalOmzetBrandToko.toLocaleString("id-ID")}</span></p>
@@ -1514,7 +1521,7 @@ function renderPerolehan(data) {
 
     document.getElementById("summary").innerHTML = `
     <div class="summary-card">
-        <h2>📊 Perolehan & Rekap Toko</h2>
+        <h2><i data-lucide="bar-chart-3" style="width:20px; height:20px;"></i> Perolehan & Rekap Toko</h2>
         <p>👥 Jumlah Promotor : <b style="font-family:var(--font-num);">${data.list.length}</b></p>
         <p>💰 Total Omzet Toko : <span style="font-weight:bold;color:var(--accent-green);font-family:var(--font-num);">Rp ${totalOmzet.toLocaleString("id-ID")}</span></p>
     </div>`;
@@ -1546,7 +1553,7 @@ function renderDendaUC(dataPerolehan) {
 
     document.getElementById("summary").innerHTML = `
     <div class="summary-card">
-        <h2>⚡ Rekapitulasi Denda & Keterlambatan</h2>
+        <h2><i data-lucide="alert-circle" style="width:20px; height:20px;"></i> Rekapitulasi Denda & Keterlambatan</h2>
         <p>Keterlambatan Finger : <b style="font-family:var(--font-num);">${terlambat} Kali</b></p>
         <p>Estimasi Denda Late : <span style="color:var(--accent-red); font-weight:800; font-family:var(--font-num);">Rp ${dendaLate.toLocaleString("id-ID")}</span></p>
     </div>`;
@@ -1565,7 +1572,7 @@ function renderDendaUC(dataPerolehan) {
 function renderRules(result) {
     if(!result) return;
     const list = result.data || [];
-    document.getElementById("summary").innerHTML = `<div class="summary-card"><h2>✨ Panduan SOP & Peraturan Toko</h2></div>`;
+    document.getElementById("summary").innerHTML = `<div class="summary-card"><h2><i data-lucide="book-open" style="width:20px; height:20px;"></i> Panduan SOP & Peraturan Toko</h2></div>`;
 
     let html = `<div class="mobile-list-container">`;
     if (list.length === 0) {
@@ -1606,7 +1613,7 @@ function renderRules(result) {
 function renderReward(result) {
     if(!result) return;
     const list = result.data || [];
-    document.getElementById("summary").innerHTML = `<div class="summary-card"><h2>🏆 Daftar Reward & Bonus Toko</h2></div>`;
+    document.getElementById("summary").innerHTML = `<div class="summary-card"><h2><i data-lucide="trophy" style="width:20px; height:20px;"></i> Daftar Reward & Bonus Toko</h2></div>`;
 
     let html = `<div class="mobile-list-container">`;
     if (list.length === 0) {
@@ -1635,7 +1642,7 @@ function renderReward(result) {
 function renderPunishment(result) {
     if(!result) return;
     const list = result.data || [];
-    document.getElementById("summary").innerHTML = `<div class="summary-card"><h2>⚠️ Daftar Punishment & Sanksi Toko</h2></div>`;
+    document.getElementById("summary").innerHTML = `<div class="summary-card"><h2><i data-lucide="shield-off" style="width:20px; height:20px;"></i> Daftar Punishment & Sanksi Toko</h2></div>`;
 
     let html = `<div class="mobile-list-container">`;
     if (list.length === 0) {
@@ -1663,20 +1670,20 @@ function renderPunishment(result) {
 
 function renderPelanggaranSaya(result) {
     let targetNama = (currentRole === "ADMIN") ? (document.getElementById("nama").value.trim() || currentUser) : currentUser;
-    document.getElementById("summary").innerHTML = `<div class="summary-card"><h2>🚨 Catatan Pelanggaran Saya</h2><p>Promotor: <b>${targetNama}</b></p></div>`;
+    document.getElementById("summary").innerHTML = `<div class="summary-card"><h2><i data-lucide="shield-alert" style="width:20px; height:20px;"></i> Catatan Pelanggaran Saya</h2><p>Promotor: <b>${targetNama}</b></p></div>`;
     document.getElementById("hasil").innerHTML = `<div class="card success" style="text-align:center; padding:28px; color:var(--accent-green); font-weight:700;">🎉 Bersih dari Catatan Pelanggaran</div>`;
 }
 
 function renderRewardSaya(result) {
     let targetNama = (currentRole === "ADMIN") ? (document.getElementById("nama").value.trim() || currentUser) : currentUser;
-    document.getElementById("summary").innerHTML = `<div class="summary-card"><h2>🎁 Catatan Reward Saya</h2><p>Promotor: <b>${targetNama}</b></p></div>`;
+    document.getElementById("summary").innerHTML = `<div class="summary-card"><h2><i data-lucide="gift" style="width:20px; height:20px;"></i> Catatan Reward Saya</h2><p>Promotor: <b>${targetNama}</b></p></div>`;
     document.getElementById("hasil").innerHTML = `<div class="card" style="text-align:center; padding:28px; color:var(--gold-main); font-weight:700;">🎯 Belum Ada Reward Khusus Diinput</div>`;
 }
 
 function renderPromo(result) {
     if(!result) return;
     const list = result.data || [];
-    document.getElementById("summary").innerHTML = `<div class="summary-card"><h2>🏷️ Promo Toko</h2></div>`;
+    document.getElementById("summary").innerHTML = `<div class="summary-card"><h2><i data-lucide="percent" style="width:20px; height:20px;"></i> Promo Toko</h2></div>`;
 
     let html = "";
     if (list.length === 0) html = `<div class="card">Data promo tidak ditemukan</div>`;
@@ -1719,7 +1726,6 @@ function tutupModalSOP() {
     if (modal) modal.style.display = "none";
 }
 
-// EKSPOR LAPORAN
 function prosesEkspor(format) {
     let namaKaryawan = (currentRole === "USER") ? currentUser : (document.getElementById("nama").value.trim() || "Semua_Promotor");
     const namaFile = `Laporan_${activeTab}_${namaKaryawan.replace(/\s+/g, '_')}`;
