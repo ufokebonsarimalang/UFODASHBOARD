@@ -20,21 +20,13 @@
         import { getFirestore, collection, getDocs, doc, writeBatch } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
         const firebaseConfig = {
-
-  apiKey: "AIzaSyBMokA92YiB87vwuqBREwNhHkkU_bXo8cI",
-
-  authDomain: "ufokebonsariapps.firebaseapp.com",
-
-  projectId: "ufokebonsariapps",
-
-  storageBucket: "ufokebonsariapps.firebasestorage.app",
-
-  messagingSenderId: "663266923207",
-
-  appId: "1:663266923207:web:94b7d55af67dc45f3724e2"
-
-};
-
+            apiKey: "AIzaSyBMokA92YiB87vwuqBREwNhHkkU_bXo8cI",
+            authDomain: "ufokebonsariapps.firebaseapp.com",
+            projectId: "ufokebonsariapps",
+            storageBucket: "ufokebonsariapps.firebasestorage.app",
+            messagingSenderId: "663266923207",
+            appId: "1:663266923207:web:94b7d55af67dc45f3724e2"
+        };
 
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
@@ -100,41 +92,41 @@
                         }
                     }
 
-                 if (workbook.Sheets["ABSENFINGER"]) {
-    statusEl.innerHTML = "⏳ Membersihkan data ABSENFINGER lama di Firebase...";
-    
-    // 1. Hapus seluruh data absensi finger lama di koleksi absensi_finger
-    const oldAbsenDocs = await getDocs(collection(window.db, "absensi_finger"));
-    let deleteBatch = writeBatch(window.db);
-    let delCount = 0;
+                    if (workbook.Sheets["ABSENFINGER"]) {
+                        statusEl.innerHTML = "⏳ Membersihkan data ABSENFINGER lama di Firebase...";
+                        
+                        // 1. Hapus seluruh data absensi finger lama di koleksi absensi_finger
+                        const oldAbsenDocs = await getDocs(collection(window.db, "absensi_finger"));
+                        let deleteBatch = writeBatch(window.db);
+                        let delCount = 0;
 
-    for (const docSnap of oldAbsenDocs.docs) {
-        deleteBatch.delete(docSnap.ref);
-        delCount++;
-        if (delCount % 400 === 0) {
-            await deleteBatch.commit();
-            deleteBatch = writeBatch(window.db);
-        }
-    }
-    if (delCount % 400 !== 0) {
-        await deleteBatch.commit();
-    }
+                        for (const docSnap of oldAbsenDocs.docs) {
+                            deleteBatch.delete(docSnap.ref);
+                            delCount++;
+                            if (delCount % 400 === 0) {
+                                await deleteBatch.commit();
+                                deleteBatch = writeBatch(window.db);
+                            }
+                        }
+                        if (delCount % 400 !== 0) {
+                            await deleteBatch.commit();
+                        }
 
-    // 2. Simpan data ABSENFINGER baru secara bertahap (chunk size 400)
-    statusEl.innerHTML = "⏳ Menyimpan data ABSENFINGER baru ke Firebase...";
-    const absenData = XLSX.utils.sheet_to_json(workbook.Sheets["ABSENFINGER"]);
-    
-    for (let i = 0; i < absenData.length; i += 400) {
-        const batchAbsen = writeBatch(window.db);
-        const chunk = absenData.slice(i, i + 400);
-        
-        chunk.forEach((row, idx) => {
-            const docRef = doc(window.db, "absensi_finger", `ab_${i + idx}`);
-            batchAbsen.set(docRef, cleanObj(row));
-        });
-        await batchAbsen.commit();
-    }
-}
+                        // 2. Simpan data ABSENFINGER baru secara bertahap (chunk size 400)
+                        statusEl.innerHTML = "⏳ Menyimpan data ABSENFINGER baru ke Firebase...";
+                        const absenData = XLSX.utils.sheet_to_json(workbook.Sheets["ABSENFINGER"]);
+                        
+                        for (let i = 0; i < absenData.length; i += 400) {
+                            const batchAbsen = writeBatch(window.db);
+                            const chunk = absenData.slice(i, i + 400);
+                            
+                            chunk.forEach((row, idx) => {
+                                const docRef = doc(window.db, "absensi_finger", `ab_${i + idx}`);
+                                batchAbsen.set(docRef, cleanObj(row));
+                            });
+                            await batchAbsen.commit();
+                        }
+                    }
 
                     statusEl.innerHTML = "<span style='color:#10b981;'>✅ Berhasil! Data Excel diperbarui di Firebase.</span>";
                     alert("Seluruh data Excel berhasil diimpor ke Firebase!");
@@ -315,7 +307,7 @@
         }
         #nama option { background: #111827; color: #ffffff; }
 
-        /* KARTU MENU UTAMA (SEPERTI SUSUNAN LAMA) */
+        /* KARTU MENU UTAMA */
         #menuGridContainer {
             max-width: 1100px;
             margin: 0 auto;
@@ -934,7 +926,7 @@ async function login() {
     }
 }
 
-// SINKRONISASI DATA DARI FIRESTORE
+// SINKRONISASI DATA DARI FIRESTORE (OPTIMIZED & BULLETPROOF)
 async function muatSemuaDataLatarBelakang(namaTarget) {
     const loadEl = document.getElementById("globalLoading");
     if(loadEl) loadEl.style.display = "block";
@@ -1091,34 +1083,28 @@ async function muatSemuaDataLatarBelakang(namaTarget) {
         cacheData.perolehan = { list: [...mapMasterPromotor].sort((a, b) => b.omzetTotal - a.omzetTotal) };
         cacheData.perolehanBrand = { list: [...mapMasterPromotor].sort((a, b) => b.omzetBrand - a.omzetBrand) };
 
-        // 4. ATURAN, REWARD, PUNISHMENT, PROMO
-        const rulesSnap = await window.getDocs(window.collection(window.db, "rules_sop"));
-        let listRules = [];
-        rulesSnap.forEach(d => listRules.push(d.data()));
-        cacheData.rules = { data: listRules };
+        // 4. ATURAN, REWARD, PUNISHMENT, PROMO (DIAMBIL PARALEL & CACHED)
+        if (!cacheData.rules) {
+            const [rulesSnap, rewardSnap, punishmentSnap, promoSnap] = await Promise.all([
+                window.getDocs(window.collection(window.db, "rules_sop")),
+                window.getDocs(window.collection(window.db, "rewards")),
+                window.getDocs(window.collection(window.db, "punishments")),
+                window.getDocs(window.collection(window.db, "promo_toko"))
+            ]);
 
-        const rewardSnap = await window.getDocs(window.collection(window.db, "rewards"));
-        let listReward = [];
-        rewardSnap.forEach(d => listReward.push(d.data()));
-        cacheData.reward = { data: listReward };
-
-        const punishmentSnap = await window.getDocs(window.collection(window.db, "punishments"));
-        let listPunish = [];
-        punishmentSnap.forEach(d => listPunish.push(d.data()));
-        cacheData.punishment = { data: listPunish };
-
-        const promoSnap = await window.getDocs(window.collection(window.db, "promo_toko"));
-        let listPromo = [];
-        promoSnap.forEach(d => listPromo.push(d.data()));
-        cacheData.promo = { data: listPromo };
+            cacheData.rules = { data: rulesSnap.docs.map(d => d.data()) };
+            cacheData.reward = { data: rewardSnap.docs.map(d => d.data()) };
+            cacheData.punishment = { data: punishmentSnap.docs.map(d => d.data()) };
+            cacheData.promo = { data: promoSnap.docs.map(d => d.data()) };
+        }
 
     } catch(e) {
         console.error("Gagal sinkronisasi data dari Firebase", e);
     } finally {
-        // MATIKAN SPINNER BEGITU PROSES SELESAI
         if(loadEl) loadEl.style.display = "none";
     }
 }
+
 async function loadNama(){
     try {
         const masterSnap = await window.getDocs(window.collection(window.db, "master_sales"));
@@ -1153,7 +1139,6 @@ async function gantiNamaAdmin() {
 async function pindahMenu(namaMenu) {
     activeTab = namaMenu;
 
-    // Sembunyikan spinner global jika ada
     const loadEl = document.getElementById("globalLoading");
     if(loadEl) loadEl.style.display = "none";
 
@@ -1168,9 +1153,6 @@ async function pindahMenu(namaMenu) {
     else if (namaMenu === "PerolehanBrand") judulMenuText = "Perolehan Brand Saya";
     document.getElementById("currentMenuTitle").innerText = "Menu: " + judulMenuText;
 
-    let targetNama = (currentRole === "ADMIN") ? (document.getElementById("nama").value.trim() || currentUser) : currentUser;
-    
-    // Panggil render menu secara langsung
     jalankanRenderMenu(namaMenu);
 }
 
@@ -1241,8 +1223,8 @@ function renderAbsensi(result) {
     let tidakAbsenPulang = 0;
 
     data.forEach(x => { 
-        if(!x.masuk) tidakAbsenMasuk++;
-        if(!x.pulang) tidakAbsenPulang++;
+        if(!x.masuk || String(x.masuk).trim() === "") tidakAbsenMasuk++;
+        if(!x.pulang || String(x.pulang).trim() === "") tidakAbsenPulang++;
     });
 
     if(data.length){
@@ -1262,8 +1244,8 @@ function renderAbsensi(result) {
     let html = "";
     data.forEach(x => {
         const isTerlambat = String(x.terlambat).toUpperCase() === "YA";
-        const isNoMasuk = !x.masuk || x.masuk.trim() === "";
-        const isNoPulang = !x.pulang || x.pulang.trim() === "";
+        const isNoMasuk = !x.masuk || String(x.masuk).trim() === "";
+        const isNoPulang = !x.pulang || String(x.pulang).trim() === "";
 
         let statusText = 'Lengkap';
         let kelasCard = 'success';
