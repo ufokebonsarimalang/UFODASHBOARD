@@ -1123,9 +1123,11 @@ async function muatSemuaDataLatarBelakang(namaTarget) {
             if (!isBulanIni) return; 
 
             // --- PROSES PEROLEHAN ---
+         // --- PROSES PEROLEHAN ---
             mapMasterPromotor.forEach(p => {
                 if (p.idSales === idSalesExcel) {
-                    // 1. Perolehan Toko: Menghitung seluruh total omzet secara penuh
+                    
+                    // 1. PEROLEHAN TOKO: Murni menjumlahkan SEMUA omzet tanpa filter kategori
                     p.omzetTotal += omzet;
 
                     let isBrandMatch = false;
@@ -1141,14 +1143,13 @@ async function muatSemuaDataLatarBelakang(namaTarget) {
                         isBrandMatch = true;
                     }
 
-                    // 2. Perolehan Brand: Kategori GARANSI dan ONGKOS tidak ikut dihitung
+                    // 2. PEROLEHAN BRAND: Disaring khusus berdasarkan brand/merk masing-masing promotor
                     if (isBrandMatch && kategori !== "GARANSI" && kategori !== "ONGKOS") {
                         p.omzetBrand += omzet;
                         p.unitBrand  += qty;
                     }
                 }
             });
-
             // --- PROSES DETAIL SAYA (USER) ---
             if (daftarIdSalesSaya.includes(idSalesExcel)) {
                 if (kategori !== "GARANSI" && kategori !== "ONGKOS") {
