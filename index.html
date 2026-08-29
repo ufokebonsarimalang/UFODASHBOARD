@@ -1472,9 +1472,15 @@ function renderPerolehan(data) {
     let totalOmzet = 0; 
     data.list.forEach(x => { totalOmzet += Number(x.omzetTotal || 0); });
 
+    // Mendapatkan informasi periode bulan berjalan otomatis
+    const sekarang = new Date();
+    const namaBulanIndo = ["Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"];
+    const periodeTokoStr = `1 - ${sekarang.getDate()} ${namaBulanIndo[sekarang.getMonth()]} ${sekarang.getFullYear()}`;
+
     document.getElementById("summary").innerHTML = `
     <div class="summary-card">
         <h2><i data-lucide="bar-chart-3" style="width:20px; height:20px;"></i> Perolehan Toko</h2>
+        <p>Periode : <b>${periodeTokoStr}</b></p>
         <p>👥 Jumlah Promotor : <b style="font-family:var(--font-num);">${data.list.length}</b></p>
         <p>💰 Total Omzet Toko : <span style="font-weight:bold;color:var(--accent-green);font-family:var(--font-num);">Rp ${totalOmzet.toLocaleString("id-ID")}</span></p>
     </div>`;
