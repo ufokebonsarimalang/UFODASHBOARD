@@ -943,7 +943,7 @@ async function login() {
     }
 }
 
-// MEMUAT SELURUH DATA DARI FIRESTORE
+// MEMUAT SELURUH DATA DARI FIRESTORE DENGAN RUMUS BRAND YANG BENAR
 async function muatSemuaDataLatarBelakang(namaTarget) {
     const loadEl = document.getElementById("globalLoading");
     if(loadEl) loadEl.style.display = "block";
@@ -972,7 +972,7 @@ async function muatSemuaDataLatarBelakang(namaTarget) {
         });
         cacheData.absensi = { data: hasilAbsen, terlambat: jumlahTerlambat };
 
-        // 2. MASTER SALES & BRAND
+        // 2. MASTER SALES & PEMETAAN BRAND (RUMUS DIBERSIHKAN)
         let mapMasterPromotor = [];
         let daftarIdSalesSaya = [];
 
@@ -985,6 +985,7 @@ async function muatSemuaDataLatarBelakang(namaTarget) {
             const aktif       = String(md.Aktif || md.aktif || "YA").trim().toUpperCase();
 
             if (namaAbsen && idSales && aktif === "YA") {
+                // Split keyword brand berdasarkan koma dan bersihkan spasi
                 let brandList = brandMaster.split(",").map(b => b.trim()).filter(b => b !== "");
                 let promotorObj = {
                     nama: namaAbsen,
@@ -1007,7 +1008,7 @@ async function muatSemuaDataLatarBelakang(namaTarget) {
             daftarIdSalesSaya.push(namaTarget.trim().toUpperCase());
         }
 
-        // 3. LAPORAN PENJUALAN
+        // 3. LAPORAN PENJUALAN (LOGIKA RUMUS PEROLEHAN BRAND)
         let detailPenjualan = [];
         let detailUC = [];
 
@@ -1030,7 +1031,22 @@ async function muatSemuaDataLatarBelakang(namaTarget) {
             mapMasterPromotor.forEach(p => {
                 if (p.idSales === idSalesExcel) {
                     p.omzetTotal += omzet;
-                    let isBrandMatch = p.brandKeywords.some(kw => brandPenjualan.includes(kw) || namaProduk.includes(kw));
+
+                    // RUMUS COCOK BRAND: Cek apakah nama produk/brand penjualan mengandung salah satu kata kunci brand promotor
+                    let isBrandMatch = false;
+                    if (p.brandKeywords.length > 0) {
+                        for (let k = 0; k < p.brandKeywords.length; k++) {
+                            let kw = p.brandKeywords[k];
+                            if (kw !== "" && (brandPenjualan.includes(kw) || namaProduk.includes(kw))) {
+                                isBrandMatch = true;
+                                break;
+                            }
+                        }
+                    } else {
+                        isBrandMatch = true;
+                    }
+
+                    // Hanya hitung ke Perolehan Brand jika cocok & bukan Garansi/Ongkos
                     if (isBrandMatch && kategori !== "GARANSI" && kategori !== "ONGKOS") {
                         p.omzetBrand += omzet;
                         p.unitBrand  += qty;
@@ -1061,6 +1077,7 @@ async function muatSemuaDataLatarBelakang(namaTarget) {
             detail: detailUC
         };
 
+        // Urutkan peringkat perolehan dari omzet tertinggi
         cacheData.perolehan = { list: [...mapMasterPromotor].sort((a, b) => b.omzetTotal - a.omzetTotal) };
         cacheData.perolehanBrand = { list: [...mapMasterPromotor].sort((a, b) => b.omzetBrand - a.omzetBrand) };
 
@@ -1091,7 +1108,6 @@ async function muatSemuaDataLatarBelakang(namaTarget) {
         if(loadEl) loadEl.style.display = "none";
     }
 }
-
 async function loadNama(){
     try {
         const masterSnap = await window.getDocs(window.collection(window.db, "master_sales"));
