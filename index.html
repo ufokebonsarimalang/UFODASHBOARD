@@ -1472,7 +1472,6 @@ function renderPerolehan(data) {
     let totalOmzet = 0; 
     data.list.forEach(x => { totalOmzet += Number(x.omzetTotal || 0); });
 
-    // Mendapatkan informasi periode bulan berjalan otomatis
     const sekarang = new Date();
     const namaBulanIndo = ["Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"];
     const periodeTokoStr = `1 - ${sekarang.getDate()} ${namaBulanIndo[sekarang.getMonth()]} ${sekarang.getFullYear()}`;
@@ -1488,6 +1487,15 @@ function renderPerolehan(data) {
     let html = `<div class="summary-card">`;
     data.list.forEach((x, i) => {
         const omzetVal = Number(x.omzetTotal || 0);
+        
+        // Logika Warna Omzet: < 80jt (Merah), 80jt - < 100jt (Oranye/Gold), >= 100jt (Hijau)
+        let warnaOmzet = "var(--accent-green)";
+        if (omzetVal < 80000000) {
+            warnaOmzet = "var(--accent-red)";
+        } else if (omzetVal < 100000000) {
+            warnaOmzet = "var(--gold-main)";
+        }
+
         html += `
             <div style="display:flex; align-items:center; justify-content:space-between; padding:12px 0; border-bottom:1px solid rgba(255,255,255,0.06); gap:10px;">
                 <div style="display:flex; align-items:center; gap:12px; min-width:0; flex:1;">
@@ -1495,7 +1503,7 @@ function renderPerolehan(data) {
                     <div style="font-weight:700; font-size:14px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${x.nama}</div>
                 </div>
                 <div style="text-align:right; white-space:nowrap; flex-shrink:0;">
-                    <div style="font-weight:800; font-size:14px; color:var(--accent-green); font-family:var(--font-num);">Rp ${omzetVal.toLocaleString("id-ID")}</div>
+                    <div style="font-weight:800; font-size:14px; color:${warnaOmzet}; font-family:var(--font-num);">Rp ${omzetVal.toLocaleString("id-ID")}</div>
                 </div>
             </div>`;
     });
@@ -1506,6 +1514,78 @@ function renderPerolehan(data) {
     document.getElementById("hasil").innerHTML = html;
 }
 
+function renderPerolehanBrand(data) {
+    if (!data || !Array.isArray(data.list)) return;
+
+    const sekarang = new Date();
+    const namaBulanIndo = ["Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"];
+    const periodeBrandStr = `1 - ${sekarang.getDate()} ${namaBulanIndo[sekarang.getMonth()]} ${sekarang.getFullYear()}`;
+
+    if (currentRole === "USER") {
+        const userObj = data.list.find(x => (x.nama || "").toUpperCase() === (currentUser || "").toUpperCase());
+        const omzetVal = Number(userObj ? userObj.omzetBrand : 0);
+
+        let warnaOmzetUser = "var(--accent-green)";
+        if (omzetVal < 80000000) {
+            warnaOmzetUser = "var(--accent-red)";
+        } else if (omzetVal < 100000000) {
+            warnaOmzetUser = "var(--gold-main)";
+        }
+
+        document.getElementById("summary").innerHTML = `
+        <div class="summary-card">
+            <h2><i data-lucide="tag" style="width:20px; height:20px;"></i> Perolehan Brand</h2>
+            <p>Periode : <b>${periodeBrandStr}</b></p>
+            <p>👤 <b>${currentUser}</b></p>
+            <p>💰 Total Omzet Brand : <span style="font-weight:bold; color:${warnaOmzetUser}; font-family:var(--font-num);">Rp ${omzetVal.toLocaleString("id-ID")}</span></p>
+        </div>`;
+        document.getElementById("hasil").innerHTML = "";
+        return;
+    }
+
+    let totalOmzetBrandToko = 0;
+    data.list.forEach(x => {
+        totalOmzetBrandToko += Number(x.omzetBrand || 0);
+    });
+
+    document.getElementById("summary").innerHTML = `
+    <div class="summary-card">
+        <h2><i data-lucide="tag" style="width:20px; height:20px;"></i> Perolehan Brand</h2>
+        <p>Periode : <b>${periodeBrandStr}</b></p>
+        <p>👥 Jumlah Promotor : <b style="font-family:var(--font-num);">${data.list.length}</b></p>
+        <p>💰 Total Omzet Brand Toko : <span style="font-weight:bold;color:var(--accent-green);font-family:var(--font-num);">Rp ${totalOmzetBrandToko.toLocaleString("id-ID")}</span></p>
+    </div>`;
+
+    let html = `<div class="summary-card">`;
+    data.list.forEach((x, i) => {
+        const omzetVal = Number(x.omzetBrand || 0);
+
+        let warnaOmzet = "var(--accent-green)";
+        if (omzetVal < 80000000) {
+            warnaOmzet = "var(--accent-red)";
+        } else if (omzetVal < 100000000) {
+            warnaOmzet = "var(--gold-main)";
+        }
+
+        html += `
+            <div style="display:flex; align-items:center; justify-content:space-between; padding:12px 0; border-bottom:1px solid rgba(255,255,255,0.06); gap:10px;">
+                <div style="display:flex; align-items:center; gap:12px; min-width:0; flex:1;">
+                    <div style="width:30px; height:30px; border-radius:50%; background:rgba(245,197,24,0.15); border:1px solid rgba(245,197,24,0.4); display:flex; align-items:center; justify-content:center; font-weight:800; font-size:12px; flex-shrink:0; color:var(--gold-main); font-family:var(--font-num);">${i + 1}</div>
+                    <div style="font-weight:700; font-size:14px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">
+                        ${x.nama}
+                    </div>
+                </div>
+                <div style="text-align:right; white-space:nowrap; flex-shrink:0;">
+                    <div style="font-weight:800; font-size:14px; color:${warnaOmzet}; font-family:var(--font-num);">Rp ${omzetVal.toLocaleString("id-ID")}</div>
+                </div>
+            </div>`;
+    });
+    html += `</div>`;
+
+    if(currentRole === "ADMIN") document.getElementById("exportArea").style.display = "flex";
+    document.getElementById("hasil").className = "";
+    document.getElementById("hasil").innerHTML = html;
+}
 function renderDendaUC(dataPerolehan) {
     let terlambat = (cacheData.absensi && cacheData.absensi.terlambat) ? cacheData.absensi.terlambat : 0;
     let dendaLate = terlambat * 10000;
