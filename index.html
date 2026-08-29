@@ -8,10 +8,10 @@
     <!-- Mencegah Error Favicon 404 -->
     <link rel="icon" href="data:,">
 
-    <!-- Google Font: Outfit -->
+    <!-- Google Font: Outfit & Inter -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
 
     <!-- Library Ekspor Excel & PDF -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
@@ -39,7 +39,6 @@
         window.getDocs = getDocs;
         window.firebaseReady = true;
 
-        // FUNGSI IMPOR EXCEL DENGAN CLEANING UNDEFINED & DUKUNGAN OBJEK/ARRAY
         window.importSeluruhExcelKeFirebase = async function(fileInput) {
             const statusEl = document.getElementById("statusUploadExcel");
             if (!fileInput.files.length) {
@@ -98,7 +97,6 @@
                     if (workbook.Sheets["ABSENFINGER"]) {
                         statusEl.innerHTML = "⏳ Membersihkan data ABSENFINGER lama di Firebase...";
                         
-                        // 1. Hapus seluruh data absensi finger lama di koleksi absensi_finger
                         const oldAbsenDocs = await getDocs(collection(window.db, "absensi_finger"));
                         let deleteBatch = writeBatch(window.db);
                         let delCount = 0;
@@ -115,7 +113,6 @@
                             await deleteBatch.commit();
                         }
 
-                        // 2. Simpan data ABSENFINGER baru secara bertahap (chunk size 400)
                         statusEl.innerHTML = "⏳ Menyimpan data ABSENFINGER baru ke Firebase...";
                         const absenData = XLSX.utils.sheet_to_json(workbook.Sheets["ABSENFINGER"]);
                         
@@ -146,34 +143,49 @@
     </script>
 
     <style>
+        :root {
+            --bg-dark: #07090e;
+            --card-bg: rgba(18, 26, 43, 0.65);
+            --card-border: rgba(212, 175, 55, 0.2);
+            --gold-main: #f5c518;
+            --gold-gradient: linear-gradient(135deg, #ffe885 0%, #d4af37 50%, #aa7c11 100%);
+            --accent-green: #10b981;
+            --accent-red: #f43f5e;
+            --text-main: #f8fafc;
+            --text-sub: #94a3b8;
+        }
+
         * {
             box-sizing: border-box;
             font-family: 'Outfit', sans-serif !important;
+            -webkit-tap-highlight-color: transparent;
         }
 
         body {
             margin: 0;
             padding: 24px 16px;
             min-height: 100vh;
-            background: radial-gradient(circle at 50% 0%, #1e2640 0%, #0a0d14 100%);
-            color: #f3f4f6;
+            background: radial-gradient(circle at 50% -20%, #1a2542 0%, #07090e 80%);
+            color: var(--text-main);
+            background-attachment: fixed;
         }
 
         /* GLASSMORPHISM CARD STYLE */
         .glass-panel {
-            background: rgba(17, 24, 39, 0.75);
-            backdrop-filter: blur(16px);
-            border: 1px solid rgba(212, 175, 55, 0.2);
-            border-radius: 20px;
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+            background: var(--card-bg);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid var(--card-border);
+            border-radius: 24px;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6);
         }
 
         /* KOTAK LOGIN MODERN */
         #loginBox {
-            max-width: 420px;
-            margin: 60px auto;
-            padding: 40px 32px;
-            animation: slideUp 0.4s ease;
+            max-width: 400px;
+            margin: 50px auto;
+            padding: 44px 32px;
+            animation: slideUp 0.5s cubic-bezier(0.16, 1, 0.3, 1);
         }
 
         .login-logo-container {
@@ -182,17 +194,17 @@
         }
 
         .login-logo-container img {
-            width: 95px;
-            height: 95px;
+            width: 90px;
+            height: 90px;
             border-radius: 50%;
             object-fit: cover;
-            border: 2px solid #d4af37;
-            box-shadow: 0 0 25px rgba(212, 175, 55, 0.3);
+            border: 2px solid var(--gold-main);
+            box-shadow: 0 0 30px rgba(245, 197, 24, 0.35);
         }
 
         .login-title-area {
             text-align: center;
-            margin-bottom: 28px;
+            margin-bottom: 32px;
         }
 
         .login-title-area h2 {
@@ -200,7 +212,7 @@
             font-size: 24px;
             font-weight: 800;
             letter-spacing: -0.5px;
-            background: linear-gradient(135deg, #ffffff 0%, #d4af37 100%);
+            background: var(--gold-gradient);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
         }
@@ -208,107 +220,108 @@
         .login-title-area p {
             margin: 6px 0 0;
             font-size: 13.5px;
-            color: #9ca3af;
+            color: var(--text-sub);
             font-weight: 500;
         }
 
         .input-group {
-            margin-bottom: 20px;
+            margin-bottom: 22px;
         }
 
         .input-group label {
             display: block;
-            font-size: 11.5px;
+            font-size: 11px;
             font-weight: 800;
-            color: #d4af37;
+            color: var(--gold-main);
             margin-bottom: 8px;
-            letter-spacing: 0.8px;
+            letter-spacing: 1px;
         }
 
         .input-group input {
             width: 100%;
-            padding: 15px 18px;
-            border-radius: 12px;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            background: rgba(31, 41, 55, 0.6);
+            padding: 16px 20px;
+            border-radius: 14px;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            background: rgba(10, 15, 26, 0.6);
             color: #ffffff;
-            font-size: 14.5px;
+            font-size: 15px;
             outline: none;
-            transition: all 0.25s ease;
+            transition: all 0.3s ease;
         }
 
         .input-group input:focus {
-            border-color: #d4af37;
-            box-shadow: 0 0 15px rgba(212, 175, 55, 0.25);
-            background: rgba(17, 24, 39, 0.9);
+            border-color: var(--gold-main);
+            box-shadow: 0 0 20px rgba(245, 197, 24, 0.25);
+            background: rgba(10, 15, 26, 0.9);
         }
 
         #btnLogin {
             width: 100%;
             padding: 16px;
             border: none;
-            border-radius: 12px;
+            border-radius: 14px;
             cursor: pointer;
             font-weight: 800;
             font-size: 15px;
-            color: #0b0f19;
-            background: linear-gradient(135deg, #fce085 0%, #d4af37 100%);
-            box-shadow: 0 8px 20px rgba(212, 175, 55, 0.3);
-            transition: all 0.25s ease;
+            color: #05070a;
+            background: var(--gold-gradient);
+            box-shadow: 0 10px 25px rgba(212, 175, 55, 0.35);
+            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
         }
 
         #btnLogin:hover {
             transform: translateY(-2px);
-            box-shadow: 0 12px 25px rgba(212, 175, 55, 0.45);
+            box-shadow: 0 14px 30px rgba(212, 175, 55, 0.5);
         }
 
         /* HEADER DASHBOARD */
         .header {
             text-align: center;
-            margin-bottom: 25px;
+            margin-bottom: 30px;
         }
 
         .header h1 {
-            font-size: 34px;
-            font-weight: 800;
+            font-size: 36px;
+            font-weight: 900;
             margin: 0;
             letter-spacing: -1px;
-            background: linear-gradient(90deg, #ffffff, #d4af37);
+            background: var(--gold-gradient);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
         }
 
         .header p {
-            color: #9ca3af;
-            font-size: 13.5px;
-            margin-top: 4px;
+            color: var(--text-sub);
+            font-size: 14px;
+            margin-top: 6px;
+            font-weight: 500;
         }
 
         /* DROPDOWN NAMA */
         .search-box {
             max-width: 1100px;
-            margin: 0 auto 16px;
+            margin: 0 auto 20px;
         }
 
         #nama {
             width: 100%;
-            height: 50px;
-            padding: 0 18px;
-            border-radius: 14px;
+            height: 52px;
+            padding: 0 20px;
+            border-radius: 16px;
             border: 1px solid rgba(212, 175, 55, 0.3);
-            background: rgba(17, 24, 39, 0.85);
+            background: rgba(15, 23, 42, 0.85);
             color: #ffffff;
-            font-size: 14px;
+            font-size: 14.5px;
             font-weight: 700;
             outline: none;
             cursor: pointer;
             appearance: none;
-            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='%23d4af37' viewBox='0 0 16 16'%3E%3Cpath d='M1.5 5.5l6 6 6-6'/%3E%3C/svg%3E");
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='%23f5c518' viewBox='0 0 16 16'%3E%3Cpath d='M1.5 5.5l6 6 6-6'/%3E%3C/svg%3E");
             background-repeat: no-repeat;
-            background-position: right 18px center;
-            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+            background-position: right 20px center;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
         }
-        #nama option { background: #111827; color: #ffffff; }
+        #nama option { background: #0b0f19; color: #ffffff; }
 
         /* KARTU MENU UTAMA */
         #menuGridContainer {
@@ -316,34 +329,54 @@
             margin: 0 auto;
             display: grid;
             grid-template-columns: repeat(3, 1fr);
-            gap: 16px;
-            animation: fadeIn 0.3s ease;
+            gap: 20px;
+            animation: fadeIn 0.4s ease;
         }
 
         .menu-card-item {
-            background: rgba(17, 24, 39, 0.75);
-            border: 1px solid rgba(212, 175, 55, 0.2);
-            border-radius: 18px;
-            padding: 24px 20px;
+            background: rgba(18, 26, 43, 0.65);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 20px;
+            padding: 26px 22px;
             text-align: center;
             cursor: pointer;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+            transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.35);
             position: relative;
             overflow: hidden;
+            backdrop-filter: blur(12px);
+        }
+
+        .menu-card-item::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 3px;
+            background: var(--gold-gradient);
+            opacity: 0;
+            transition: opacity 0.3s ease;
         }
 
         .menu-card-item:hover {
-            transform: translateY(-5px);
-            border-color: #d4af37;
-            background: rgba(26, 36, 56, 0.9);
-            box-shadow: 0 14px 30px rgba(212, 175, 55, 0.25);
+            transform: translateY(-6px);
+            border-color: rgba(212, 175, 55, 0.4);
+            background: rgba(26, 38, 64, 0.85);
+            box-shadow: 0 18px 35px rgba(0, 0, 0, 0.5), 0 0 20px rgba(212, 175, 55, 0.15);
+        }
+
+        .menu-card-item:hover::before {
+            opacity: 1;
         }
 
         .menu-card-item .icon {
-            font-size: 40px;
-            margin-bottom: 12px;
-            filter: drop-shadow(0 4px 8px rgba(0,0,0,0.4));
+            font-size: 42px;
+            margin-bottom: 14px;
+            filter: drop-shadow(0 6px 12px rgba(0,0,0,0.5));
+            display: inline-block;
+            transition: transform 0.3s ease;
+        }
+
+        .menu-card-item:hover .icon {
+            transform: scale(1.1);
         }
 
         .menu-card-item h3 {
@@ -356,22 +389,23 @@
         .menu-card-item p {
             margin: 0;
             font-size: 12.5px;
-            color: #9ca3af;
-            line-height: 1.4;
+            color: var(--text-sub);
+            line-height: 1.45;
         }
 
         .admin-badge {
             position: absolute;
-            top: 12px;
-            right: 12px;
-            background: rgba(212, 175, 55, 0.15);
-            color: #d4af37;
+            top: 14px;
+            right: 14px;
+            background: rgba(245, 197, 24, 0.12);
+            color: var(--gold-main);
             font-size: 10px;
             font-weight: 800;
-            padding: 4px 10px;
+            padding: 4px 12px;
             border-radius: 20px;
-            border: 1px solid rgba(212, 175, 55, 0.3);
+            border: 1px solid rgba(245, 197, 24, 0.3);
             display: none;
+            letter-spacing: 0.5px;
         }
 
         /* DETAIL VIEW SECTION */
@@ -379,157 +413,160 @@
             display: none;
             max-width: 1100px;
             margin: 0 auto;
-            animation: fadeIn 0.3s ease;
+            animation: fadeIn 0.4s ease;
         }
 
         .nav-back-bar {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 18px;
+            margin-bottom: 22px;
             flex-wrap: wrap;
             gap: 12px;
         }
 
         .btn-back-menu {
-            padding: 10px 18px;
+            padding: 12px 22px;
             border: none;
-            border-radius: 12px;
+            border-radius: 14px;
             cursor: pointer;
             font-weight: 800;
-            font-size: 13px;
-            color: #0b0f19;
-            background: #d4af37;
+            font-size: 13.5px;
+            color: #05070a;
+            background: var(--gold-gradient);
             display: inline-flex;
             align-items: center;
             gap: 8px;
-            box-shadow: 0 4px 15px rgba(212, 175, 55, 0.3);
-            transition: all 0.2s ease;
+            box-shadow: 0 6px 20px rgba(212, 175, 55, 0.3);
+            transition: all 0.3s ease;
         }
-        .btn-back-menu:hover { transform: scale(1.02); }
+        .btn-back-menu:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(212, 175, 55, 0.45); }
 
-        #summary { margin-bottom: 18px; }
+        #summary { margin-bottom: 20px; }
 
         .summary-card {
-            background: rgba(17, 24, 39, 0.85);
+            background: rgba(18, 26, 43, 0.85);
             border: 1px solid rgba(212, 175, 55, 0.3);
-            border-radius: 16px;
-            padding: 20px;
+            border-radius: 20px;
+            padding: 24px;
             color: #ffffff;
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4);
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.4);
+            backdrop-filter: blur(16px);
         }
 
         .summary-card h2 {
-            margin: 0 0 10px 0;
-            font-size: 16px;
+            margin: 0 0 12px 0;
+            font-size: 18px;
             font-weight: 800;
-            color: #d4af37;
+            color: var(--gold-main);
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 10px;
         }
 
         .summary-card p {
-            margin: 6px 0;
-            color: #e5e7eb;
-            font-size: 13.5px;
+            margin: 8px 0;
+            color: #e2e8f0;
+            font-size: 14px;
         }
 
         .grid {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
-            gap: 16px;
+            gap: 18px;
         }
 
         .card {
-            background: rgba(17, 24, 39, 0.8);
+            background: rgba(18, 26, 43, 0.75);
             border: 1px solid rgba(255, 255, 255, 0.08);
-            border-radius: 16px;
-            padding: 18px;
-            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
-            transition: all 0.2s ease;
+            border-radius: 18px;
+            padding: 20px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
         }
 
-        .card.success { border-left: 4px solid #10b981; }
-        .card.warning { border-left: 4px solid #ef4444; }
-        .card.late { border: 2px solid #d4af37; background: rgba(212, 175, 55, 0.05); }
+        .card.success { border-left: 4px solid var(--accent-green); }
+        .card.warning { border-left: 4px solid var(--accent-red); }
+        .card.late { border: 2px solid var(--gold-main); background: rgba(245, 197, 24, 0.05); }
 
         .tanggal {
             text-align: center;
             font-weight: 800;
-            margin-bottom: 12px;
+            margin-bottom: 14px;
             color: #ffffff;
-            font-size: 14px;
+            font-size: 14.5px;
         }
 
         .row {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 8px 0;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-            color: #9ca3af;
-            font-size: 13px;
+            padding: 9px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+            color: var(--text-sub);
+            font-size: 13.5px;
         }
         .row:last-child { border-bottom: none; }
 
         .ok { font-weight: 700; color: #ffffff; }
-        .kosong { color: #ef4444; font-weight: 700; }
-        .status-ok { color: #10b981; font-weight: 700; }
-        .status-warning { color: #ef4444; font-weight: 700; }
+        .kosong { color: var(--accent-red); font-weight: 700; }
+        .status-ok { color: var(--accent-green); font-weight: 700; }
+        .status-warning { color: var(--accent-red); font-weight: 700; }
 
-        /* LIST KHUSUS HP/MOBILE */
         .mobile-list-container {
             display: flex;
             flex-direction: column;
-            gap: 12px;
+            gap: 14px;
             width: 100%;
         }
 
         .mobile-list-card {
-            background: rgba(17, 24, 39, 0.85);
+            background: rgba(18, 26, 43, 0.85);
             border: 1px solid rgba(255, 255, 255, 0.08);
-            border-radius: 14px;
-            padding: 16px;
-            box-shadow: 0 6px 15px rgba(0,0,0,0.3);
+            border-radius: 16px;
+            padding: 18px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+            backdrop-filter: blur(10px);
         }
 
-        /* TOMBOL LOGOUT & EKSPOR */
         .btn-logout-main {
-            padding: 8px 16px;
+            padding: 10px 20px;
             border: none;
-            border-radius: 10px;
+            border-radius: 12px;
             cursor: pointer;
-            color: #ef4444;
-            background: rgba(239, 68, 68, 0.12);
-            border: 1px solid rgba(239, 68, 68, 0.3);
-            font-weight: 700;
-            font-size: 12.5px;
-            transition: all 0.2s ease;
+            color: var(--accent-red);
+            background: rgba(244, 63, 94, 0.12);
+            border: 1px solid rgba(244, 63, 94, 0.3);
+            font-weight: 800;
+            font-size: 13px;
+            transition: all 0.25s ease;
         }
-        .btn-logout-main:hover { background: rgba(239, 68, 68, 0.25); }
+        .btn-logout-main:hover { background: rgba(244, 63, 94, 0.25); transform: translateY(-1px); }
 
         .export-container {
-            margin-bottom: 16px;
+            margin-bottom: 18px;
             display: none;
             justify-content: flex-end;
-            gap: 10px;
+            gap: 12px;
         }
 
         .btn-export {
-            padding: 9px 16px;
+            padding: 10px 18px;
             border: none;
-            border-radius: 10px;
+            border-radius: 12px;
             font-weight: 800;
-            font-size: 12px;
+            font-size: 12.5px;
             cursor: pointer;
             color: white;
             display: flex;
             align-items: center;
-            gap: 6px;
+            gap: 8px;
+            transition: all 0.25s ease;
         }
         .btn-excel { background: #065f46; border: 1px solid #10b981; }
-        .btn-pdf { background: #991b1b; border: 1px solid #ef4444; }
+        .btn-pdf { background: #881337; border: 1px solid #f43f5e; }
+        .btn-export:hover { transform: translateY(-2px); filter: brightness(1.15); }
 
         /* POPUP & MODAL ZOOM */
         #popup, #logoutPopup, #sopModal {
@@ -537,26 +574,26 @@
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
             background: rgba(0, 0, 0, 0.85);
-            backdrop-filter: blur(10px);
+            backdrop-filter: blur(14px);
             z-index: 99999;
             justify-content: center; align-items: center;
-            padding: 16px;
+            padding: 20px;
         }
 
         .modern-popup-box {
-            background: #111827; padding: 28px 24px; border-radius: 20px;
-            min-width: 300px; text-align: center;
+            background: #0f172a; padding: 32px 28px; border-radius: 24px;
+            min-width: 320px; text-align: center;
             border: 1px solid rgba(212, 175, 55, 0.4);
-            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.8);
+            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.8);
         }
 
         .sop-modal-content {
             position: relative;
             max-width: 95%;
             max-height: 85vh;
-            background: #111827;
-            padding: 20px;
-            border-radius: 20px;
+            background: #0f172a;
+            padding: 24px;
+            border-radius: 24px;
             border: 1px solid rgba(212, 175, 55, 0.4);
             text-align: center;
         }
@@ -564,49 +601,52 @@
             width: 100%;
             max-height: 70vh;
             object-fit: contain;
-            border-radius: 12px;
+            border-radius: 16px;
         }
         .sop-close-btn {
             position: absolute;
-            top: -12px;
-            right: -12px;
-            background: #ef4444;
+            top: -14px;
+            right: -14px;
+            background: var(--accent-red);
             color: #fff;
-            width: 34px; height: 34px;
+            width: 36px; height: 36px;
             border-radius: 50%;
             display: flex; align-items: center; justify-content: center;
-            font-size: 16px; font-weight: 800; cursor: pointer;
+            font-size: 18px; font-weight: 800; cursor: pointer;
             border: 2px solid #fff;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.4);
         }
 
         .btn-popup-ok {
-            border: none; padding: 10px 26px; border-radius: 10px;
-            cursor: pointer; color: #0b0f19; font-weight: 800; background: #d4af37;
+            border: none; padding: 12px 30px; border-radius: 12px;
+            cursor: pointer; color: #05070a; font-weight: 800; background: var(--gold-gradient);
         }
 
         #btnBatal, #btnLogoutConfirm {
-            border: none; padding: 10px 20px; border-radius: 10px;
+            border: none; padding: 12px 24px; border-radius: 12px;
             cursor: pointer; color: white; font-weight: 700; margin: 4px;
         }
-        #btnBatal { background: #374151; }
-        #btnLogoutConfirm { background: #991b1b; }
+        #btnBatal { background: #334155; }
+        #btnLogoutConfirm { background: #9f1239; }
 
         /* SPINNER ANIMATION */
         .spinner {
-            width: 18px; height: 18px; display: inline-block;
-            border: 2.5px solid rgba(255,255,255,.3); border-top: 2.5px solid #d4af37;
+            width: 20px; height: 20px; display: inline-block;
+            border: 3px solid rgba(255,255,255,.3); border-top: 3px solid var(--gold-main);
             border-radius: 50%; animation: spin .8s linear infinite; vertical-align: middle;
         }
 
         @keyframes spin { to { transform: rotate(360deg); } }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
-        @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes slideUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
 
         @media(max-width: 1024px) { 
             .grid, #menuGridContainer { grid-template-columns: repeat(2, 1fr) !important; } 
         }
         @media(max-width: 768px) {
             .grid, #menuGridContainer { grid-template-columns: 1fr !important; }
+            body { padding: 16px 12px; }
+            .header h1 { font-size: 28px; }
         }
     </style>
 </head>
@@ -643,34 +683,34 @@
     </div>
 
     <!-- PANEL UPLOAD EXCEL KHUSUS ADMIN -->
-    <div id="adminUploadCard" class="glass-panel" style="display:none; max-width:1100px; margin:0 auto 20px; padding:20px;">
-        <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; margin-bottom:12px;">
-            <h3 style="margin:0; color:#d4af37; font-size:16px; font-weight:800; display:flex; align-items:center; gap:8px;">
+    <div id="adminUploadCard" class="glass-panel" style="display:none; max-width:1100px; margin:0 auto 24px; padding:24px;">
+        <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px; margin-bottom:14px;">
+            <h3 style="margin:0; color:var(--gold-main); font-size:16px; font-weight:800; display:flex; align-items:center; gap:8px;">
                 <span>📂</span> Form Update Data Excel (Admin Only)
             </h3>
-            <span style="font-size:11.5px; color:#9ca3af; background:rgba(31,41,55,0.8); padding:4px 10px; border-radius:8px; border:1px solid rgba(212,175,55,0.2);">
+            <span style="font-size:11.5px; color:var(--text-sub); background:rgba(15,23,42,0.8); padding:5px 12px; border-radius:10px; border:1px solid rgba(212,175,55,0.2);">
                 File: ABSEN FINGER(2).xlsx
             </span>
         </div>
 
         <div style="display:flex; flex-wrap:wrap; gap:12px; align-items:center;">
-            <input type="file" id="inputFileAbsenExcel" accept=".xlsx, .xls" style="color:#d1d5db; font-size:13px; background:rgba(31,41,55,0.8); padding:9px 14px; border-radius:10px; border:1px solid #374151; flex:1; min-width:240px;">
+            <input type="file" id="inputFileAbsenExcel" accept=".xlsx, .xls" style="color:#cbd5e1; font-size:13px; background:rgba(15,23,42,0.8); padding:11px 16px; border-radius:12px; border:1px solid #334155; flex:1; min-width:240px;">
             <button onclick="importSeluruhExcelKeFirebase(document.getElementById('inputFileAbsenExcel'))" 
-                    style="padding:10px 22px; background:linear-gradient(135deg, #10b981 0%, #059669 100%); color:white; border:none; border-radius:10px; font-weight:800; font-size:13px; cursor:pointer; box-shadow:0 4px 15px rgba(16,185,129,0.3); display:flex; align-items:center; gap:6px;">
+                    style="padding:12px 24px; background:linear-gradient(135deg, #10b981 0%, #059669 100%); color:white; border:none; border-radius:12px; font-weight:800; font-size:13px; cursor:pointer; box-shadow:0 6px 20px rgba(16,185,129,0.35); display:flex; align-items:center; gap:8px;">
                 <span>🚀</span> Import & Simpan Ke Firebase
             </button>
         </div>
-        <div id="statusUploadExcel" style="margin-top:10px; font-size:12.5px; color:#9ca3af; font-weight:600;"></div>
+        <div id="statusUploadExcel" style="margin-top:12px; font-size:13px; color:var(--text-sub); font-weight:600;"></div>
     </div>
 
     <!-- SPINNER INDIKATOR GLOBAL -->
-    <div id="globalLoading" style="display:none; text-align:center; margin:15px 0; color:#d4af37; font-weight:700; font-size:14px;">
-        <span class="spinner" style="margin-right:8px;"></span>
+    <div id="globalLoading" style="display:none; text-align:center; margin:18px 0; color:var(--gold-main); font-weight:700; font-size:14.5px;">
+        <span class="spinner" style="margin-right:10px;"></span>
         Memproses data Firebase, mohon tunggu...
     </div>
 
-    <div style="max-width:1100px; margin:0 auto 20px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px;">
-        <div id="loginInfo" style="padding:8px 16px; border-radius:99px; background:rgba(17,24,39,0.8); border:1px solid rgba(212, 175, 55, 0.3); color:#e2e8f0; font-size:13px; font-weight:700;"></div>
+    <div style="max-width:1100px; margin:0 auto 24px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px;">
+        <div id="loginInfo" style="padding:10px 20px; border-radius:99px; background:rgba(18,26,43,0.85); border:1px solid rgba(212, 175, 55, 0.35); color:#f1f5f9; font-size:13.5px; font-weight:700; backdrop-filter:blur(10px);"></div>
         <button class="btn-logout-main" onclick="logout()">🚪 Keluar</button>
     </div>
 
@@ -750,7 +790,7 @@
     <div id="detailViewSection" style="display:none;">
         <div class="nav-back-bar">
             <button class="btn-back-menu" onclick="kembaliKeMenuUtama()">⬅ Kembali ke Menu</button>
-            <div id="currentMenuTitle" style="color:#d4af37; font-weight:800; font-size:16px;"></div>
+            <div id="currentMenuTitle" style="color:var(--gold-main); font-weight:800; font-size:17px;"></div>
         </div>
 
         <div class="search-box" id="searchBoxWrapper">
@@ -941,13 +981,13 @@ async function login() {
     }
 }
 
-// SINKRONISASI DATA DARI FIRESTORE (OPTIMIZED DENGAN GLOBAL CACHE)
+// SINKRONISASI DATA DARI FIRESTORE
 async function muatSemuaDataLatarBelakang(namaTarget) {
     const loadEl = document.getElementById("globalLoading");
     if(loadEl) loadEl.style.display = "block";
 
     try {
-        // 1. ABSENSI (Selalu Ambil Sesuai Nama Target)
+        // 1. ABSENSI
         const absenSnap = await window.getDocs(window.collection(window.db, "absensi_finger"));
         let hasilAbsen = [];
         let jumlahTerlambat = 0;
@@ -974,7 +1014,7 @@ async function muatSemuaDataLatarBelakang(namaTarget) {
         });
         cacheData.absensi = { data: hasilAbsen, terlambat: jumlahTerlambat };
 
-        // 2. MASTER SALES & LAPORAN PENJUALAN GLOBAL (HANYA AMBIL 1 KALI DARI FIREBASE)
+        // 2. MASTER SALES & LAPORAN PENJUALAN GLOBAL
         if (!cacheData.masterGlobal || !cacheData.jualGlobal) {
             const [masterSnap, jualSnapshot] = await Promise.all([
                 window.getDocs(window.collection(window.db, "master_sales")),
@@ -985,7 +1025,7 @@ async function muatSemuaDataLatarBelakang(namaTarget) {
             cacheData.jualGlobal = jualSnapshot.docs.map(d => d.data());
         }
 
-        // 3. OLAH DATA DI MEMORI BROWSER (0 READ KE FIREBASE SAAT GANTI NAMA)
+        // 3. OLAH DATA DI MEMORI BROWSER
         let mapMasterPromotor = [];
         let daftarIdSalesSaya = [];
 
@@ -1103,7 +1143,7 @@ async function muatSemuaDataLatarBelakang(namaTarget) {
         cacheData.perolehan = { list: [...mapMasterPromotor].sort((a, b) => b.omzetTotal - a.omzetTotal) };
         cacheData.perolehanBrand = { list: [...mapMasterPromotor].sort((a, b) => b.omzetBrand - a.omzetBrand) };
 
-        // 4. ATURAN, REWARD, PUNISHMENT, PROMO (DIAMBIL PARALEL & CACHED)
+        // 4. ATURAN, REWARD, PUNISHMENT, PROMO
         if (!cacheData.rules) {
             const [rulesSnap, rewardSnap, punishmentSnap, promoSnap] = await Promise.all([
                 window.getDocs(window.collection(window.db, "rules_sop")),
@@ -1158,7 +1198,6 @@ async function gantiNamaAdmin() {
     jalankanRenderMenu(activeTab);
 }
 
-// FUNGSI PINDAH MENU TERBARU (SPINNER HILANG OTOMATIS)
 async function pindahMenu(namaMenu) {
     activeTab = namaMenu;
 
@@ -1236,7 +1275,6 @@ function tampil(v){
     return (v && String(v).trim() !== "") ? `<span class="ok">${v}</span>` : `<span class="kosong">-</span>`;
 }
 
-// FUNGSI RENDER DETAIL
 function renderAbsensi(result) {
     if(!result) return;
     const data = result.data || [];
@@ -1256,8 +1294,8 @@ function renderAbsensi(result) {
             <h2>🏆 ${data[0].nama}</h2>
             <p>Total Hari Absen : <b>${data.length}</b></p>
             <p>Datang Terlambat : <b>${terlambat}</b></p>
-            <p style="color:#ef4444; margin-top:4px;">⚠️ Tidak Absen Masuk : <b>${tidakAbsenMasuk}x</b></p>
-            <p style="color:#ef4444;">⚠️ Tidak Absen Pulang : <b>${tidakAbsenPulang}x</b></p>
+            <p style="color:var(--accent-red); margin-top:4px;">⚠️ Tidak Absen Masuk : <b>${tidakAbsenMasuk}x</b></p>
+            <p style="color:var(--accent-red);">⚠️ Tidak Absen Pulang : <b>${tidakAbsenPulang}x</b></p>
         </div>`;
         if(currentRole === "ADMIN") document.getElementById("exportArea").style.display = "flex";
     } else {
@@ -1284,7 +1322,7 @@ function renderAbsensi(result) {
         html += `
         <div class="card ${kelasCard} ${kelasTambahan}">
             <div class="tanggal">📅 ${x.tanggal}<br>${status}
-                ${isTerlambat ? '<div style="color:#d4af37;font-weight:800;margin-top:4px;">TERLAMBAT</div>' : ''}
+                ${isTerlambat ? '<div style="color:var(--gold-main);font-weight:800;margin-top:4px;">TERLAMBAT</div>' : ''}
             </div>
             <div class="row"><span>Masuk</span>${isNoMasuk ? '<span class="kosong">TIDAK FINGER</span>' : tampil(x.masuk)}</div>
             <div class="row"><span>Istirahat 1</span>${tampil(x.istirahat1)}</div>
@@ -1306,7 +1344,7 @@ function renderPenjualan(data) {
     <div class="summary-card">
         <h2>💰 ${data.nama}</h2>
         <p>Total Unit : <b>${data.totalUnit} Unit</b></p>
-        <p>Total Omzet Toko : <span style="font-weight:bold; color:#10b981;">Rp ${Number(data.totalOmzet).toLocaleString("id-ID")}</span></p>
+        <p>Total Omzet Toko : <span style="font-weight:bold; color:var(--accent-green);">Rp ${Number(data.totalOmzet).toLocaleString("id-ID")}</span></p>
     </div>`;
 
     let html = "";
@@ -1314,7 +1352,7 @@ function renderPenjualan(data) {
         html += `
         <div class="card success">
             <div class="tanggal">📅 ${x.tanggal}</div>
-            <div style="font-size:13px; font-weight:700; margin-bottom:8px; color:#ffffff;">${x.produk}</div>
+            <div style="font-size:13.5px; font-weight:700; margin-bottom:8px; color:#ffffff;">${x.produk}</div>
             <div class="row"><span>Qty</span><span>${x.qty}</span></div>
             <div class="row"><span>Omzet</span><span>Rp ${Number(x.omzet).toLocaleString("id-ID")}</span></div>
         </div>`;
@@ -1338,7 +1376,7 @@ function renderUC(data) {
         html += `
         <div class="card success">
             <div class="tanggal">📅 ${x.tanggal}</div>
-            <div style="font-size:13px; font-weight:700; margin-bottom:8px; color:#ffffff;">${x.produk}</div>
+            <div style="font-size:13.5px; font-weight:700; margin-bottom:8px; color:#ffffff;">${x.produk}</div>
             <div class="row"><span>Qty UC</span><span>${x.qty}</span></div>
         </div>`;
     });
@@ -1366,11 +1404,11 @@ function renderPerolehanBrand(data) {
     <h2>🏷️ Perolehan Khusus Brand Toko</h2>
     ${currentRole === "ADMIN" ? 
         `<p>👥 Jumlah Promotor : <b>${data.list.length}</b></p>
-         <p>💰 Total Omzet Khusus Brand : <span style="font-weight:bold;color:#10b981">Rp ${totalOmzetBrandToko.toLocaleString("id-ID")}</span></p>
+         <p>💰 Total Omzet Khusus Brand : <span style="font-weight:bold;color:var(--accent-green)">Rp ${totalOmzetBrandToko.toLocaleString("id-ID")}</span></p>
          <p>📦 Total Unit Khusus Brand : <b>${totalUnitBrandToko} Unit</b></p>` :
         `<p>👤 <b>${currentUser}</b></p>
          <p>🏷️ Brand Saya : <b>${user ? user.brandMaster : '-'}</b></p>
-         <p>💰 Omzet Brand Saya : <span style="font-weight:bold; color:#10b981;">Rp ${Number(user ? user.omzetBrand : 0).toLocaleString("id-ID")}</span> (${user ? user.unitBrand : 0} Unit)</p>
+         <p>💰 Omzet Brand Saya : <span style="font-weight:bold; color:var(--accent-green);">Rp ${Number(user ? user.omzetBrand : 0).toLocaleString("id-ID")}</span> (${user ? user.unitBrand : 0} Unit)</p>
          <p>🏅 Peringkat Brand : <b>${posisi > 0 ? posisi : '-'} dari ${data.list.length} Promotor</b></p>`
     }
     </div>`;
@@ -1379,20 +1417,20 @@ function renderPerolehanBrand(data) {
     data.list.forEach((x, i) => {
         const omzetVal = Number(x.omzetBrand || 0);
         const unitVal = Number(x.unitBrand || 0);
-        const warnaOmzet = omzetVal >= 100000000 ? '#10b981' : omzetVal >= 80000000 ? '#f59e0b' : '#ef4444';
+        const warnaOmzet = omzetVal >= 100000000 ? 'var(--accent-green)' : omzetVal >= 80000000 ? '#f59e0b' : 'var(--accent-red)';
 
         html += `
             <div style="display:flex; align-items:center; justify-content:space-between; padding:12px 0; border-bottom:1px solid rgba(255,255,255,0.06); gap:10px;">
                 <div style="display:flex; align-items:center; gap:12px; min-width:0; flex:1;">
-                    <div style="width:28px; height:28px; border-radius:50%; background:rgba(212,175,55,0.15); border:1px solid rgba(212,175,55,0.4); display:flex; align-items:center; justify-content:center; font-weight:800; font-size:12px; flex-shrink:0; color:#d4af37;">${i + 1}</div>
-                    <div style="font-weight:700; font-size:13.5px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">
+                    <div style="width:30px; height:30px; border-radius:50%; background:rgba(245,197,24,0.15); border:1px solid rgba(245,197,24,0.4); display:flex; align-items:center; justify-content:center; font-weight:800; font-size:12px; flex-shrink:0; color:var(--gold-main);">${i + 1}</div>
+                    <div style="font-weight:700; font-size:14px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">
                         ${x.nama}
-                        <div style="font-size:11px; color:#d4af37; font-weight:600;">Brand: ${x.brandMaster}</div>
+                        <div style="font-size:11px; color:var(--gold-main); font-weight:600;">Brand: ${x.brandMaster}</div>
                     </div>
                 </div>
                 <div style="text-align:right; white-space:nowrap; flex-shrink:0;">
-                    <div style="font-weight:800; font-size:13.5px; color:${warnaOmzet};">Rp ${omzetVal.toLocaleString("id-ID")}</div>
-                    <div style="font-size:11.5px; font-weight:600; color:#9ca3af; margin-top:1px;">📦 ${unitVal} Unit</div>
+                    <div style="font-weight:800; font-size:14px; color:${warnaOmzet};">Rp ${omzetVal.toLocaleString("id-ID")}</div>
+                    <div style="font-size:11.5px; font-weight:600; color:var(--text-sub); margin-top:2px;">📦 ${unitVal} Unit</div>
                 </div>
             </div>`;
     });
@@ -1412,7 +1450,7 @@ function renderPerolehan(data) {
     <div class="summary-card">
         <h2>📊 Perolehan & Rekap Toko</h2>
         <p>👥 Jumlah Promotor : <b>${data.list.length}</b></p>
-        <p>💰 Total Omzet Toko : <span style="font-weight:bold;color:#10b981">Rp ${totalOmzet.toLocaleString("id-ID")}</span></p>
+        <p>💰 Total Omzet Toko : <span style="font-weight:bold;color:var(--accent-green)">Rp ${totalOmzet.toLocaleString("id-ID")}</span></p>
     </div>`;
 
     let html = `<div class="summary-card">`;
@@ -1421,11 +1459,11 @@ function renderPerolehan(data) {
         html += `
             <div style="display:flex; align-items:center; justify-content:space-between; padding:12px 0; border-bottom:1px solid rgba(255,255,255,0.06); gap:10px;">
                 <div style="display:flex; align-items:center; gap:12px; min-width:0; flex:1;">
-                    <div style="width:28px; height:28px; border-radius:50%; background:rgba(212,175,55,0.15); border:1px solid rgba(212,175,55,0.4); display:flex; align-items:center; justify-content:center; font-weight:800; font-size:12px; flex-shrink:0; color:#d4af37;">${i + 1}</div>
-                    <div style="font-weight:700; font-size:13.5px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${x.nama}</div>
+                    <div style="width:30px; height:30px; border-radius:50%; background:rgba(245,197,24,0.15); border:1px solid rgba(245,197,24,0.4); display:flex; align-items:center; justify-content:center; font-weight:800; font-size:12px; flex-shrink:0; color:var(--gold-main);">${i + 1}</div>
+                    <div style="font-weight:700; font-size:14px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${x.nama}</div>
                 </div>
                 <div style="text-align:right; white-space:nowrap; flex-shrink:0;">
-                    <div style="font-weight:800; font-size:13.5px; color:#10b981;">Rp ${omzetVal.toLocaleString("id-ID")}</div>
+                    <div style="font-weight:800; font-size:14px; color:var(--accent-green);">Rp ${omzetVal.toLocaleString("id-ID")}</div>
                 </div>
             </div>`;
     });
@@ -1444,14 +1482,14 @@ function renderDendaUC(dataPerolehan) {
     <div class="summary-card">
         <h2>⚡ Rekapitulasi Denda & Keterlambatan</h2>
         <p>Keterlambatan Finger : <b>${terlambat} Kali</b></p>
-        <p>Estimasi Denda Late : <span style="color:#ef4444; font-weight:800;">Rp ${dendaLate.toLocaleString("id-ID")}</span></p>
+        <p>Estimasi Denda Late : <span style="color:var(--accent-red); font-weight:800;">Rp ${dendaLate.toLocaleString("id-ID")}</span></p>
     </div>`;
 
     let html = `
-    <div class="card warning" style="padding:20px;">
-        <div style="font-weight:800; color:#ffffff; font-size:14px; margin-bottom:12px;">Rincian Aturan Denda Toko:</div>
-        <div class="row"><span>Keterlambatan Finger</span><span style="color:#ef4444; font-weight:700;">Rp 10.000 / kali</span></div>
-        <div class="row"><span>Keterlambatan SOP</span><span style="color:#ef4444; font-weight:700;">Sesuai Jenis Pelanggaran</span></div>
+    <div class="card warning" style="padding:22px;">
+        <div style="font-weight:800; color:#ffffff; font-size:14.5px; margin-bottom:12px;">Rincian Aturan Denda Toko:</div>
+        <div class="row"><span>Keterlambatan Finger</span><span style="color:var(--accent-red); font-weight:700;">Rp 10.000 / kali</span></div>
+        <div class="row"><span>Keterlambatan SOP</span><span style="color:var(--accent-red); font-weight:700;">Sesuai Jenis Pelanggaran</span></div>
     </div>`;
 
     document.getElementById("hasil").className = "";
@@ -1477,15 +1515,15 @@ function renderRules(result) {
             }
 
             html += `
-            <div class="mobile-list-card" style="display: flex; flex-direction: row; align-items: center; justify-content: space-between; gap: 12px; border-left: 4px solid #d4af37; cursor: pointer;" onclick="bukaModalSOP('${pathGambar}', '${judul.replace(/'/g, "\\'")}')">
+            <div class="mobile-list-card" style="display: flex; flex-direction: row; align-items: center; justify-content: space-between; gap: 14px; border-left: 4px solid var(--gold-main); cursor: pointer;" onclick="bukaModalSOP('${pathGambar}', '${judul.replace(/'/g, "\\'")}')">
                 <div style="flex: 1; min-width: 0;">
-                    <div style="font-size: 14px; color: #d4af37; font-weight: 800; margin-bottom: 4px;">📌 ${judul}</div>
-                    <div style="font-size: 12px; color: #9ca3af;">Ketuk untuk memperbesar gambar SOP</div>
+                    <div style="font-size: 14.5px; color: var(--gold-main); font-weight: 800; margin-bottom: 4px;">📌 ${judul}</div>
+                    <div style="font-size: 12px; color: var(--text-sub);">Ketuk untuk memperbesar gambar SOP</div>
                 </div>`;
                 
                 if (pathGambar) {
                     html += `
-                    <div style="width: 55px; height: 55px; flex-shrink: 0; background: #0b0f19; border-radius: 10px; overflow: hidden; border: 1px solid rgba(212, 175, 55, 0.3);">
+                    <div style="width: 58px; height: 58px; flex-shrink: 0; background: #07090e; border-radius: 12px; overflow: hidden; border: 1px solid rgba(212, 175, 55, 0.35);">
                         <img src="${pathGambar}" alt="${judul}" style="width: 100%; height: 100%; object-fit: cover; display: block;" onerror="this.onerror=null; this.parentElement.style.display='none';">
                     </div>`;
                 }
@@ -1514,12 +1552,12 @@ function renderReward(result) {
             const detail = r.detail || r.Detail || r.pesan || "-";
 
             html += `
-            <div class="mobile-list-card" style="border-left: 4px solid #10b981;">
+            <div class="mobile-list-card" style="border-left: 4px solid var(--accent-green);">
                 <div style="display:flex; justify-content:space-between; align-items:center; gap:10px; margin-bottom:8px; border-bottom:1px solid rgba(255,255,255,0.06); padding-bottom:8px;">
-                    <div style="font-size:14.5px; font-weight:800; color:#ffffff;"><span style="color: #10b981;">🏆</span> ${judul}</div>
-                    <span style="background: rgba(16, 185, 129, 0.15); color: #10b981; border: 1px solid rgba(16, 185, 129, 0.35); padding:3px 8px; border-radius:6px; font-size:11px; font-weight:800;">${periode}</span>
+                    <div style="font-size:15px; font-weight:800; color:#ffffff;"><span style="color: var(--accent-green);">🏆</span> ${judul}</div>
+                    <span style="background: rgba(16, 185, 129, 0.15); color: var(--accent-green); border: 1px solid rgba(16, 185, 129, 0.35); padding:4px 10px; border-radius:8px; font-size:11px; font-weight:800;">${periode}</span>
                 </div>
-                <div style="font-size:13px; color:#d1d5db; line-height:1.5;">${detail}</div>
+                <div style="font-size:13.5px; color:#cbd5e1; line-height:1.5;">${detail}</div>
             </div>`;
         });
     }
@@ -1543,12 +1581,12 @@ function renderPunishment(result) {
             const level = p.level || p.Level || "Peringatan";
 
             html += `
-            <div class="mobile-list-card" style="border-left: 4px solid #ef4444;">
+            <div class="mobile-list-card" style="border-left: 4px solid var(--accent-red);">
                 <div style="display:flex; justify-content:space-between; align-items:center; gap:10px; margin-bottom:8px; border-bottom:1px solid rgba(255,255,255,0.06); padding-bottom:8px;">
-                    <div style="font-size:14.5px; font-weight:800; color:#ffffff;"><span style="color: #ef4444;">⚠️</span> ${judul}</div>
-                    <span style="background: rgba(239, 68, 68, 0.15); color: #ef4444; border: 1px solid rgba(239, 68, 68, 0.35); padding:3px 8px; border-radius:6px; font-size:11px; font-weight:800;">${level}</span>
+                    <div style="font-size:15px; font-weight:800; color:#ffffff;"><span style="color: var(--accent-red);">⚠️</span> ${judul}</div>
+                    <span style="background: rgba(244, 63, 94, 0.15); color: var(--accent-red); border: 1px solid rgba(244, 63, 94, 0.35); padding:4px 10px; border-radius:8px; font-size:11px; font-weight:800;">${level}</span>
                 </div>
-                <div style="font-size:13px; color:#d1d5db; line-height:1.5;">${detail}</div>
+                <div style="font-size:13.5px; color:#cbd5e1; line-height:1.5;">${detail}</div>
             </div>`;
         });
     }
@@ -1560,13 +1598,13 @@ function renderPunishment(result) {
 function renderPelanggaranSaya(result) {
     let targetNama = (currentRole === "ADMIN") ? (document.getElementById("nama").value.trim() || currentUser) : currentUser;
     document.getElementById("summary").innerHTML = `<div class="summary-card"><h2>🚨 Catatan Pelanggaran Saya</h2><p>Promotor: <b>${targetNama}</b></p></div>`;
-    document.getElementById("hasil").innerHTML = `<div class="card success" style="text-align:center; padding:24px; color:#10b981; font-weight:700;">🎉 Bersih dari Catatan Pelanggaran</div>`;
+    document.getElementById("hasil").innerHTML = `<div class="card success" style="text-align:center; padding:28px; color:var(--accent-green); font-weight:700;">🎉 Bersih dari Catatan Pelanggaran</div>`;
 }
 
 function renderRewardSaya(result) {
     let targetNama = (currentRole === "ADMIN") ? (document.getElementById("nama").value.trim() || currentUser) : currentUser;
     document.getElementById("summary").innerHTML = `<div class="summary-card"><h2>🎁 Catatan Reward Saya</h2><p>Promotor: <b>${targetNama}</b></p></div>`;
-    document.getElementById("hasil").innerHTML = `<div class="card" style="text-align:center; padding:24px; color:#d4af37; font-weight:700;">🎯 Belum Ada Reward Khusus Diinput</div>`;
+    document.getElementById("hasil").innerHTML = `<div class="card" style="text-align:center; padding:28px; color:var(--gold-main); font-weight:700;">🎯 Belum Ada Reward Khusus Diinput</div>`;
 }
 
 function renderPromo(result) {
@@ -1579,9 +1617,9 @@ function renderPromo(result) {
     else {
         list.forEach(p => {
             html += `<div class="card success">
-                <div class="tanggal" style="text-align:left; font-size:14px; color:#d4af37;">🔥 ${p.judul || p.Judul || ""}</div>
-                <div style="font-size:11.5px; color:#9ca3af; margin:4px 0;"><b>Periode:</b> ${p.periode || p.Periode || ""}</div>
-                <div style="font-size:13px; line-height:1.4; color:#d1d5db; border-top:1px solid rgba(255,255,255,0.06); padding-top:8px;">${p.detail || p.Detail || ""}</div>
+                <div class="tanggal" style="text-align:left; font-size:14.5px; color:var(--gold-main);">🔥 ${p.judul || p.Judul || ""}</div>
+                <div style="font-size:12px; color:var(--text-sub); margin:6px 0;"><b>Periode:</b> ${p.periode || p.Periode || ""}</div>
+                <div style="font-size:13.5px; line-height:1.45; color:#cbd5e1; border-top:1px solid rgba(255,255,255,0.06); padding-top:10px; margin-top:8px;">${p.detail || p.Detail || ""}</div>
             </div>`;
         });
     }
@@ -1597,7 +1635,7 @@ function bukaModalSOP(urlGambar, judulSop) {
         modalDiv.innerHTML = `
             <div class="sop-modal-content">
                 <div class="sop-close-btn" onclick="tutupModalSOP()">✕</div>
-                <div id="sopModalTitle" style="color: #d4af37; font-weight: 800; font-size: 16px; margin-bottom: 12px;"></div>
+                <div id="sopModalTitle" style="color: var(--gold-main); font-weight: 800; font-size: 16px; margin-bottom: 14px;"></div>
                 <img id="sopModalImg" src="" alt="SOP Preview">
             </div>
         `;
@@ -1668,8 +1706,8 @@ function tutupPopup() { document.getElementById("popup").style.display = "none";
 <!-- POPUP INFORMASI -->
 <div id="popup">
   <div class="modern-popup-box">
-    <h3 style="margin:0; color:#d4af37;">Informasi</h3>
-    <div id="popupText" style="margin: 16px 0; font-size: 14px; color: #d1d5db;"></div>
+    <h3 style="margin:0; color:var(--gold-main);">Informasi</h3>
+    <div id="popupText" style="margin: 18px 0; font-size: 14.5px; color: #cbd5e1;"></div>
     <button class="btn-popup-ok" onclick="tutupPopup()">OK</button>
   </div>
 </div>
@@ -1677,8 +1715,8 @@ function tutupPopup() { document.getElementById("popup").style.display = "none";
 <!-- POPUP KELUAR -->
 <div id="logoutPopup">
   <div class="modern-popup-box">
-    <h3 style="margin:0; color:#ef4444;">🚪 Keluar Aplikasi</h3>
-    <p style="margin: 16px 0; color: #d1d5db;">Yakin ingin keluar dari akun ini?</p>
+    <h3 style="margin:0; color:var(--accent-red);">🚪 Keluar Aplikasi</h3>
+    <p style="margin: 18px 0; color: #cbd5e1;">Yakin ingin keluar dari akun ini?</p>
     <div>
       <button id="btnBatal" onclick="tutupLogout()">Batal</button>
       <button id="btnLogoutConfirm" onclick="logoutConfirm()">Keluar</button>
