@@ -5,6 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>UFO Kebonsari - Dashboard Promotor Modern</title>
 
+    <!-- Mencegah Error Favicon 404 -->
+    <link rel="icon" href="data:,">
+
     <!-- Google Font: Outfit -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -771,8 +774,20 @@ let currentRole = "";
 let activeTab = "Absensi"; 
 
 let cacheData = {
-    absensi: null, penjualan: null, uc: null, perolehan: null, perolehanBrand: null,
-    denda: null, promo: null, reward: null, rewardSaya: null, rules: null, punishment: null, pelanggaranSaya: null
+    masterGlobal: null,
+    jualGlobal: null,
+    absensi: null,
+    penjualan: null,
+    uc: null,
+    perolehan: null,
+    perolehanBrand: null,
+    denda: null,
+    promo: null,
+    reward: null,
+    rewardSaya: null,
+    rules: null,
+    punishment: null,
+    pelanggaranSaya: null
 };
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -926,13 +941,13 @@ async function login() {
     }
 }
 
-// SINKRONISASI DATA DARI FIRESTORE (OPTIMIZED & BULLETPROOF)
+// SINKRONISASI DATA DARI FIRESTORE (OPTIMIZED DENGAN GLOBAL CACHE)
 async function muatSemuaDataLatarBelakang(namaTarget) {
     const loadEl = document.getElementById("globalLoading");
     if(loadEl) loadEl.style.display = "block";
 
     try {
-        // 1. ABSENSI
+        // 1. ABSENSI (Selalu Ambil Sesuai Nama Target)
         const absenSnap = await window.getDocs(window.collection(window.db, "absensi_finger"));
         let hasilAbsen = [];
         let jumlahTerlambat = 0;
@@ -944,7 +959,6 @@ async function muatSemuaDataLatarBelakang(namaTarget) {
                 const isLate = String(data.Terlambat || data.terlambat || "").trim().toUpperCase();
                 if (isLate === "YA") jumlahTerlambat++;
 
-                // Konversi seluruh nilai ke String untuk mencegah error .trim()
                 hasilAbsen.push({
                     nama: namaAbsenDb,
                     tanggal: String(data.Tanggal || data.tanggal || "").trim(),
@@ -960,13 +974,22 @@ async function muatSemuaDataLatarBelakang(namaTarget) {
         });
         cacheData.absensi = { data: hasilAbsen, terlambat: jumlahTerlambat };
 
-        // 2. MASTER SALES
+        // 2. MASTER SALES & LAPORAN PENJUALAN GLOBAL (HANYA AMBIL 1 KALI DARI FIREBASE)
+        if (!cacheData.masterGlobal || !cacheData.jualGlobal) {
+            const [masterSnap, jualSnapshot] = await Promise.all([
+                window.getDocs(window.collection(window.db, "master_sales")),
+                window.getDocs(window.collection(window.db, "laporan_penjualan"))
+            ]);
+
+            cacheData.masterGlobal = masterSnap.docs.map(d => d.data());
+            cacheData.jualGlobal = jualSnapshot.docs.map(d => d.data());
+        }
+
+        // 3. OLAH DATA DI MEMORI BROWSER (0 READ KE FIREBASE SAAT GANTI NAMA)
         let mapMasterPromotor = [];
         let daftarIdSalesSaya = [];
 
-        const masterSnap = await window.getDocs(window.collection(window.db, "master_sales"));
-        masterSnap.forEach(docSnap => {
-            const md = docSnap.data();
+        cacheData.masterGlobal.forEach(md => {
             const namaAbsen   = String(md["Nama Absen"] || md.nama || "").trim();
             const idSales     = String(md["Nama Sales"] || md.idSales || "").trim().toUpperCase();
             const brandMaster = String(md.Merk || md.brand || "UMUM").trim().toUpperCase();
@@ -995,13 +1018,10 @@ async function muatSemuaDataLatarBelakang(namaTarget) {
             daftarIdSalesSaya.push(namaTarget.trim().toUpperCase());
         }
 
-        // 3. LAPORAN PENJUALAN
         let detailPenjualan = [];
         let detailUC = [];
 
-        const jualSnapshot = await window.getDocs(window.collection(window.db, "laporan_penjualan"));
-        jualSnapshot.forEach(docSnap => {
-            const dataDoc = docSnap.data();
+        cacheData.jualGlobal.forEach(dataDoc => {
             const r = dataDoc.row || dataDoc;
             const cols = Array.isArray(r) ? r : Object.values(r);
 
@@ -1107,10 +1127,13 @@ async function muatSemuaDataLatarBelakang(namaTarget) {
 
 async function loadNama(){
     try {
-        const masterSnap = await window.getDocs(window.collection(window.db, "master_sales"));
+        if (!cacheData.masterGlobal) {
+            const masterSnap = await window.getDocs(window.collection(window.db, "master_sales"));
+            cacheData.masterGlobal = masterSnap.docs.map(d => d.data());
+        }
+
         let daftarNama = [];
-        masterSnap.forEach(docSnap => {
-            const md = docSnap.data();
+        cacheData.masterGlobal.forEach(md => {
             const n = String(md["Nama Absen"] || md.nama || "").trim();
             if (n && !daftarNama.includes(n)) daftarNama.push(n);
         });
