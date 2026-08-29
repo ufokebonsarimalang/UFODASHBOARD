@@ -1100,32 +1100,34 @@ cacheData.jualGlobal.forEach(dataDoc => {
 
                 if (!idSalesExcel) return;
 
-               mapMasterPromotor.forEach(p => {
-                    if (p.idSales === idSalesExcel) {
-                        
-                        // 1. PEROLEHAN TOKO: Semua kategori (Reguler, Garansi/UC, dan Ongkos) MASUK dihitung
-                        p.omzetTotal += omzet;
+              mapMasterPromotor.forEach(p => {
+    if (p.idSales === idSalesExcel) {
+        
+        // 1. PEROLEHAN TOKO: Kategori ONGKOS TIDAK DIHITUNG (agar klop persis dengan Excel utama)
+        if (kategori !== "ONGKOS") {
+            p.omzetTotal += omzet;
+        }
 
-                        // 2. PEROLEHAN BRAND: Kategori GARANSI (UC) dan ONGKOS tidak ikut dihitung
-                        let isBrandMatch = false;
-                        if (p.brandKeywords.length > 0) {
-                            for (let k = 0; k < p.brandKeywords.length; k++) {
-                                let kw = p.brandKeywords[k];
-                                if (kw !== "" && (brandPenjualan.includes(kw) || namaProduk.includes(kw))) {
-                                    isBrandMatch = true;
-                                    break;
-                                }
-                            }
-                        } else {
-                            isBrandMatch = true;
-                        }
+        // 2. PEROLEHAN BRAND: Kategori GARANSI dan ONGKOS sama-sama TIDAK DIHITUNG
+        let isBrandMatch = false;
+        if (p.brandKeywords.length > 0) {
+            for (let k = 0; k < p.brandKeywords.length; k++) {
+                let kw = p.brandKeywords[k];
+                if (kw !== "" && (brandPenjualan.includes(kw) || namaProduk.includes(kw))) {
+                    isBrandMatch = true;
+                    break;
+                }
+            }
+        } else {
+            isBrandMatch = true;
+        }
 
-                        if (isBrandMatch && kategori !== "GARANSI" && kategori !== "ONGKOS") {
-                            p.omzetBrand += omzet;
-                            p.unitBrand  += qty;
-                        }
-                    }
-                });
+        if (isBrandMatch && kategori !== "GARANSI" && kategori !== "ONGKOS") {
+            p.omzetBrand += omzet;
+            p.unitBrand  += qty;
+        }
+    }
+});
                 if (daftarIdSalesSaya.includes(idSalesExcel)) {
                     if (kategori !== "GARANSI" && kategori !== "ONGKOS") {
                         detailPenjualan.push({ tanggal: tglText, produk: namaProduk, qty: qty, omzet: omzet });
