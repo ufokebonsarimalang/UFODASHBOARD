@@ -1068,85 +1068,88 @@ async function muatSemuaDataLatarBelakang(namaTarget) {
         const teksPeriodeUC = (tglHariIni === 1) 
             ? `1 ${namaBulanIndo[blnSekarang]} ${thnSekarang}` 
             : `1 - ${tglHariIni} ${namaBulanIndo[blnSekarang]} ${thnSekarang}`;
+cacheData.jualGlobal.forEach(dataDoc => {
+                const r = dataDoc.row || dataDoc;
+                const cols = Array.isArray(r) ? r : Object.values(r);
 
-        cacheData.jualGlobal.forEach(dataDoc => {
-            const r = dataDoc.row || dataDoc;
-            const cols = Array.isArray(r) ? r : Object.values(r);
+                let tglText        = "";
+                let namaProduk     = "";
+                let qty            = 0;
+                let omzet          = 0;
+                let idSalesExcel   = "";
+                let kategori       = "";
+                let brandPenjualan = "";
 
-            let tglText        = "";
-            let namaProduk     = "";
-            let qty            = 0;
-            let omzet          = 0;
-            let idSalesExcel   = "";
-            let kategori       = "";
-            let brandPenjualan = "";
+                if (typeof r === "object" && !Array.isArray(r)) {
+                    tglText        = String(r["Tanggal"] || r["TGL"] || r[2] || "").trim();
+                    namaProduk     = String(r["Nama Produk"] || r["NAMA PRODUK"] || r["Nama Barang"] || r[5] || "").trim().toUpperCase();
+                    qty            = Number(r["Qty"] || r["QTY"] || r[6]) || 0;
+                    omzet          = Number(String(r["Total"] || r["TOTAL"] || r["Omzet"] || r[10] || 0).replace(/,/g, "")) || 0;
+                    idSalesExcel   = String(r["Sales"] || r["SALES"] || r["ID Sales"] || r[15] || "").trim().toUpperCase();
+                    kategori       = String(r["Kategori"] || r["KATEGORI"] || r[17] || "").trim().toUpperCase();
+                    brandPenjualan = String(r["Brand"] || r["BRAND"] || r["Merk"] || r[18] || r[4] || "").trim().toUpperCase();
+                } else {
+                    tglText        = String(cols[2] || "").trim();
+                    namaProduk     = String(cols[5] || "").trim().toUpperCase();
+                    qty            = Number(cols[6]) || 0;
+                    omzet          = Number(String(cols[10] || 0).replace(/,/g, "")) || 0;
+                    idSalesExcel   = String(cols[15] || "").trim().toUpperCase();
+                    kategori       = String(cols[17] || "").trim().toUpperCase();
+                    brandPenjualan = String(cols[18] || cols[4] || "").trim().toUpperCase();
+                }
 
-            if (typeof r === "object" && !Array.isArray(r)) {
-                tglText        = String(r["Tanggal"] || r["TGL"] || r[2] || "").trim();
-                namaProduk     = String(r["Nama Produk"] || r["NAMA PRODUK"] || r["Nama Barang"] || r[5] || "").trim().toUpperCase();
-                qty            = Number(r["Qty"] || r["QTY"] || r[6]) || 0;
-                omzet          = Number(String(r["Total"] || r["TOTAL"] || r["Omzet"] || r[10] || 0).replace(/,/g, "")) || 0;
-                idSalesExcel   = String(r["Sales"] || r["SALES"] || r["ID Sales"] || r[15] || "").trim().toUpperCase();
-                kategori       = String(r["Kategori"] || r["KATEGORI"] || r[17] || "").trim().toUpperCase();
-                brandPenjualan = String(r["Brand"] || r["BRAND"] || r["Merk"] || r[18] || r[4] || "").trim().toUpperCase();
-            } else {
-                tglText        = String(cols[2] || "").trim();
-                namaProduk     = String(cols[5] || "").trim().toUpperCase();
-                qty            = Number(cols[6]) || 0;
-                omzet          = Number(String(cols[10] || 0).replace(/,/g, "")) || 0;
-                idSalesExcel   = String(cols[15] || "").trim().toUpperCase();
-                kategori       = String(cols[17] || "").trim().toUpperCase();
-                brandPenjualan = String(cols[18] || cols[4] || "").trim().toUpperCase();
-            }
+                if (!idSalesExcel) return;
 
-            if (!idSalesExcel) return;
-
-            mapMasterPromotor.forEach(p => {
-                if (p.idSales === idSalesExcel) {
-                    p.omzetTotal += omzet;
-
-                    let isBrandMatch = false;
-                    if (p.brandKeywords.length > 0) {
-                        for (let k = 0; k < p.brandKeywords.length; k++) {
-                            let kw = p.brandKeywords[k];
-                            if (kw !== "" && (brandPenjualan.includes(kw) || namaProduk.includes(kw))) {
-                                isBrandMatch = true;
-                                break;
-                            }
+                mapMasterPromotor.forEach(p => {
+                    if (p.idSales === idSalesExcel) {
+                        
+                        // 1. PEROLEHAN TOKO: Kategori ONGKOS saja yang tidak dihitung (Garansi/UC ikut masuk)
+                        if (kategori !== "ONGKOS") {
+                            p.omzetTotal += omzet;
                         }
-                    } else {
-                        isBrandMatch = true;
+
+                        // 2. PEROLEHAN BRAND: Kategori GARANSI (UC) dan ONGKOS tidak ikut dihitung
+                        let isBrandMatch = false;
+                        if (p.brandKeywords.length > 0) {
+                            for (let k = 0; k < p.brandKeywords.length; k++) {
+                                let kw = p.brandKeywords[k];
+                                if (kw !== "" && (brandPenjualan.includes(kw) || namaProduk.includes(kw))) {
+                                    isBrandMatch = true;
+                                    break;
+                                }
+                            }
+                        } else {
+                            isBrandMatch = true;
+                        }
+
+                        if (isBrandMatch && kategori !== "GARANSI" && kategori !== "ONGKOS") {
+                            p.omzetBrand += omzet;
+                            p.unitBrand  += qty;
+                        }
+                    }
+                });
+
+                if (daftarIdSalesSaya.includes(idSalesExcel)) {
+                    if (kategori !== "GARANSI" && kategori !== "ONGKOS") {
+                        detailPenjualan.push({ tanggal: tglText, produk: namaProduk, qty: qty, omzet: omzet });
                     }
 
-                    if (isBrandMatch && kategori !== "GARANSI" && kategori !== "ONGKOS") {
-                        p.omzetBrand += omzet;
-                        p.unitBrand  += qty;
+                    if (kategori === "GARANSI") {
+                        let dateObj = parseTanggalLaporan(tglText);
+                        if (dateObj) {
+                            if (
+                                dateObj.getFullYear() === thnSekarang && 
+                                dateObj.getMonth() === blnSekarang && 
+                                dateObj.getDate() <= tglHariIni
+                            ) {
+                                detailUC.push({ tanggal: tglText, produk: namaProduk, qty: qty, omzet: omzet });
+                            }
+                        } else {
+                            detailUC.push({ tanggal: tglText, produk: namaProduk, qty: qty, omzet: omzet });
+                        }
                     }
                 }
             });
-
-            if (daftarIdSalesSaya.includes(idSalesExcel)) {
-                if (kategori !== "GARANSI" && kategori !== "ONGKOS") {
-                    detailPenjualan.push({ tanggal: tglText, produk: namaProduk, qty: qty, omzet: omzet });
-                }
-
-                if (kategori === "GARANSI") {
-                    let dateObj = parseTanggalLaporan(tglText);
-                    if (dateObj) {
-                        if (
-                            dateObj.getFullYear() === thnSekarang && 
-                            dateObj.getMonth() === blnSekarang && 
-                            dateObj.getDate() <= tglHariIni
-                        ) {
-                            detailUC.push({ tanggal: tglText, produk: namaProduk, qty: qty, omzet: omzet });
-                        }
-                    } else {
-                        detailUC.push({ tanggal: tglText, produk: namaProduk, qty: qty, omzet: omzet });
-                    }
-                }
-            }
-        });
-
         cacheData.penjualan = {
             nama: namaTarget,
             totalUnit: detailPenjualan.reduce((a, b) => a + b.qty, 0),
