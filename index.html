@@ -1410,16 +1410,20 @@ function renderUC(data) {
 function renderPerolehanBrand(data) {
     if (!data || !Array.isArray(data.list)) return;
 
+    // Mendapatkan informasi periode bulan berjalan otomatis
+    const sekarang = new Date();
+    const namaBulanIndo = ["Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"];
+    const periodeBrandStr = `1 - ${sekarang.getDate()} ${namaBulanIndo[sekarang.getMonth()]} ${sekarang.getFullYear()}`;
+
     if (currentRole === "USER") {
         const userObj = data.list.find(x => (x.nama || "").toUpperCase() === (currentUser || "").toUpperCase());
         const omzetVal = Number(userObj ? userObj.omzetBrand : 0);
-        const unitVal = Number(userObj ? userObj.unitBrand : 0);
 
         document.getElementById("summary").innerHTML = `
         <div class="summary-card">
             <h2><i data-lucide="tag" style="width:20px; height:20px;"></i> Perolehan Brand</h2>
+            <p>Periode : <b>${periodeBrandStr}</b></p>
             <p>👤 <b>${currentUser}</b></p>
-            <p>📦 Total Unit : <b style="font-family:var(--font-num);">${unitVal} Unit</b></p>
             <p>💰 Total Omzet Brand : <span style="font-weight:bold; color:var(--accent-green); font-family:var(--font-num);">Rp ${omzetVal.toLocaleString("id-ID")}</span></p>
         </div>`;
         document.getElementById("hasil").innerHTML = "";
@@ -1427,24 +1431,21 @@ function renderPerolehanBrand(data) {
     }
 
     let totalOmzetBrandToko = 0;
-    let totalUnitBrandToko = 0;
     data.list.forEach(x => {
         totalOmzetBrandToko += Number(x.omzetBrand || 0);
-        totalUnitBrandToko += Number(x.unitBrand || 0);
     });
 
     document.getElementById("summary").innerHTML = `
     <div class="summary-card">
         <h2><i data-lucide="tag" style="width:20px; height:20px;"></i> Perolehan Brand</h2>
+        <p>Periode : <b>${periodeBrandStr}</b></p>
         <p>👥 Jumlah Promotor : <b style="font-family:var(--font-num);">${data.list.length}</b></p>
         <p>💰 Total Omzet Brand Toko : <span style="font-weight:bold;color:var(--accent-green);font-family:var(--font-num);">Rp ${totalOmzetBrandToko.toLocaleString("id-ID")}</span></p>
-        <p>📦 Total Unit Brand Toko : <b style="font-family:var(--font-num);">${totalUnitBrandToko} Unit</b></p>
     </div>`;
 
     let html = `<div class="summary-card">`;
     data.list.forEach((x, i) => {
         const omzetVal = Number(x.omzetBrand || 0);
-        const unitVal = Number(x.unitBrand || 0);
 
         html += `
             <div style="display:flex; align-items:center; justify-content:space-between; padding:12px 0; border-bottom:1px solid rgba(255,255,255,0.06); gap:10px;">
@@ -1456,7 +1457,6 @@ function renderPerolehanBrand(data) {
                 </div>
                 <div style="text-align:right; white-space:nowrap; flex-shrink:0;">
                     <div style="font-weight:800; font-size:14px; color:var(--accent-green); font-family:var(--font-num);">Rp ${omzetVal.toLocaleString("id-ID")}</div>
-                    <div style="font-size:11.5px; font-weight:600; color:var(--text-sub); margin-top:2px;">📦 <span style="font-family:var(--font-num);">${unitVal}</span> Unit</div>
                 </div>
             </div>`;
     });
