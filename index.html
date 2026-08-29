@@ -748,7 +748,7 @@
             <span class="admin-badge" data-badge="menu">Pribadi</span>
             <div class="icon">⭐</div>
             <h3>UC</h3>
-            <p>Pencapaian poin UC promotor</p>
+            <p>Pencapaian poin UC promotor (Tgl 1-30/31)</p>
         </div>
         <div class="menu-card-item" id="menuPerolehanCard" onclick="pindahMenu('Perolehan')">
             <span class="admin-badge" data-badge="admin">Admin Only</span>
@@ -845,6 +845,35 @@ let cacheData = {
     punishment: null,
     pelanggaranSaya: null
 };
+
+// HELPER PARSE TANGGAL UNTUK FILTER PERIODE BULAN (BERLAKU TANGGAL 1 - 30/31)
+function parseTanggalLaporan(tglStr) {
+    if (!tglStr) return null;
+    tglStr = String(tglStr).trim();
+
+    // Format ISO / Standard Date String (YYYY-MM-DD atau YYYY/MM/DD)
+    if (tglStr.includes("-") || tglStr.includes("/")) {
+        let parts = tglStr.split(/[-/]/);
+        if (parts.length === 3) {
+            // Cek jika format DD-MM-YYYY
+            if (parts[0].length === 2 && parts[2].length === 4) {
+                return new Date(parts[2], parts[1] - 1, parts[0]);
+            }
+            // Cek jika format YYYY-MM-DD
+            if (parts[0].length === 4) {
+                return new Date(parts[0], parts[1] - 1, parts[2]);
+            }
+        }
+    }
+
+    // Format Serial Number Excel
+    if (!isNaN(tglStr) && Number(tglStr) > 30000) {
+        return new Date((Number(tglStr) - (25567 + 2)) * 86400 * 1000);
+    }
+
+    let d = new Date(tglStr);
+    return isNaN(d.getTime()) ? null : d;
+}
 
 document.addEventListener("DOMContentLoaded", () => {
     const savedName = localStorage.getItem("loginNama");
@@ -1077,6 +1106,11 @@ async function muatSemuaDataLatarBelakang(namaTarget) {
         let detailPenjualan = [];
         let detailUC = [];
 
+        // PENENTUAN TANGGAL 1 - 30/31 BULAN BERJALAN
+        const sekarang = new Date();
+        const thnSekarang = sekarang.getFullYear();
+        const blnSekarang = sekarang.getMonth();
+
         cacheData.jualGlobal.forEach(dataDoc => {
             const r = dataDoc.row || dataDoc;
             const cols = Array.isArray(r) ? r : Object.values(r);
@@ -1137,8 +1171,18 @@ async function muatSemuaDataLatarBelakang(namaTarget) {
                 if (kategori !== "GARANSI" && kategori !== "ONGKOS") {
                     detailPenjualan.push({ tanggal: tglText, produk: namaProduk, qty: qty, omzet: omzet });
                 }
+
+                // KHUSUS PERHITUNGAN UC: DISARING TANGGAL 1 SAMPAI 30/31 BULAN BERJALAN
                 if (kategori === "GARANSI") {
-                    detailUC.push({ tanggal: tglText, produk: namaProduk, qty: qty, omzet: omzet });
+                    let dateObj = parseTanggalLaporan(tglText);
+                    if (dateObj) {
+                        if (dateObj.getFullYear() === thnSekarang && dateObj.getMonth() === blnSekarang) {
+                            detailUC.push({ tanggal: tglText, produk: namaProduk, qty: qty, omzet: omzet });
+                        }
+                    } else {
+                        // Jika parsing tanggal gagal/tidak dispesifikasikan, tetap dimuat
+                        detailUC.push({ tanggal: tglText, produk: namaProduk, qty: qty, omzet: omzet });
+                    }
                 }
             }
         });
@@ -1229,6 +1273,7 @@ async function pindahMenu(namaMenu) {
     else if (namaMenu === "RewardSaya") judulMenuText = "Reward Saya";
     else if (namaMenu === "PelanggaranSaya") judulMenuText = "Catatan Pelanggaran";
     else if (namaMenu === "PerolehanBrand") judulMenuText = "Perolehan Brand Saya";
+    else if (namaMenu === "UC") judulMenuText = "Poin UC (Tanggal 1 - 30/31)";
     document.getElementById("currentMenuTitle").innerText = "Menu: " + judulMenuText;
 
     jalankanRenderMenu(namaMenu);
@@ -1384,18 +1429,23 @@ function renderUC(data) {
     document.getElementById("summary").innerHTML = `
     <div class="summary-card">
         <h2>⭐ ${data.nama}</h2>
-        <p>Total UC : <b style="font-family:var(--font-num);">${data.totalUC} Poin</b></p>
+        <p>Periode Perhitungan : <b>Tanggal 1 s/d 30/31 Bulan Ini</b></p>
+        <p>Total UC Terkumpul : <b style="font-family:var(--font-num); color:var(--gold-main); font-size:16px;">${data.totalUC} Poin</b></p>
     </div>`;
 
     let html = "";
-    (data.detail || []).forEach(x => {
-        html += `
-        <div class="card success">
-            <div class="tanggal">📅 ${x.tanggal}</div>
-            <div style="font-size:13.5px; font-weight:700; margin-bottom:8px; color:#ffffff;">${x.produk}</div>
-            <div class="row"><span>Qty UC</span><span style="font-family:var(--font-num); font-weight:700; color:#fff;">${x.qty}</span></div>
-        </div>`;
-    });
+    if (!data.detail || data.detail.length === 0) {
+        html = `<div class="card" style="text-align:center; padding:24px; color:var(--text-sub);">Tidak ada perolehan UC pada tanggal 1 - 30/31 bulan ini</div>`;
+    } else {
+        data.detail.forEach(x => {
+            html += `
+            <div class="card success">
+                <div class="tanggal">📅 ${x.tanggal}</div>
+                <div style="font-size:13.5px; font-weight:700; margin-bottom:8px; color:#ffffff;">${x.produk}</div>
+                <div class="row"><span>Qty UC</span><span style="font-family:var(--font-num); font-weight:700; color:#fff;">${x.qty}</span></div>
+            </div>`;
+        });
+    }
 
     document.getElementById("hasil").className = "grid";
     document.getElementById("hasil").innerHTML = html;
