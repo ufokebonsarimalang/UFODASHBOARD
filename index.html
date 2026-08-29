@@ -802,7 +802,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
         if (currentRole === "USER") {
             document.getElementById("menuPerolehanCard").style.display = "none";
-            muatSemuaDataLatarBelakang(currentUser);
+            (currentUser);
         } else {
             document.getElementById("menuPerolehanCard").style.display = "block";
             loadNama();
@@ -943,7 +943,7 @@ async function login() {
     }
 }
 
-// MEMUAT SELURUH DATA DARI FIRESTORE DENGAN RUMUS BRAND YANG BENAR
+// MEMUAT SELURUH DATA DARI FIRESTORE DENGAN BACA HEADER DARI EXCEL (SANGAT AKURAT)
 async function muatSemuaDataLatarBelakang(namaTarget) {
     const loadEl = document.getElementById("globalLoading");
     if(loadEl) loadEl.style.display = "block";
@@ -972,7 +972,7 @@ async function muatSemuaDataLatarBelakang(namaTarget) {
         });
         cacheData.absensi = { data: hasilAbsen, terlambat: jumlahTerlambat };
 
-        // 2. MASTER SALES & PEMETAAN BRAND (RUMUS DIBERSIHKAN)
+        // 2. MASTER SALES & BRAND
         let mapMasterPromotor = [];
         let daftarIdSalesSaya = [];
 
@@ -985,7 +985,6 @@ async function muatSemuaDataLatarBelakang(namaTarget) {
             const aktif       = String(md.Aktif || md.aktif || "YA").trim().toUpperCase();
 
             if (namaAbsen && idSales && aktif === "YA") {
-                // Split keyword brand berdasarkan koma dan bersihkan spasi
                 let brandList = brandMaster.split(",").map(b => b.trim()).filter(b => b !== "");
                 let promotorObj = {
                     nama: namaAbsen,
@@ -1008,7 +1007,7 @@ async function muatSemuaDataLatarBelakang(namaTarget) {
             daftarIdSalesSaya.push(namaTarget.trim().toUpperCase());
         }
 
-        // 3. LAPORAN PENJUALAN (LOGIKA RUMUS PEROLEHAN BRAND)
+        // 3. LAPORAN PENJUALAN (MEMBACA NILAI BERDASARKAN OBJEK / INDEKS FLEKSIBEL)
         let detailPenjualan = [];
         let detailUC = [];
 
@@ -1016,15 +1015,38 @@ async function muatSemuaDataLatarBelakang(namaTarget) {
         jualSnapshot.forEach(docSnap => {
             const dataDoc = docSnap.data();
             const r = dataDoc.row || dataDoc;
+            
+            // Konversi row menjadi array jika dalam bentuk object
             const cols = Array.isArray(r) ? r : Object.values(r);
 
-            const tglText        = String(cols[2] || "").trim();
-            const namaProduk     = String(cols[5] || "").trim().toUpperCase();
-            const qty            = Number(cols[6]) || 0;
-            const omzet          = Number(String(cols[10] || 0).replace(/,/g, "")) || 0;
-            const idSalesExcel   = String(cols[15] || "").trim().toUpperCase();
-            const kategori       = String(cols[17] || "").trim().toUpperCase();
-            const brandPenjualan = String(cols[18] || cols[4] || "").trim().toUpperCase();
+            // Ekstrak nilai sel dengan aman
+            let tglText        = "";
+            let namaProduk     = "";
+            let qty            = 0;
+            let omzet          = 0;
+            let idSalesExcel   = "";
+            let kategori       = "";
+            let brandPenjualan = "";
+
+            if (typeof r === "object" && !Array.isArray(r)) {
+                // Jika data tersimpan sebagai Objek Header
+                tglText        = String(r["Tanggal"] || r["TGL"] || r[2] || "").trim();
+                namaProduk     = String(r["Nama Produk"] || r["NAMA PRODUK"] || r["Nama Barang"] || r[5] || "").trim().toUpperCase();
+                qty            = Number(r["Qty"] || r["QTY"] || r[6]) || 0;
+                omzet          = Number(String(r["Total"] || r["TOTAL"] || r["Omzet"] || r[10] || 0).replace(/,/g, "")) || 0;
+                idSalesExcel   = String(r["Sales"] || r["SALES"] || r["ID Sales"] || r[15] || "").trim().toUpperCase();
+                kategori       = String(r["Kategori"] || r["KATEGORI"] || r[17] || "").trim().toUpperCase();
+                brandPenjualan = String(r["Brand"] || r["BRAND"] || r["Merk"] || r[18] || r[4] || "").trim().toUpperCase();
+            } else {
+                // Jika data tersimpan sebagai Array Baris
+                tglText        = String(cols[2] || "").trim();
+                namaProduk     = String(cols[5] || "").trim().toUpperCase();
+                qty            = Number(cols[6]) || 0;
+                omzet          = Number(String(cols[10] || 0).replace(/,/g, "")) || 0;
+                idSalesExcel   = String(cols[15] || "").trim().toUpperCase();
+                kategori       = String(cols[17] || "").trim().toUpperCase();
+                brandPenjualan = String(cols[18] || cols[4] || "").trim().toUpperCase();
+            }
 
             if (!idSalesExcel) return;
 
@@ -1032,7 +1054,7 @@ async function muatSemuaDataLatarBelakang(namaTarget) {
                 if (p.idSales === idSalesExcel) {
                     p.omzetTotal += omzet;
 
-                    // RUMUS COCOK BRAND: Cek apakah nama produk/brand penjualan mengandung salah satu kata kunci brand promotor
+                    // LOGIKA COCOK BRAND PROMOTOR
                     let isBrandMatch = false;
                     if (p.brandKeywords.length > 0) {
                         for (let k = 0; k < p.brandKeywords.length; k++) {
@@ -1046,7 +1068,6 @@ async function muatSemuaDataLatarBelakang(namaTarget) {
                         isBrandMatch = true;
                     }
 
-                    // Hanya hitung ke Perolehan Brand jika cocok & bukan Garansi/Ongkos
                     if (isBrandMatch && kategori !== "GARANSI" && kategori !== "ONGKOS") {
                         p.omzetBrand += omzet;
                         p.unitBrand  += qty;
@@ -1077,7 +1098,6 @@ async function muatSemuaDataLatarBelakang(namaTarget) {
             detail: detailUC
         };
 
-        // Urutkan peringkat perolehan dari omzet tertinggi
         cacheData.perolehan = { list: [...mapMasterPromotor].sort((a, b) => b.omzetTotal - a.omzetTotal) };
         cacheData.perolehanBrand = { list: [...mapMasterPromotor].sort((a, b) => b.omzetBrand - a.omzetBrand) };
 
