@@ -1568,6 +1568,17 @@ function prosesEkspor(format) {
                 });
             }
         }
+        // TAMBAHAN KHUSUS: PEROLEHAN BRAND (TIDAK MENGANGGU ABSENSI & PEROLEHAN)
+        else if (activeTab === "PerolehanBrand") {
+            rowsArr.push(["REKAP PEROLEHAN KHUSUS BRAND PROMOTOR"], []);
+            rowsArr.push(["Peringkat", "Nama Promotor", "Brand", "Omzet Brand (Rp)", "Total Unit"]);
+            
+            if (cacheData.perolehanBrand && cacheData.perolehanBrand.list) {
+                cacheData.perolehanBrand.list.forEach((x, i) => {
+                    rowsArr.push([i + 1, x.nama, x.brandMaster || x.brand || "UMUM", Number(x.omzet || 0), Number(x.unit || 0)]);
+                });
+            }
+        }
 
         if (rowsArr.length > 0) {
             const ws = XLSX.utils.aoa_to_sheet(rowsArr);
