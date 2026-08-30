@@ -752,180 +752,39 @@ async function muatSemuaDataLatarBelakang(namaTarget) {
     if(loadEl) loadEl.style.display = "block";
 
     try {
-        console.log("🔥 MEMUAT DATA FIREBASE DENGAN PENJEMBATAN NAMA & ID UNTUK:", namaTarget);
+        const [resAbsen, resJual, resUC, resPerolehan, resPerolehanBrand, resDendaLate, resPromo, resReward, resRewardSaya, resRules, resPunishment, resPelanggaran] = await Promise.all([
+            fetch(WEBAPP_URL + "?nama=" + encodeURIComponent(namaTarget)).then(r => r.json()),
+            fetch(WEBAPP_URL + "?action=penjualan&nama=" + encodeURIComponent(namaTarget)).then(r => r.json()),
+            fetch(WEBAPP_URL + "?action=uc&nama=" + encodeURIComponent(namaTarget)).then(r => r.json()),
+            fetch(WEBAPP_URL + "?action=perolehan").then(r => r.json()),
+            fetch(WEBAPP_URL + "?action=perolehan_brand&nama=" + encodeURIComponent(namaTarget)).then(r => r.json()).catch(() => ({})),
+            fetch(WEBAPP_URL + "?action=rekap_terlambat").then(r => r.json()),
+            fetch(WEBAPP_URL + "?action=promo").then(r => r.json()),
+            fetch(WEBAPP_URL + "?action=reward").then(r => r.json()).catch(() => ({data: []})),
+            fetch(WEBAPP_URL + "?action=reward_saya&nama=" + encodeURIComponent(namaTarget)).then(r => r.json()).catch(() => ({data: []})),
+            fetch(WEBAPP_URL + "?action=rules").then(r => r.json()),
+            fetch(WEBAPP_URL + "?action=punishment").then(r => r.json()).catch(() => ({data: []})),
+            fetch(WEBAPP_URL + "?action=pelanggaran_saya&nama=" + encodeURIComponent(namaTarget)).then(r => r.json()).catch(() => ({data: []}))
+        ]);
 
-        // 1. Ambil absensi
-        const absenSnap = await window.getDocs(window.collection(window.db, "absensi_finger"));
-        let hasilAbsen = [];
-        let jumlahTerlambat = 0;
-        absenSnap.forEach(d => {
-            const data = d.data();
-            if ((data.nama || "").trim().toUpperCase() === namaTarget.trim().toUpperCase()) {
-                if ((data.terlambat || "").toUpperCase() === "YA") jumlahTerlambat++;
-                hasilAbsen.push(data);
-            }
-        });
-        cacheData.absensi = { data: hasilAbsen, terlambat: jumlahTerlambat };
-
-        // 2. AMBIL ID SALES & DATA MASTER DARI MASTER_SALES
-        let idSalesMaster = "";
-        try {
-            const masterSnap = await window.getDocs(window.collection(window.db, "master_sales"));
-            masterSnap.forEach(docSnap => {
-                const md = docSnap.data();
-                const dbNamaAbsen = String(md.nama || md.NamaAbsen || "").trim().toUpperCase();
-                // Jika nama di web sama dengan Nama Absen di Master, ambil ID Sales-nya
-                if (dbNamaAbsen === namaTarget.trim().toUpperCase()) {
-                    idSalesMaster = String(md.idSales || md.id || "").trim().toUpperCase();
-                }
-            });
-        } catch(e) { console.log("Gagal ambil master sales:", e); }
-
-        console.log("🎯 Nama Tampil di Web:", namaTarget, "| ID Sales Terhubung:", idSalesMaster);
-
-        // 3. Rentang Tanggal UC (Tanggal 25 s.d 24)
-        const sekarang = new Date();
-        let tglAwalObj, tglAkhirObj;
-        if (sekarang.getDate() >= 25) {
-            tglAwalObj = new Date(sekarang.getFullYear(), sekarang.getMonth(), 25);
-            tglAkhirObj = new Date(sekarang.getFullYear(), sekarang.getMonth() + 1, 24);
-        } else {
-            tglAwalObj = new Date(sekarang.getFullYear(), sekarang.getMonth() - 1, 25);
-            tglAkhirObj = new Date(sekarang.getFullYear(), sekarang.getMonth(), 24);
-        }
-
-        const formatTglStr = (d) => `${String(d.getDate()).padStart(2, '0')}/${String(d.getMonth() + 1).padStart(2, '0')}/${d.getFullYear()}`;
-        const strTanggalPertamaUC = formatTglStr(tglAwalObj);
-        const strTanggalTerakhirUC = formatTglStr(tglAkhirObj);
-
-        // 4. Ambil data penjualan dari Firebase
-        let detailPenjualan = [];
-        let detailUC = [];
-        let tanggalPertamaGlobal = "01/08/2026";
-        let tanggalTerakhirGlobal = "25/08/2026";
-        let mapOmzetToko = {};
-
-        try {
-            const jualSnapshot = await window.getDocs(window.collection(window.db, "laporan_penjualan"));
-            
-            jualSnapshot.forEach(docSnap => {
-                const dataDoc = docSnap.data();
-                const r = dataDoc.row || {};
-                const cols = Object.values(r);
-
-                // Indeks kolom mutlak file Excel Anda
-                const tglText   = String(cols[2] || "").trim();                     // Kolom C (Index 2) - Tanggal
-                const produk    = String(cols[5] || "").trim();                     // Kolom F (Index 5) - Produk
-                const qty       = Number(cols[6]) || 0;                             // Kolom G (Index 6) - Qty
-                const omzet     = Number(String(cols[10] || 0).replace(/,/g, "")) || 0; // Kolom K (Index 10) - Omzet
-                const salesExcel = String(cols[15] || "").trim().toUpperCase();     // Kolom P (Index 15) - Sales di Excel
-                const kategori  = String(cols[17] || "").trim().toUpperCase();      // Kolom R (Index 17) - Kategori
-
-                if (tglText) tanggalTerakhirGlobal = tglText;
-                if (!salesExcel) return;
-
-                // Rekap Omzet Toko Keseluruhan
-                mapOmzetToko[salesExcel] = (mapOmzetToko[salesExcel] || 0) + omzet;
-
-                // --- PENCATATAN & PENCARIAN GANDA (Nama Web / ID Sales) ---
-                let isMatch = false;
-                
-                // Cek 1: Apakah kolom sales di Excel sama persis dengan ID Sales Promotor?
-                if (idSalesMaster && salesExcel === idSalesMaster) isMatch = true;
-                
-                // Cek 2: Apakah kolom sales di Excel mengandung nama promotor yang tampil di web?
-                if (salesExcel === namaTarget.trim().toUpperCase()) isMatch = true;
-                if (salesExcel.includes(namaTarget.trim().toUpperCase())) isMatch = true;
-                if (idSalesMaster && salesExcel.includes(idSalesMaster)) isMatch = true;
-
-                if (!isMatch) return;
-
-                // A. Menu Penjualan (Abaikan GARANSI dan ONGKOS)
-                if (kategori !== "GARANSI" && kategori !== "ONGKOS") {
-                    detailPenjualan.push({
-                        tanggal: tglText || "-",
-                        produk: produk || "-",
-                        qty: qty,
-                        omzet: omzet
-                    });
-                }
-
-                // B. Menu UC (Hanya Kategori GARANSI dalam periode tgl 25 s.d 24)
-                if (kategori === "GARANSI") {
-                    const parts = tglText.split("/");
-                    if (parts.length === 3) {
-                        const tglItem = new Date(Number(parts[2]), Number(parts[1]) - 1, Number(parts[0]));
-                        if (tglItem >= tglAwalObj && tglItem <= tglAkhirObj) {
-                            detailUC.push({
-                                tanggal: tglText || "-",
-                                produk: produk || "-",
-                                qty: qty,
-                                omzet: omzet
-                            });
-                        }
-                    }
-                }
-            });
-        } catch(e) {
-            console.log("Gagal membaca koleksi penjualan:", e);
-        }
-
-        let totalU = detailPenjualan.reduce((acc, cur) => acc + cur.qty, 0);
-        let totalO = detailPenjualan.reduce((acc, cur) => acc + cur.omzet, 0);
-        
-        cacheData.penjualan = {
-            nama: namaTarget, 
-            tanggalPertama: tanggalPertamaGlobal, 
-            tanggalTerakhir: tanggalTerakhirGlobal,
-            totalUnit: totalU, 
-            totalOmzet: totalO, 
-            detail: detailPenjualan
-        };
-
-        let totalUC = detailUC.reduce((acc, cur) => acc + cur.qty, 0);
-        cacheData.uc = { 
-            nama: namaTarget, totalUC: totalUC, totalUnit: totalUC, totalOmzet: 0,
-            tanggalPertama: strTanggalPertamaUC, tanggalTerakhir: strTanggalTerakhirUC, detail: detailUC 
-        };
-
-        // Rekap Perolehan Toko
-        let listPerolehanToko = [];
-        try {
-            const masterSnap = await window.getDocs(window.collection(window.db, "master_sales"));
-            masterSnap.forEach(docSnap => {
-                const md = docSnap.data();
-                const aktif = String(md.aktif || "YA").toUpperCase();
-                if (aktif !== "YA") return;
-
-                const namaAbsen = String(md.nama || "").trim();
-                const idSalesRow = String(md.idSales || "").toUpperCase();
-                const omzetPromotor = mapOmzetToko[idSalesRow] || mapOmzetToko[namaAbsen.toUpperCase()] || 0;
-
-                listPerolehanToko.push({
-                    nama: namaAbsen,
-                    omzet: omzetPromotor,
-                    uc: 0
-                });
-            });
-            listPerolehanToko.sort((a, b) => b.omzet - a.omzet);
-        } catch(e) { console.log("Gagal buat perolehan toko:", e); }
-
-        cacheData.perolehan = { list: listPerolehanToko };
-        cacheData.promo = { data: [{ judul: "Promo Kemerdekaan UFO", periode: "Agustus 2026", detail: "Diskon spesial produk elektronik." }] };
-        cacheData.rules = { data: [{ poin: "SOP Disiplin Toko", desc: "Datang tepat waktu dan seragam rapi." }] };
-        cacheData.punishment = { data: [{ judul: "Keterlambatan", level: "Peringatan", detail: "Potongan denda Rp 10.000." }] };
-        cacheData.reward = { data: [{ judul: "Bonus Target Bulanan", periode: "Agustus", detail: "Pencapaian omzet terbaik." }] };
-        cacheData.pelanggaranSaya = { data: [] };
-        cacheData.rewardSaya = { data: [] };
-
+        cacheData.absensi = resAbsen;
+        cacheData.penjualan = resJual;
+        cacheData.uc = resUC;
+        cacheData.perolehan = resPerolehan;
+        cacheData.perolehanBrand = resPerolehanBrand;
+        cacheData.denda = { perolehan: resPerolehan, late: resDendaLate };
+        cacheData.promo = resPromo;
+        cacheData.reward = resReward;
+        cacheData.rewardSaya = resRewardSaya;
+        cacheData.rules = resRules;
+        cacheData.punishment = resPunishment;
+        cacheData.pelanggaranSaya = resPelanggaran;
     } catch(e) {
-        console.error("Gagal load cache dari Firebase", e);
+        console.error("Gagal sinkronisasi data cache", e);
     } finally {
         if(loadEl) loadEl.style.display = "none";
     }
 }
-async function loadNama(){
-    try {
         const res = await fetch(WEBAPP_URL + "?action=nama");
         const data = await res.json();
         
