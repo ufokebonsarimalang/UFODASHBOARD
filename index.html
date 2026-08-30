@@ -1561,16 +1561,41 @@ function prosesEkspor(format) {
                 let status = card.querySelector(".tanggal").innerText.includes("Lengkap") ? "Lengkap" : "Belum Lengkap";
                 if(card.querySelector(".tanggal").innerText.includes("TERLAMBAT")) status += " (Terlambat)";
                 let rowsData = card.querySelectorAll(".row");
-                rowsArr.push([tglText, status, rowsData[0]?.querySelector(".ok, .kosong")?.innerText || "-", rowsData[1]?.querySelector(".ok, .kosong")?.innerText || "-", rowsData[2]?.querySelector(".ok, .kosong")?.innerText || "-", rowsData[3]?.querySelector(".ok, .kosong")?.innerText || "-", rowsData[4]?.querySelector(".ok, .kosong")?.innerText || "-", rowsData[5]?.querySelector(".ok, .kosong")?.innerText || "-"]);
+                rowsArr.push([
+                    tglText, 
+                    status, 
+                    rowsData[0]?.querySelector(".ok, .kosong")?.innerText || "-", 
+                    rowsData[1]?.querySelector(".ok, .kosong")?.innerText || "-", 
+                    rowsData[2]?.querySelector(".ok, .kosong")?.innerText || "-", 
+                    rowsData[3]?.querySelector(".ok, .kosong")?.innerText || "-", 
+                    rowsData[4]?.querySelector(".ok, .kosong")?.innerText || "-", 
+                    rowsData[5]?.querySelector(".ok, .kosong")?.innerText || "-"
+                ]);
             });
         } 
         else if (activeTab === "Perolehan") {
-            rowsArr.push(["REKAP PEROLEHAN & OMZET PROMOTOR"], []);
+            rowsArr.push(["REKAP PEROLEHAN & OMZET PROMOTOR TOKO"], []);
             rowsArr.push(["Peringkat", "Nama Promotor", "Omzet (Rp)", "UC"]);
             
             if (cacheData.perolehan && cacheData.perolehan.list) {
                 cacheData.perolehan.list.forEach((x, i) => {
                     rowsArr.push([i + 1, x.nama, Number(x.omzet || 0), Number(x.uc || 0)]);
+                });
+            }
+        }
+        else if (activeTab === "PerolehanBrand") {
+            rowsArr.push(["LAPORAN PEROLEHAN BRAND PROMOTOR: " + namaKaryawan.toUpperCase()], []);
+            rowsArr.push(["Tanggal", "Brand", "Nama Produk", "Qty", "Omzet (Rp)"]);
+            
+            if (cacheData.perolehanBrand && cacheData.perolehanBrand.detail) {
+                cacheData.perolehanBrand.detail.forEach(item => {
+                    rowsArr.push([
+                        item.tanggal || "-", 
+                        item.brand || "-", 
+                        item.produk || "-", 
+                        Number(item.qty || 0), 
+                        Number(item.omzet || 0)
+                    ]);
                 });
             }
         }
