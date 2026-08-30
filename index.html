@@ -824,48 +824,37 @@ function parseTanggalLaporan(tglStr) {
     if (!tglStr) return null;
     tglStr = String(tglStr).trim();
 
-    if (tglStr.includes("-") || tglStr.includes("/")) {
-        let parts = tglStr.split(/[-/]/);
-        if (parts.length === 3) {
-            if (parts[0].length === 2 && parts[2].length === 4) {
-                return new Date(parts[2], parts[1] - 1, parts[0]);
-            }
-            if (parts[0].length === 4) {
-                return new Date(parts[0], parts[1] - 1, parts[2]);
-            }
-        }
-    }
-
+    // Jika format serial angka Excel (contoh: 45000+)
     if (!isNaN(tglStr) && Number(tglStr) > 30000) {
         return new Date((Number(tglStr) - (25567 + 2)) * 86400 * 1000);
+    }
+
+    // Jika mengandung pemisah / atau - atau .
+    if (tglStr.includes("-") || tglStr.includes("/") || tglStr.includes(".")) {
+        let parts = tglStr.split(/[\/\-\.]/);
+        if (parts.length === 3) {
+            let p0 = parseInt(parts[0]);
+            let p1 = parseInt(parts[1]);
+            let p2 = parseInt(parts[2]);
+
+            // Format YYYY-MM-DD
+            if (parts[0].length === 4) {
+                return new Date(p0, p1 - 1, p2);
+            }
+            // Format DD-MM-YYYY
+            if (parts[2].length === 4) {
+                return new Date(p2, p1 - 1, p0);
+            }
+            // Format 2 digit tahun DD-MM-YY
+            if (parts[2].length === 2) {
+                return new Date(2000 + p2, p1 - 1, p0);
+            }
+        }
     }
 
     let d = new Date(tglStr);
     return isNaN(d.getTime()) ? null : d;
 }
-
-document.addEventListener("DOMContentLoaded", () => {
-    lucide.createIcons();
-    const savedName = localStorage.getItem("loginNama");
-    const savedRole = localStorage.getItem("loginRole");
-    if (savedName && savedRole) {
-        currentUser = savedName;
-        currentRole = savedRole;
-        aturTampilanBerdasarkanRole();
-        document.getElementById("loginInfo").innerHTML = "<i data-lucide='user' style='width:16px; height:16px; color:var(--gold-main);'></i> <b>" + currentUser + "</b>" + (currentRole === "ADMIN" ? " (ADMIN)" : " (PROMOTOR)");
-        document.getElementById("loginBox").style.display = "none";
-        document.getElementById("dashboard").style.display = "block";
-
-        if (currentRole === "USER") {
-            document.getElementById("menuPerolehanCard").style.display = "block";
-            muatSemuaDataLatarBelakang(currentUser);
-        } else {
-            document.getElementById("menuPerolehanCard").style.display = "block";
-            loadNama();
-        }
-        lucide.createIcons();
-    }
-});
 
 function aturTampilanBerdasarkanRole() {
     const subtitle = document.getElementById("roleSubtitle");
