@@ -785,6 +785,9 @@ async function muatSemuaDataLatarBelakang(namaTarget) {
         if(loadEl) loadEl.style.display = "none";
     }
 }
+
+async function loadNama() {
+    try {
         const res = await fetch(WEBAPP_URL + "?action=nama");
         const data = await res.json();
         
@@ -879,6 +882,7 @@ async function pastikanDataMenuSiap(namaMenu) {
         console.error("Gagal memuat data menu:", e);
     }
 }
+
 function kembaliKeMenuUtama() {
     document.getElementById("detailViewSection").style.display = "none";
     document.getElementById("menuGridContainer").style.display = "grid";
@@ -1101,6 +1105,7 @@ function renderPerolehanBrand(data) {
     document.getElementById("hasil").className = "grid";
     document.getElementById("hasil").innerHTML = html;
 }
+
 function renderUC(data) {
     if(!data) return;
     document.getElementById("summary").innerHTML = `
@@ -1493,6 +1498,7 @@ function renderPunishment(result) {
     document.getElementById("hasil").className = "";
     document.getElementById("hasil").innerHTML = html;
 }
+
 function bukaModalSOP(urlGambar, judulSop) {
     let modal = document.getElementById("sopModal");
     if (!modal) {
