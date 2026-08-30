@@ -1102,26 +1102,36 @@ async function muatSemuaDataLatarBelakang(namaTarget) {
             if (!idSalesExcel) return;
 
             // --- VALIDASI BULAN ---
+         // --- VALIDASI BULAN & TANGGAL (AMBIL DARI TANGGAL 1 SAMPAI HARI INI) ---
             let isBulanIni = false;
-            let tglParts = String(tglText).split(/[\/\-]/);
-            if (tglParts.length === 3) {
-                let day = parseInt(tglParts[0]);
-                let month = parseInt(tglParts[1]);
-                let year = parseInt(tglParts[2]);
-                if (year < 1000) { year = parseInt(tglParts[0]); month = parseInt(tglParts[1]); day = parseInt(tglParts[2]); }
+            let dateObj = parseTanggalLaporan(tglText);
 
-                if (year === thnSekarang && (month - 1) === blnSekarang) {
+            if (dateObj) {
+                let tahunData = dateObj.getFullYear();
+                let bulanData = dateObj.getMonth();
+                let hariData = dateObj.getDate();
+
+                // Pastikan berada di tahun dan bulan yang sama, dan tanggalnya tidak melebihi hari ini
+                if (tahunData === thnSekarang && bulanData === blnSekarang && hariData <= tglHariIni) {
                     isBulanIni = true;
                 }
             } else {
-                let dateObj = parseTanggalLaporan(tglText);
-                if (dateObj && dateObj.getFullYear() === thnSekarang && dateObj.getMonth() === blnSekarang) {
-                    isBulanIni = true;
+                // Fallback jika format teks langsung terbaca
+                let tglParts = String(tglText).split(/[\/\-]/);
+                if (tglParts.length === 3) {
+                    let day = parseInt(tglParts[0]);
+                    let month = parseInt(tglParts[1]);
+                    let year = parseInt(tglParts[2]);
+                    if (year < 1000) { year = parseInt(tglParts[0]); month = parseInt(tglParts[1]); day = parseInt(tglParts[2]); }
+
+                    if (year === thnSekarang && (month - 1) === blnSekarang && day <= tglHariIni) {
+                        isBulanIni = true;
+                    }
                 }
             }
 
-            if (!isBulanIni) return; 
-
+            // Jika di luar rentang tanggal 1 sampai hari ini, abaikan
+            if (!isBulanIni) return;
             // --- PROSES PEROLEHAN ---
          // --- PROSES PEROLEHAN ---
             mapMasterPromotor.forEach(p => {
