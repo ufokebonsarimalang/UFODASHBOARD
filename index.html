@@ -812,8 +812,12 @@ async function loadNama() {
 async function gantiNamaAdmin() {
     let namaTerpilih = document.getElementById("nama").value.trim();
     if(!namaTerpilih) return;
+    
+    // Tampilkan indikator loading sebentar jika perlu
+    document.getElementById("hasil").innerHTML = `<div style="text-align:center; padding:30px; color:#d4af37; font-weight:600;"><span class="spinner" style="margin-right:8px;"></span>Memuat data ${namaTerpilih}, mohon tunggu...</div>`;
+    
     await muatSemuaDataLatarBelakang(namaTerpilih);
-    jalankanRenderMenu(activeTab);
+    jalankanRenderMenu(activeTab); // INI KUNCINYA: Langsung render ulang menu aktif!
 }
 
 async function pindahMenu(namaMenu) {
