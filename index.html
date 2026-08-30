@@ -712,25 +712,12 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 function aturTampilanBerdasarkanRole() {
-    const badges = document.querySelectorAll('.admin-badge');
     const subtitle = document.getElementById("roleSubtitle");
     
     if (currentRole === "ADMIN") {
         if(subtitle) subtitle.innerText = "Dashboard Monitoring & Kontrol Admin";
-        badges.forEach(b => {
-            if(b.getAttribute("data-badge") === "admin") {
-                b.style.display = "block";
-                b.innerText = "Panel Kontrol";
-            }
-        });
     } else {
         if(subtitle) subtitle.innerText = "Dashboard Mandiri Promotor";
-        badges.forEach(b => {
-            if(b.getAttribute("data-badge") === "menu") {
-                b.style.display = "block";
-                b.innerText = "Data Saya";
-            }
-        });
     }
 }
 
