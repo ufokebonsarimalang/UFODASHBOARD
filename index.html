@@ -1328,7 +1328,7 @@ function renderDendaUC(dendaObj) {
 
         document.getElementById("summary").innerHTML = `
         <div class="summary-card">
-            <h2>⚡ Rekap Denda & Keterlambatan Saya</h2>
+            <h2>⚡ Rekap Denda & Keterlambatan Saya (Bulan Ini)</h2>
             <p>Promotor : <b>${currentUser}</b></p>
             <p>Total Estimasi Denda : <span style="font-weight:bold; color:${totalDenda > 0 ? '#f87171' : '#34d399'};">Rp ${totalDenda.toLocaleString("id-ID")}</span></p>
         </div>`;
@@ -1336,7 +1336,7 @@ function renderDendaUC(dendaObj) {
         let html = `
         <div class="card" style="border-left: 4px solid ${totalDenda > 0 ? '#ef4444' : '#10b981'}; padding: 20px;">
             <div style="font-size: 14px; font-weight: 700; color: #ffffff; margin-bottom: 12px; border-bottom: 1px solid rgba(255,255,255,0.08); padding-bottom: 8px;">
-                Rincian Perhitungan Denda Anda
+                Rincian Perhitungan Denda Bulanan
             </div>
             <div class="row">
                 <span>Denda Target UC (${isIkutUC ? `Kurang ${kurangUC} unit` : 'Tidak ikut UC'})</span>
@@ -1358,10 +1358,10 @@ function renderDendaUC(dendaObj) {
         return;
     }
 
-    // --- JIKA ADMIN, TAMPILKAN LIST SELURUH PROMOTOR SEPERTI SEMULA ---
+    // --- JIKA ADMIN, TAMPILKAN LIST SELURUH PROMOTOR ---
     document.getElementById("summary").innerHTML = `
     <div class="summary-card">
-        <h2>⚖️ Rekap Denda & Keterlambatan Seluruh Promotor</h2>
+        <h2>⚖️ Rekap Denda & Keterlambatan Seluruh Promotor (Bulan Ini)</h2>
         <div style="display:flex; flex-wrap:wrap; gap:10px; margin-top:8px;">
             <div style="flex:1; min-width:180px; background:#1a2234; padding:10px 12px; border-radius:10px; border:1px solid #374151;">
                 <div style="font-size:10px; color:#9ca3af; font-weight:700; text-transform:uppercase;">Denda Target UC</div>
@@ -1429,7 +1429,6 @@ function renderDendaUC(dendaObj) {
     document.getElementById("hasil").className = "";
     document.getElementById("hasil").innerHTML = html;
 }
-
 function renderRules(result) {
     if(!result) return;
     const list = result.data || [];
