@@ -823,33 +823,40 @@ async function loadNama() {
         const data = await firebaseDataProvider.getNames();
         
         let html = `<option value="" disabled selected hidden>Pilih Nama Promotor</option>`;
-        if(Array.isArray(data)) {
+        if(Array.isArray(data) && data.length > 0) {
             data.forEach((nama) => { 
                 html += `<option value="${nama}">${nama}</option>`; 
             });
         }
         document.getElementById("nama").innerHTML = html;
 
-        let targetPertama = data[0] || "";
-        if(targetPertama) {
+        // Pastikan ada data dan pilih otomatis nama pertama
+        if(Array.isArray(data) && data.length > 0) {
+            let targetPertama = data[0];
             document.getElementById("nama").value = targetPertama;
             await muatSemuaDataLatarBelakang(targetPertama);
+            
+            // Jika saat ini sedang di dalam menu detail, render ulang
+            if (document.getElementById("detailViewSection").style.display === "block") {
+                jalankanRenderMenu(activeTab);
+            }
         }
     } catch(e) {
         console.error("Gagal memuat nama promotor dari Firebase", e);
     }
 }
+
 async function gantiNamaAdmin() {
-    let namaTerpilih = document.getElementById("nama").value.trim();
+    let selectEl = document.getElementById("nama");
+    let namaTerpilih = selectEl ? selectEl.value.trim() : "";
+    
     if(!namaTerpilih) return;
     
-    // Tampilkan indikator loading sebentar jika perlu
     document.getElementById("hasil").innerHTML = `<div style="text-align:center; padding:30px; color:#d4af37; font-weight:600;"><span class="spinner" style="margin-right:8px;"></span>Memuat data ${namaTerpilih}, mohon tunggu...</div>`;
     
     await muatSemuaDataLatarBelakang(namaTerpilih);
-    jalankanRenderMenu(activeTab); // INI KUNCINYA: Langsung render ulang menu aktif!
+    jalankanRenderMenu(activeTab);
 }
-
 async function pindahMenu(namaMenu) {
     activeTab = namaMenu;
     document.getElementById("menuGridContainer").style.display = "none";
