@@ -1,154 +1,249 @@
 /**
- * Firebase Data Loader - UFO Dashboard
- * Wrapper untuk backward compatibility dengan kode existing
- * Mengambil data dari Firebase Realtime DB
+ * Firebase Data Loader - UFO Dashboard (Optimized for Object/Array Mapping)
  */
 
-// Load data dari Firebase dengan kategori dan nama (optional)
-async function loadDataFromFirebase(category, nama = null) {
+async function loadDataFromFirebase(category) {
   try {
-    let path = `data/${category}`;
-    if(nama && nama.trim()) {
-      path = `data/${category}/${nama.toUpperCase()}`;
-    }
-    
-    return new Promise((resolve, reject) => {
-      // Pastikan objek db sudah siap
-      if (typeof db === 'undefined') {
-        resolve({ data: [], success: false });
-        return;
-      }
-
-      const ref = db.ref(path);
-      const timeout = setTimeout(() => {
-        reject(new Error(`Firebase timeout loading ${path}`));
-      }, 10000); // 10 detik timeout
-      
-      ref.once('value', (snapshot) => {
-        clearTimeout(timeout);
-        const data = snapshot.val();
-        
-        // Return format yang sama dengan Apps Script response
-        if(Array.isArray(data)) {
-          resolve({ data: data, success: true });
-        } else if(data && typeof data === 'object') {
-          resolve(data);
-        } else {
-          resolve({ data: [], success: true });
-        }
-      }, (error) => {
-        clearTimeout(timeout);
-        console.error(`Firebase error loading ${path}:`, error);
-        resolve({ data: [], success: false }); 
-      });
-    });
-  } catch(e) {
-    console.error("Firebase load error:", e);
-    return { data: [], success: true };
-  }
-}
-
-// Get nama list untuk dropdown admin dari MASTER_SALES
-async function getNameListFromFirebase() {
-  try {
+    const path = `data/${category}`;
     return new Promise((resolve) => {
       if (typeof db === 'undefined') {
-        resolve([]);
+        resolve(null);
         return;
       }
-      const ref = db.ref('data/MASTER_SALES');
+      const ref = db.ref(path);
       ref.once('value', (snapshot) => {
-        const allData = snapshot.val() || {};
-        let names = [];
-        if (Array.isArray(allData)) {
-          names = [...new Set(allData.map(x => x.nama || x.NAMA))].filter(Boolean);
-        } else {
-          names = Object.keys(allData);
-        }
-        resolve(names.sort());
-      }, () => {
-        resolve([]);
+        resolve(snapshot.val());
+      }, (error) => {
+        console.error(`Firebase error loading ${path}:`, error);
+        resolve(null);
       });
     });
-  } catch(e) {
-    console.error("Error getting names:", e);
-    return [];
+  } catch (e) {
+    console.error("Firebase load error:", e);
+    return null;
   }
 }
 
-// Push data ke Firebase (untuk admin upload)
-async function pushDataToFirebase(category, nama, dataArray) {
-  try {
-    const path = `data/${category}/${nama.toUpperCase()}`;
-    const ref = db.ref(path);
-    await ref.set(dataArray);
-    return { success: true, message: `Data ${category} berhasil disimpan ke Firebase` };
-  } catch(e) {
-    console.error("Firebase push error:", e);
-    return { success: false, message: e.message };
-  }
-}
-
-// Wrapper untuk backward compatibility - disesuaikan dengan nama folder di Firebase
 const firebaseDataProvider = {
+  // 1. ABSENSI & LATE
   getAbsensi: async (nama) => {
-    if(!nama) return { data: [] };
-    return await loadDataFromFirebase('ABSENFINGER', nama);
+    const rawData = await loadDataFromFirebase('ABSENFINGER');
+    if (!rawData) return { data: [], terlambat: 0 };
+    
+    // Jika data disimpan ber-grup berdasarkan nama (Uppercase)
+    let userRecords = [];
+    let targetKey = nama ? nama.toUpperCase().trim() : "";
+    
+    if (rawData[targetKey]) {
+      userRecords = rawData[targetKey];
+    } else if (Array.isArray(rawData)) {
+      userRecords = rawData.filter(x => String(x.nama || x.NAMA || "").toUpperCase().trim() === targetKey);
+    }
+
+    let terlambatCount = userRecords.filter(x => String(x.terlambat || x.TERLAMBAT || "").toUpperCase() === "YA").length;
+    return { data: userRecords, terlambat: terlambatCount };
   },
   
+  // 2. PENJUALAN
   getPenjualan: async (nama) => {
-    if(!nama) return { data: [] };
-    return await loadDataFromFirebase('PENJUALAN', nama);
+    const rawData = await loadDataFromFirebase('PENJUALAN');
+    if (!rawData) return { data: [], totalUnit: 0, totalOmzet: 0 };
+
+    let userRecords = [];
+    let targetKey = nama ? nama.toUpperCase().trim() : "";
+
+    if (rawData[targetKey]) {
+      userRecords = rawData[targetKey];
+    } else if (Array.isArray(rawData)) {
+      userRecords = rawData.filter(x => String(x.nama || x.NAMA || "").toUpperCase().trim() === targetKey);
+    }
+
+    let totalUnit = 0;
+    let totalOmzet = 0;
+    let tglPertama = "-";
+    let tglTerakhir = "-";
+
+    if (userRecords.length > 0) {
+      tglPertama = userRecords[0].tanggal || userRecords[0].Tanggal || "-";
+      tglTerakhir = userRecords[userRecords.length - 1].tanggal || userRecords[userRecords.length - 1].Tanggal || "-";
+      
+      userRecords.forEach(item => {
+        totalUnit += Number(item.qty || item.Qty || 0);
+        totalOmzet += Number(item.omzet || item.Omzet || 0);
+      });
+    }
+
+    return {
+      nama: nama,
+      tanggalPertama: tglPertama,
+      tanggalTerakhir: tglTerakhir,
+      totalUnit: totalUnit,
+      totalOmzet: totalOmzet,
+      detail: userRecords
+    };
   },
   
+  // 3. UC
   getUC: async (nama) => {
-    if(!nama) return { data: [] };
-    return await loadDataFromFirebase('UC', nama);
+    const rawData = await loadDataFromFirebase('UC');
+    if (!rawData) return { data: [], totalUC: 0 };
+
+    let userRecords = [];
+    let targetKey = nama ? nama.toUpperCase().trim() : "";
+
+    if (rawData[targetKey]) {
+      userRecords = rawData[targetKey];
+    } else if (Array.isArray(rawData)) {
+      userRecords = rawData.filter(x => String(x.nama || x.NAMA || "").toUpperCase().trim() === targetKey);
+    }
+
+    let totalUC = 0;
+    userRecords.forEach(item => {
+      totalUC += Number(item.uc || item.UC || item.qty || 0);
+    });
+
+    return {
+      nama: nama,
+      totalUC: totalUC,
+      detail: userRecords
+    };
   },
   
+  // 4. PEROLEHAN KESELURUHAN (ADMIN)
   getPerolehan: async () => {
-    return await loadDataFromFirebase('PENJUALAN');
+    const rawData = await loadDataFromFirebase('PENJUALAN');
+    if (!rawData) return { list: [] };
+
+    let summaryMap = {};
+
+    // Jika data terstruktur per nama atau array datar
+    let allRows = [];
+    if (Array.isArray(rawData)) {
+      allRows = rawData;
+    } else {
+      Object.keys(rawData).forEach(namaKey => {
+        if (Array.isArray(rawData[namaKey])) {
+          allRows = allRows.concat(rawData[namaKey]);
+        }
+      });
+    }
+
+    allRows.forEach(item => {
+      let nama = String(item.nama || item.NAMA || "UNKNOWN").toUpperCase().trim();
+      if (!summaryMap[nama]) {
+        summaryMap[nama] = { nama: nama, omzet: 0, uc: 0 };
+      }
+      summaryMap[nama].omzet += Number(item.omzet || item.Omzet || 0);
+      summaryMap[nama].uc += Number(item.uc || item.UC || 0);
+    });
+
+    let list = Object.values(summaryMap).sort((a, b) => b.omzet - a.omzet);
+    return { list: list };
   },
   
+  // 5. PEROLEHAN BRAND SAYA
   getPerolehanBrand: async (nama) => {
-    if(!nama) return { data: [] };
-    return await loadDataFromFirebase('PENJUALAN', nama);
+    const resJual = await firebaseDataProvider.getPenjualan(nama);
+    return {
+      nama: nama,
+      totalUnit: resJual.totalUnit,
+      totalOmzet: resJual.totalOmzet,
+      detail: resJual.detail
+    };
   },
   
+  // 6. DENDA & LATE
   getDendaLate: async (nama) => {
-    if(!nama) return { data: [] };
-    return await loadDataFromFirebase('ABSENFINGER', nama);
+    const rawAbsen = await loadDataFromFirebase('ABSENFINGER');
+    if (!rawAbsen) return { list: [] };
+
+    let summaryLate = {};
+    let allRows = [];
+    if (Array.isArray(rawAbsen)) {
+      allRows = rawAbsen;
+    } else {
+      Object.keys(rawAbsen).forEach(namaKey => {
+        if (Array.isArray(rawAbsen[namaKey])) {
+          allRows = allRows.concat(rawAbsen[namaKey]);
+        }
+      });
+    }
+
+    allRows.forEach(item => {
+      let namaPromotor = String(item.nama || item.NAMA || "UNKNOWN").toUpperCase().trim();
+      let isLate = String(item.terlambat || item.TERLAMBAT || "").toUpperCase() === "YA";
+      if (isLate) {
+        summaryLate[namaPromotor] = (summaryLate[namaPromotor] || 0) + 1;
+      }
+    });
+
+    let list = Object.keys(summaryLate).map(nama => ({
+      nama: nama,
+      terlambat: summaryLate[nama]
+    }));
+
+    return { list: list };
   },
   
+  // 7. PROMO
   getPromo: async () => {
-    return await loadDataFromFirebase('PROMO');
+    const rawData = await loadDataFromFirebase('PROMO');
+    let list = Array.isArray(rawData) ? rawData : (rawData ? Object.values(rawData) : []);
+    return { data: list };
   },
   
+  // 8. REWARD
   getReward: async () => {
-    return await loadDataFromFirebase('REWARD');
+    const rawData = await loadDataFromFirebase('REWARD');
+    let list = Array.isArray(rawData) ? rawData : (rawData ? Object.values(rawData) : []);
+    return { data: list };
   },
   
+  // 9. REWARD SAYA
   getRewardSaya: async (nama) => {
-    if(!nama) return { data: [] };
-    return await loadDataFromFirebase('REWARD', nama);
+    const rawData = await loadDataFromFirebase('REWARD');
+    let list = Array.isArray(rawData) ? rawData : (rawData ? Object.values(rawData) : []);
+    let targetKey = nama ? nama.toUpperCase().trim() : "";
+    let filtered = list.filter(x => String(x.nama || x.NAMA || "").toUpperCase().trim() === targetKey);
+    return { data: filtered };
   },
   
+  // 10. RULES / SOP
   getRules: async () => {
-    return await loadDataFromFirebase('RULES');
+    const rawData = await loadDataFromFirebase('RULES');
+    let list = Array.isArray(rawData) ? rawData : (rawData ? Object.values(rawData) : []);
+    return { data: list };
   },
   
+  // 11. PUNISHMENT
   getPunishment: async () => {
-    return await loadDataFromFirebase('PUNISHMENT');
+    const rawData = await loadDataFromFirebase('PUNISHMENT');
+    let list = Array.isArray(rawData) ? rawData : (rawData ? Object.values(rawData) : []);
+    return { data: list };
   },
   
+  // 12. PELANGGARAN SAYA
   getPelanggaranSaya: async (nama) => {
-    if(!nama) return { data: [] };
-    return await loadDataFromFirebase('PUNISHMENT', nama);
+    const rawData = await loadDataFromFirebase('PUNISHMENT');
+    let list = Array.isArray(rawData) ? rawData : (rawData ? Object.values(rawData) : []);
+    let targetKey = nama ? nama.toUpperCase().trim() : "";
+    let filtered = list.filter(x => String(x.nama || x.NAMA || "").toUpperCase().trim() === targetKey);
+    return { data: filtered };
   },
   
+  // 13. GET NAMES (DROPDOWN)
   getNames: async () => {
-    return await getNameListFromFirebase();
+    const rawData = await loadDataFromFirebase('MASTER_SALES');
+    if (!rawData) return [];
+    
+    let names = [];
+    if (Array.isArray(rawData)) {
+      names = [...new Set(rawData.map(x => x.nama || x.NAMA || x.Nama))].filter(Boolean);
+    } else {
+      names = Object.keys(rawData);
+    }
+    return names.sort();
   }
 };
 
-console.log("✅ Firebase Data Provider loaded");
+console.log("✅ Optimized Firebase Data Provider loaded");
