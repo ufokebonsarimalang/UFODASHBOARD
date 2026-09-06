@@ -16,7 +16,8 @@ function importAllSheetDataToFirebase() {
   try {
     Logger.log("🔄 Starting data import from Sheet to Firebase...");
     
-    const ss = SpreadsheetApp.getActiveSpreadsheet();
+    const SPREADSHEET_ID = "1gh7EmT6n8v4DlGb9JNgQfrpJQoQSQ3ntRI-iC8PQMno";
+const ss = SpreadsheetApp.openById(SPREADSHEET_ID);
     const dataSheets = ['Absensi', 'Penjualan', 'UC', 'Perolehan', 'DendaLate', 'Promo', 'Reward', 'Rules', 'Punishment'];
     
     for(let sheetName of dataSheets) {
