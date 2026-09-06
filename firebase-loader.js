@@ -13,6 +13,12 @@ async function loadDataFromFirebase(category, nama = null) {
     }
     
     return new Promise((resolve, reject) => {
+      // Pastikan objek db sudah siap
+      if (typeof db === 'undefined') {
+        resolve({ data: [], success: false });
+        return;
+      }
+
       const ref = db.ref(path);
       const timeout = setTimeout(() => {
         reject(new Error(`Firebase timeout loading ${path}`));
@@ -33,7 +39,7 @@ async function loadDataFromFirebase(category, nama = null) {
       }, (error) => {
         clearTimeout(timeout);
         console.error(`Firebase error loading ${path}:`, error);
-        resolve({ data: [], success: false }); // Fallback, jangan reject
+        resolve({ data: [], success: false }); 
       });
     });
   } catch(e) {
@@ -42,15 +48,24 @@ async function loadDataFromFirebase(category, nama = null) {
   }
 }
 
-// Get nama list untuk dropdown admin
+// Get nama list untuk dropdown admin dari MASTER_SALES
 async function getNameListFromFirebase() {
   try {
     return new Promise((resolve) => {
-      const ref = db.ref('data/absensi');
+      if (typeof db === 'undefined') {
+        resolve([]);
+        return;
+      }
+      const ref = db.ref('data/MASTER_SALES');
       ref.once('value', (snapshot) => {
         const allData = snapshot.val() || {};
-        const names = Object.keys(allData).sort();
-        resolve(names);
+        let names = [];
+        if (Array.isArray(allData)) {
+          names = [...new Set(allData.map(x => x.nama || x.NAMA))].filter(Boolean);
+        } else {
+          names = Object.keys(allData);
+        }
+        resolve(names.sort());
       }, () => {
         resolve([]);
       });
@@ -74,61 +89,61 @@ async function pushDataToFirebase(category, nama, dataArray) {
   }
 }
 
-// Wrapper untuk backward compatibility - semua data fetch calls
+// Wrapper untuk backward compatibility - disesuaikan dengan nama folder di Firebase
 const firebaseDataProvider = {
   getAbsensi: async (nama) => {
     if(!nama) return { data: [] };
-    return await loadDataFromFirebase('absensi', nama);
+    return await loadDataFromFirebase('ABSENFINGER', nama);
   },
   
   getPenjualan: async (nama) => {
     if(!nama) return { data: [] };
-    return await loadDataFromFirebase('penjualan', nama);
+    return await loadDataFromFirebase('PENJUALAN', nama);
   },
   
   getUC: async (nama) => {
     if(!nama) return { data: [] };
-    return await loadDataFromFirebase('uc', nama);
+    return await loadDataFromFirebase('UC', nama);
   },
   
   getPerolehan: async () => {
-    return await loadDataFromFirebase('perolehan');
+    return await loadDataFromFirebase('PENJUALAN');
   },
   
   getPerolehanBrand: async (nama) => {
     if(!nama) return { data: [] };
-    return await loadDataFromFirebase('perolehanBrand', nama);
+    return await loadDataFromFirebase('PENJUALAN', nama);
   },
   
   getDendaLate: async (nama) => {
     if(!nama) return { data: [] };
-    return await loadDataFromFirebase('dendaLate', nama);
+    return await loadDataFromFirebase('ABSENFINGER', nama);
   },
   
   getPromo: async () => {
-    return await loadDataFromFirebase('promo');
+    return await loadDataFromFirebase('PROMO');
   },
   
   getReward: async () => {
-    return await loadDataFromFirebase('reward');
+    return await loadDataFromFirebase('REWARD');
   },
   
   getRewardSaya: async (nama) => {
     if(!nama) return { data: [] };
-    return await loadDataFromFirebase('rewardSaya', nama);
+    return await loadDataFromFirebase('REWARD', nama);
   },
   
   getRules: async () => {
-    return await loadDataFromFirebase('rules');
+    return await loadDataFromFirebase('RULES');
   },
   
   getPunishment: async () => {
-    return await loadDataFromFirebase('punishment');
+    return await loadDataFromFirebase('PUNISHMENT');
   },
   
   getPelanggaranSaya: async (nama) => {
     if(!nama) return { data: [] };
-    return await loadDataFromFirebase('pelanggaranSaya', nama);
+    return await loadDataFromFirebase('PUNISHMENT', nama);
   },
   
   getNames: async () => {
