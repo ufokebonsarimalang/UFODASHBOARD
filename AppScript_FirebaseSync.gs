@@ -6,7 +6,7 @@
 
 // SETUP CREDENTIALS
 const FIREBASE_DB_URL = "https://ufokebonsariapps-default-rtdb.asia-southeast1.firebasedatabase.app";
-const FIREBASE_SECRET = ""; // GANTI DENGAN DATABASE SECRET DARI FIREBASE
+const FIREBASE_SECRET = "oMf6BUBbcFv8ioJ2PlNwIL9pnCUR4bZ7PCyhogIu"; // GANTI DENGAN DATABASE SECRET DARI FIREBASE
 
 // ============================================
 // 1. IMPORT DATA: Sheet → Firebase (One-time)
