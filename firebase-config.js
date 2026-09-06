@@ -19,6 +19,5 @@ if(!window.firebaseInitialized) {
 }
 
 const db = firebase.database();
-const storage = firebase.storage();
 
-console.log("✅ Firebase DB & Storage ready");
+console.log("✅ Firebase DB ready");
