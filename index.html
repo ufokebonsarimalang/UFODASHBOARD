@@ -824,7 +824,7 @@ async function loadNama() {
     try {
         console.log("🔄 Memuat daftar nama promotor...");
         const data = await firebaseDataProvider.getNames();
-        console.log("📋 Daftar nama yang didapat:", data);
+        console.log("📋 Daftar nama diterima:", data);
         
         let selectEl = document.getElementById("nama");
         if (!selectEl) return;
@@ -836,25 +836,16 @@ async function loadNama() {
             });
             selectEl.innerHTML = html;
             
-            // Otomatis pilih nama pertama secara paksa agar data langsung keluar
+            // Pilih nama pertama secara otomatis
             selectEl.value = data[0];
-            console.log("👉 Nama otomatis terpilih:", data[0]);
-            
             await muatSemuaDataLatarBelakang(data[0]);
-            
-            // Jika sedang berada di dalam menu detail, render ulang
-            if (document.getElementById("detailViewSection").style.display === "block") {
-                jalankanRenderMenu(activeTab);
-            }
         } else {
-            selectEl.innerHTML = `<option value="" disabled selected>Tidak ada nama promotor</option>`;
-            console.warn("⚠️ List nama promotor kosong dari Firebase.");
+            selectEl.innerHTML = `<option value="" disabled selected>Data nama kosong di Firebase</option>`;
         }
     } catch(e) {
-        console.error("Gagal memuat nama promotor dari Firebase", e);
+        console.error("Gagal memuat nama promotor:", e);
     }
 }
-
 async function gantiNamaAdmin() {
     let selectEl = document.getElementById("nama");
     let namaTerpilih = selectEl ? selectEl.value.trim() : "";
