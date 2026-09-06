@@ -784,21 +784,21 @@ async function muatSemuaDataLatarBelakang(namaTarget) {
     if(loadEl) loadEl.style.display = "block";
 
     try {
-        // Menggunakan firebaseDataProvider untuk mengambil data langsung dari Firebase
-        const [resAbsen, resJual, resUC, resPerolehan, resPerolehanBrand, resDendaLate, resPromo, resReward, resRewardSaya, resRules, resPunishment, resPelanggaran] = await Promise.all([
-            firebaseDataProvider.getAbsensi(namaTarget),
-            firebaseDataProvider.getPenjualan(namaTarget),
-            firebaseDataProvider.getUC(namaTarget),
-            firebaseDataProvider.getPerolehan(),
-            firebaseDataProvider.getPerolehanBrand(namaTarget).catch(() => ({})),
-            firebaseDataProvider.getDendaLate(namaTarget),
-            firebaseDataProvider.getPromo(),
-            firebaseDataProvider.getReward().catch(() => ({data: []})),
-            firebaseDataProvider.getRewardSaya(namaTarget).catch(() => ({data: []})),
-            firebaseDataProvider.getRules(),
-            firebaseDataProvider.getPunishment().catch(() => ({data: []})),
-            firebaseDataProvider.getPelanggaranSaya(namaTarget).catch(() => ({data: []}))
-        ]);
+        console.log("🔄 Memuat data untuk target:", namaTarget);
+        
+        // Ambil data satu per satu dengan aman agar jika ada yang error, yang lain tetap jalan
+        const resAbsen = await firebaseDataProvider.getAbsensi(namaTarget).catch(e => { console.error("Error Absen:", e); return {data:[]}; });
+        const resJual = await firebaseDataProvider.getPenjualan(namaTarget).catch(e => { console.error("Error Jual:", e); return {data:[], totalUnit:0, totalOmzet:0}; });
+        const resUC = await firebaseDataProvider.getUC(namaTarget).catch(e => { console.error("Error UC:", e); return {data:[], totalUC:0}; });
+        const resPerolehan = await firebaseDataProvider.getPerolehan().catch(e => { console.error("Error Perolehan:", e); return {list:[]}; });
+        const resPerolehanBrand = await firebaseDataProvider.getPerolehanBrand(namaTarget).catch(e => { console.error("Error Brand:", e); return {detail:[]}; });
+        const resDendaLate = await firebaseDataProvider.getDendaLate(namaTarget).catch(e => { console.error("Error Denda:", e); return {list:[]}; });
+        const resPromo = await firebaseDataProvider.getPromo().catch(e => { console.error("Error Promo:", e); return {data:[]}; });
+        const resReward = await firebaseDataProvider.getReward().catch(e => { console.error("Error Reward:", e); return {data:[]}; });
+        const resRewardSaya = await firebaseDataProvider.getRewardSaya(namaTarget).catch(e => { console.error("Error RewardSaya:", e); return {data:[]}; });
+        const resRules = await firebaseDataProvider.getRules().catch(e => { console.error("Error Rules:", e); return {data:[]}; });
+        const resPunishment = await firebaseDataProvider.getPunishment().catch(e => { console.error("Error Punishment:", e); return {data:[]}; });
+        const resPelanggaran = await firebaseDataProvider.getPelanggaranSaya(namaTarget).catch(e => { console.error("Error Pelanggaran:", e); return {data:[]}; });
 
         cacheData.absensi = resAbsen;
         cacheData.penjualan = resJual;
@@ -812,6 +812,8 @@ async function muatSemuaDataLatarBelakang(namaTarget) {
         cacheData.rules = resRules;
         cacheData.punishment = resPunishment;
         cacheData.pelanggaranSaya = resPelanggaran;
+        
+        console.log("✅ Data cache berhasil dimuat:", cacheData);
     } catch(e) {
         console.error("Gagal sinkronisasi data cache dari Firebase", e);
     } finally {
