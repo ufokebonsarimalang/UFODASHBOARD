@@ -820,23 +820,42 @@ async function muatSemuaDataLatarBelakang(namaTarget) {
 }
 async function loadNama() {
     try {
-        const data = await firebaseDataProvider.getNames();
+        console.log("🔄 Memuat daftar nama promotor...");
+        let data = await firebaseDataProvider.getNames();
         
-        let html = `<option value="" disabled selected hidden>Pilih Nama Promotor</option>`;
-        if(Array.isArray(data)) {
-            data.forEach((nama) => { 
-                html += `<option value="${nama}">${nama}</option>`; 
-            });
+        // Pengaman: Jika MASTER_SALES kosong, ambil otomatis dari data perolehan/penjualan agar dropdown tidak kosong
+        if (!Array.isArray(data) || data.length === 0) {
+            const resPerolehan = await firebaseDataProvider.getPerolehan();
+            if (resPerolehan && resPerolehan.list) {
+                data = resPerolehan.list.map(x => x.nama);
+            }
         }
-        document.getElementById("nama").innerHTML = html;
+        
+        let selectEl = document.getElementById("nama");
+        if (!selectEl) return;
 
-        let targetPertama = data[0] || "";
-        if(targetPertama) {
-            document.getElementById("nama").value = targetPertama;
+        let html = `<option value="" disabled selected hidden>Pilih Nama Promotor</option>`;
+        if (Array.isArray(data) && data.length > 0) {
+            data.forEach((nama) => { 
+                if (nama) html += `<option value="${nama}">${nama}</option>`; 
+            });
+            selectEl.innerHTML = html;
+
+            // Otomatis pilih nama pertama agar data langsung tampil
+            let targetPertama = data[0];
+            selectEl.value = targetPertama;
+            console.log("👉 Nama otomatis terpilih:", targetPertama);
+            
             await muatSemuaDataLatarBelakang(targetPertama);
+            
+            if (document.getElementById("detailViewSection").style.display === "block") {
+                jalankanRenderMenu(activeTab);
+            }
+        } else {
+            selectEl.innerHTML = `<option value="" disabled selected>Tidak ada nama promotor ditemukan</option>`;
         }
     } catch(e) {
-        console.error("Gagal memuat nama promotor dari Firebase", e);
+        console.error("Gagal memuat nama promotor:", e);
     }
 }
 async function gantiNamaAdmin() {
