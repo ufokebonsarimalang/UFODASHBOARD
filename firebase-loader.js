@@ -1,5 +1,5 @@
 /**
- * Firebase Data Loader - UFO Dashboard (Synced with GAS Structure)
+ * Firebase Data Loader - UFO Dashboard (Fixed Final Bridge)
  */
 
 async function loadDataFromFirebase(category, nama = null) {
@@ -15,34 +15,41 @@ async function loadDataFromFirebase(category, nama = null) {
       ref.once('value', (snapshot) => {
         const rawData = snapshot.val();
         if (!rawData) {
-          resolve({ data: [], success: true });
+          resolve({ data: [], detail: [], success: true });
           return;
         }
 
-        // Jika fungsi meminta data spesifik berdasarkan nama
+        // Jika user memilih nama spesifik (Mode Mandiri / Filter Admin)
         if (nama && nama.trim()) {
           const targetKey = nama.toUpperCase().trim();
           let userRecords = [];
 
-          if (rawData[targetKey]) {
-            // Jika data tersimpan langsung berdasarkan key nama (struktur GAS)
+          // 1. Cek apakah data dikelompokkan berdasarkan key Nama langsung (Struktur GAS)
+          if (rawData[targetKey] && Array.isArray(rawData[targetKey])) {
             userRecords = rawData[targetKey];
-          } else if (Array.isArray(rawData)) {
-            // Jika data berupa array
+          } 
+          // 2. Cek jika data berupa Array murni
+          else if (Array.isArray(rawData)) {
             userRecords = rawData.filter(x => x && String(x.nama || x.NAMA || "").toUpperCase().trim() === targetKey);
-          } else if (typeof rawData === 'object') {
-            // Pencarian fleksibel dalam object
+          } 
+          // 3. Pencarian fleksibel dalam Objek
+          else if (typeof rawData === 'object') {
             let foundKey = Object.keys(rawData).find(k => k.toUpperCase().trim() === targetKey);
-            if (foundKey) userRecords = rawData[foundKey];
+            if (foundKey && Array.isArray(rawData[foundKey])) {
+              userRecords = rawData[foundKey];
+            } else {
+              // Cari manual di dalam semua isi objek
+              Object.values(rawData).forEach(val => {
+                if (Array.isArray(val)) {
+                  let match = val.filter(x => x && String(x.nama || x.NAMA || "").toUpperCase().trim() === targetKey);
+                  userRecords = userRecords.concat(match);
+                }
+              });
+            }
           }
 
-          if (!Array.isArray(userRecords)) {
-            userRecords = userRecords ? Object.values(userRecords) : [];
-          }
-
-          // Hitung total atau atribut khusus jika absensi
+          // Hitung statistik ringkasan pendukung
           let terlambatCount = userRecords.filter(x => x && String(x.terlambat || x.TERLAMBAT || "").toUpperCase() === "YA").length;
-          
           let totalUnit = 0;
           let totalOmzet = 0;
           userRecords.forEach(item => {
@@ -59,30 +66,29 @@ async function loadDataFromFirebase(category, nama = null) {
             totalUnit: totalUnit,
             totalOmzet: totalOmzet,
             terlambat: terlambatCount,
-            data: userRecords,
-            detail: userRecords,
+            data: userRecords,     // Sangat penting untuk render absensi
+            detail: userRecords,   // Sangat penting untuk render penjualan
             success: true
           });
-        } else {
-          // Jika mengambil seluruh data (untuk Admin/Perolehan)
+        } 
+        // Jika mode Global / Admin (Tanpa filter nama spesifik)
+        else {
           let allRows = [];
           if (Array.isArray(rawData)) {
             allRows = rawData.filter(Boolean);
-          } else {
+          } else if (typeof rawData === 'object') {
             Object.keys(rawData).forEach(k => {
               let val = rawData[k];
-              if (Array.isArray(val)) allRows = allRows.concat(val.filter(Boolean));
-              else if (val && typeof val === 'object') {
-                // Jika val berisi sub-array atau objek row
-                let subValues = Object.values(val);
-                subValues.forEach(sub => {
+              if (Array.isArray(val)) {
+                allRows = allRows.concat(val.filter(Boolean));
+              } else if (val && typeof val === 'object') {
+                Object.values(val).forEach(sub => {
                   if (sub && typeof sub === 'object') allRows.push(sub);
                 });
               }
             });
           }
 
-          // Khusus untuk perolehan rekap admin
           if (category === 'PENJUALAN') {
             let summaryMap = {};
             allRows.forEach(item => {
@@ -94,23 +100,22 @@ async function loadDataFromFirebase(category, nama = null) {
               summaryMap[promotorName].uc += Number(item.uc || item.UC || 0);
             });
             let list = Object.values(summaryMap).sort((a, b) => b.omzet - a.omzet);
-            resolve({ list: list, success: true });
+            resolve({ list: list, data: allRows, success: true });
           } else {
             resolve({ data: allRows, success: true });
           }
         }
       }, (error) => {
         console.error(`Firebase error loading ${path}:`, error);
-        resolve({ data: [], success: false });
+        resolve({ data: [], detail: [], success: false });
       });
     });
   } catch (e) {
     console.error("Firebase load error:", e);
-    return { data: [], success: true };
+    return { data: [], detail: [], success: true };
   }
 }
 
-// Mengambil daftar nama promotor dari MASTER_SALES / struktur GAS
 async function getNameListFromFirebase() {
   return new Promise((resolve) => {
     if (typeof db === 'undefined') {
@@ -118,7 +123,6 @@ async function getNameListFromFirebase() {
       return;
     }
     
-    // Cek MASTER_SALES atau fallback ke ABSENFINGER/PENJUALAN
     db.ref('data/MASTER_SALES').once('value', (snapshot) => {
       const rawData = snapshot.val();
       let names = [];
@@ -127,7 +131,6 @@ async function getNameListFromFirebase() {
         if (Array.isArray(rawData)) {
           names = rawData.map(x => x ? (x.nama || x.NAMA || x.Nama || "") : "").filter(Boolean);
         } else if (typeof rawData === 'object') {
-          // Karena GAS melakukan grouping, key dari object adalah Nama Promotor
           names = Object.keys(rawData).filter(k => k && k !== "length" && !isFinite(k));
           if (names.length === 0) {
             names = Object.values(rawData).map(x => x && typeof x === 'object' ? (x.nama || x.NAMA || "") : "").filter(Boolean);
@@ -135,7 +138,7 @@ async function getNameListFromFirebase() {
         }
       }
 
-      // Jika MASTER_SALES kosong, ambil dari key ABSENFINGER
+      // Fallback jika MASTER_SALES kosong
       if (names.length === 0) {
         db.ref('data/ABSENFINGER').once('value', (snapAbsen) => {
           const absData = snapAbsen.val();
@@ -169,4 +172,4 @@ const firebaseDataProvider = {
   getNames: async () => { return await getNameListFromFirebase(); }
 };
 
-console.log("✅ Synced Firebase Data Provider loaded");
+console.log("✅ Fixed Firebase Data Provider loaded");
