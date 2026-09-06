@@ -822,26 +822,33 @@ async function muatSemuaDataLatarBelakang(namaTarget) {
 }
 async function loadNama() {
     try {
+        console.log("🔄 Memuat daftar nama promotor...");
         const data = await firebaseDataProvider.getNames();
+        console.log("📋 Daftar nama yang didapat:", data);
         
+        let selectEl = document.getElementById("nama");
+        if (!selectEl) return;
+
         let html = `<option value="" disabled selected hidden>Pilih Nama Promotor</option>`;
-        if(Array.isArray(data) && data.length > 0) {
+        if (Array.isArray(data) && data.length > 0) {
             data.forEach((nama) => { 
                 html += `<option value="${nama}">${nama}</option>`; 
             });
-        }
-        document.getElementById("nama").innerHTML = html;
-
-        // Pastikan ada data dan pilih otomatis nama pertama
-        if(Array.isArray(data) && data.length > 0) {
-            let targetPertama = data[0];
-            document.getElementById("nama").value = targetPertama;
-            await muatSemuaDataLatarBelakang(targetPertama);
+            selectEl.innerHTML = html;
             
-            // Jika saat ini sedang di dalam menu detail, render ulang
+            // Otomatis pilih nama pertama secara paksa agar data langsung keluar
+            selectEl.value = data[0];
+            console.log("👉 Nama otomatis terpilih:", data[0]);
+            
+            await muatSemuaDataLatarBelakang(data[0]);
+            
+            // Jika sedang berada di dalam menu detail, render ulang
             if (document.getElementById("detailViewSection").style.display === "block") {
                 jalankanRenderMenu(activeTab);
             }
+        } else {
+            selectEl.innerHTML = `<option value="" disabled selected>Tidak ada nama promotor</option>`;
+            console.warn("⚠️ List nama promotor kosong dari Firebase.");
         }
     } catch(e) {
         console.error("Gagal memuat nama promotor dari Firebase", e);
